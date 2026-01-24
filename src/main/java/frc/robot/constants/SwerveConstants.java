@@ -12,7 +12,7 @@ public final class SwerveConstants {
       {8, 28}, // FR
       {2, 22}, // BL
       {4, 24}  // BR
-    };  // front is battery side on rinzler
+    };
 
     public static final int BORON_ID = 1;
     
@@ -74,20 +74,9 @@ public final class SwerveConstants {
     public static double[] DRIVE_CONTROLLER_PID = {5, 0, 0.3};
     public static double[] ROT_CONTROLLER_PID = {3.2, 0, 0};
 
-    public static Constraints ALIGNMENT_DRIVE_CONSTRAINTS = new Constraints(MAX_ROBOT_TRANS_SPEED, 2);
-    public static Constraints ALIGNMENT_ROT_CONSTRAINTS = new Constraints(MAX_ROBOT_TRANS_SPEED, 2);
-
-    public static Constraints DRIVE_TO_POINT_REEF_AVOID_CONSTRAINTS = new Constraints(4.8, 3.0);
-    public static Constraints DRIVE_TO_POINT_CONSTRAINTS = new Constraints(6, 4);
-    public static Constraints BARGE_ALIGN_CONSTRAINTS = new Constraints(1, 0.5);
-
     public static double ALIGNMENT_MAX_STOPPED_TRANS_SPEED = 0.1; // m/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning
     public static double ALIGNMENT_MAX_STOPPED_ROT_SPEED = Units.degreesToRadians(1); // rad/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning
 
     public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // rad/s^2
     public static final double WHEEL_RADIUS_MAX_VEL = 0.25; // rad/s
-
-    // for alignment
-    public static final Rotation2d SWERVE_ALIGN_ROT_TOLERANCE = Rotation2d.fromDegrees(2);
-    public static final double SWERVE_ALIGN_DIST_TOLERANCE = Units.inchesToMeters(0.75);
 }

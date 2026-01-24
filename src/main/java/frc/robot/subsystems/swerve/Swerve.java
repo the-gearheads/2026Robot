@@ -16,8 +16,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,8 +23,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.Timer;
@@ -67,8 +63,6 @@ public class Swerve extends SubsystemBase {
 
   double lastTime = Timer.getTimestamp();
 
-  TrapezoidProfile drivePIDProfile = new TrapezoidProfile(DRIVE_TO_POINT_CONSTRAINTS);
-  TrapezoidProfile driveReefAvoidPIDProfile = new TrapezoidProfile(DRIVE_TO_POINT_REEF_AVOID_CONSTRAINTS);
   double lastProfileVel = 0.0;
   double driveProfileLastTime = Timer.getFPGATimestamp();
 
@@ -280,64 +274,12 @@ public class Swerve extends SubsystemBase {
     driveFieldRelative(speeds);
   }
 
-  public boolean atPose(Pose2d pose) {
-    return atPose(pose, SWERVE_ALIGN_DIST_TOLERANCE, SWERVE_ALIGN_ROT_TOLERANCE);
-  }
-
   public boolean atPose(Pose2d pose, double distTolerance, Rotation2d rotTolerance) {
     if (Math.abs(getPose().getRotation().getRadians() - pose.getRotation().getRadians()) < rotTolerance.getRadians() &&
         getPose().getTranslation().getDistance(pose.getTranslation()) < distTolerance) {
       return true;
     }
     return false;
-  }
-
-  public Command driveToPose(Pose2d pose, boolean waitForStop, double distTolerance, Rotation2d rotTolerance) {
-    lastProfileVel = 0.0;
-    driveProfileLastTime = Timer.getFPGATimestamp();
-  
-    return this.run(() -> {
-
-      // accel limiting stuff
-      double now = Timer.getFPGATimestamp();
-      double dt = now - lastTime;
-      lastTime = now;
-
-      Rotation2d rotationError = getPose().getRotation().minus(pose.getRotation());
-      double targetDist = getPose().getTranslation().getDistance(pose.getTranslation());
-      double driveVel = driveController.calculate(targetDist, 0.0);
-      double rotVel = headingController.calculate(rotationError.getRadians(), 0.0);
-
-      State setpoint = drivePIDProfile.calculate(dt,
-      /* initial = */ new TrapezoidProfile.State(targetDist, lastProfileVel),
-          /* goal = */ new TrapezoidProfile.State(0.0, 0.0));
-
-      Logger.recordOutput("Swerve/DriveToPose/setpointPos", setpoint.position);
-      Logger.recordOutput("Swerve/DriveToPose/setpointVel", setpoint.velocity);
-      double targetVel = setpoint.velocity;
-      lastProfileVel = targetVel;
-
-      Rotation2d translationVectorAngleError = getPose().getTranslation().minus(pose.getTranslation()).getAngle();
-      var autoTranslation = new Pose2d(Translation2d.kZero,
-          translationVectorAngleError)
-          .transformBy(new Transform2d(new Translation2d(targetVel, 0.0), Rotation2d.kZero))
-          .getTranslation();
-      ChassisSpeeds autoSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(autoTranslation.getX(), autoTranslation.getY(), rotVel, getPose().getRotation());
-      drive(autoSpeeds);
-      Logger.recordOutput("Swerve/DriveToPose/targetDist", targetDist);
-      Logger.recordOutput("Swerve/DriveToPose/targetPose", pose);
-      Logger.recordOutput("Swerve/DriveToPose/rotationError", rotationError);
-      Logger.recordOutput("Swerve/DriveToPose/driveVel", driveVel);
-      Logger.recordOutput("Swerve/DriveToPose/rotVel", rotVel);
-    }).until(() -> {
-      boolean stopped = waitForStop ? getRobotRelativeSpeeds().omegaRadiansPerSecond < ALIGNMENT_MAX_STOPPED_ROT_SPEED
-      && Math.abs(getTranslationVelocity()) < ALIGNMENT_MAX_STOPPED_TRANS_SPEED : true;
-      return atPose(pose, distTolerance, rotTolerance) && stopped;
-    });
-  }
-
-  public Command driveToPose(Pose2d pose, boolean waitforStop) {
-    return driveToPose(pose, waitforStop, SWERVE_ALIGN_DIST_TOLERANCE, SWERVE_ALIGN_ROT_TOLERANCE);
   }
 
   public void setDriveVoltage(Voltage volts) {
