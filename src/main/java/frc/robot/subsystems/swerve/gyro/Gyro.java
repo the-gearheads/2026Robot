@@ -4,7 +4,7 @@ package frc.robot.subsystems.swerve.gyro;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
-public interface GyroIO {
+public interface Gyro {
   /**
    * Gets rotation as a Rotation2d
    */

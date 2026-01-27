@@ -34,7 +34,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
-import frc.robot.subsystems.swerve.gyro.GyroIO;
+import frc.robot.subsystems.swerve.gyro.Gyro;
 import frc.robot.subsystems.swerve.gyro.GyroRedux;
 import frc.robot.subsystems.swerve.gyro.GyroSim;
 
@@ -45,12 +45,12 @@ public class Swerve extends SubsystemBase {
   SwerveDrivePoseEstimator multitagPoseEstimator;
   SwerveDriveOdometry wheelOdometry;
   Field2d field = new Field2d();
-  GyroIO gyro;
+  Gyro gyro;
 
   PIDController headingController = new PIDController(ROT_CONTROLLER_PID[0], ROT_CONTROLLER_PID[1], ROT_CONTROLLER_PID[2]);
   PIDController driveController = new PIDController(DRIVE_CONTROLLER_PID[0], DRIVE_CONTROLLER_PID[1], DRIVE_CONTROLLER_PID[2]);
 
-  SwerveModuleIO[] modules = new SwerveModuleIO[4];
+  SwerveModule[] modules = new SwerveModule[4];
 
   PIDController xPid = new PIDController(XY_PATH_FOLLOWING_PID[0], XY_PATH_FOLLOWING_PID[1], XY_PATH_FOLLOWING_PID[2]);
   PIDController yPid = new PIDController(XY_PATH_FOLLOWING_PID[0], XY_PATH_FOLLOWING_PID[1], XY_PATH_FOLLOWING_PID[2]);
@@ -64,22 +64,18 @@ public class Swerve extends SubsystemBase {
   public Swerve() {
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
-      modules[0] = new SwerveModuleSim(0, "FL");
-      modules[1] = new SwerveModuleSim(1, "FR");
-      modules[2] = new SwerveModuleSim(2, "BL");
-      modules[3] = new SwerveModuleSim(3, "BR");
     } else {
       gyro = new GyroRedux();
-      modules[0] = new SwerveModule(0, "FL");
-      modules[1] = new SwerveModule(1, "FR");
-      modules[2] = new SwerveModule(2, "BL");
-      modules[3] = new SwerveModule(3, "BR");
     };
+    modules[0] = new SwerveModule(0, "FL");
+    modules[1] = new SwerveModule(1, "FR");
+    modules[2] = new SwerveModule(2, "BL");
+    modules[3] = new SwerveModule(3, "BR");
 
     gyro.reset();
     SmartDashboard.putData("Field", field);
     
-    for (SwerveModuleIO module : modules) {
+    for (SwerveModule module : modules) {
       module.configure();
     }
     
@@ -222,7 +218,7 @@ public class Swerve extends SubsystemBase {
 
   public double getCurrentDraw() {
     double totalCurrent = 0;
-    for (SwerveModuleIO module : modules) {
+    for (SwerveModule module : modules) {
       totalCurrent += module.getDrive().getCurrent();
       totalCurrent += module.getSteer().getCurrent();
     }
@@ -239,7 +235,7 @@ public class Swerve extends SubsystemBase {
 
   public void periodic() {
     // gyro.log();
-    for (SwerveModuleIO module : modules) {
+    for (SwerveModule module : modules) {
       module.periodic();
     }
     wheelOdometry.update(getGyroRotation(), getModulePositions());
@@ -287,13 +283,13 @@ public class Swerve extends SubsystemBase {
   }
 
   public void setDriveVoltage(Voltage volts) {
-    for (SwerveModuleIO mod : modules) {
+    for (SwerveModule mod : modules) {
       mod.setDriveVolts(volts.magnitude());
     }
   }
 
   public void setSteerVoltage(Voltage volts) {
-    for (SwerveModuleIO mod : modules) {
+    for (SwerveModule mod : modules) {
       mod.setSteerVolts(volts.magnitude());
     }
   }

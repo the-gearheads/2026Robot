@@ -10,12 +10,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Robot;
+import frc.robot.constants.MiscConstants;
 import frc.robot.subsystems.swerve.motors.DriveMotor;
 import frc.robot.subsystems.swerve.motors.DriveMotorSim;
 import frc.robot.subsystems.swerve.motors.SteerMotor;
 import frc.robot.subsystems.swerve.motors.SteerMotorSim;
 
-public class SwerveModule implements SwerveModuleIO {
+public class SwerveModule {
   public final DriveMotor drive;
   public final SteerMotor steer;
 
@@ -31,8 +32,13 @@ public class SwerveModule implements SwerveModuleIO {
     this.modulePath = "Swerve/" + moduleName;
     this.offset = Rotation2d.fromDegrees(WHEEL_OFFSETS[id]);
 
-    drive = new DriveMotor(MOTOR_IDS[id][0], id, modulePath);
-    steer = new SteerMotor(MOTOR_IDS[id][1], id, offset, modulePath);
+    if (MiscConstants.isReal) {
+      drive = new DriveMotor(MOTOR_IDS[id][0], id, modulePath);
+      steer = new SteerMotor(MOTOR_IDS[id][1], id, offset, modulePath);
+    } else {
+      drive = new DriveMotorSim(MOTOR_IDS[id][0], id, modulePath);
+      steer = new SteerMotorSim(MOTOR_IDS[id][1], id, offset, modulePath);
+    }
 
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue = SparkOdometryThread.getInstance().registerSignal(drive::getPositionOptional);
