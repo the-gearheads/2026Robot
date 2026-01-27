@@ -15,7 +15,7 @@ import frc.robot.subsystems.swerve.motors.DriveMotorSim;
 import frc.robot.subsystems.swerve.motors.SteerMotor;
 import frc.robot.subsystems.swerve.motors.SteerMotorSim;
 
-public class SwerveModule {
+public class SwerveModule implements SwerveModuleIO {
   public final DriveMotor drive;
   public final SteerMotor steer;
   Rotation2d offset;
@@ -92,46 +92,6 @@ public class SwerveModule {
   public void configure() {
     steer.configure();
     drive.configure();
-  }
-
-  private Rotation2d[] getOdometrySteerPositions() {
-    var angles = turnPositionQueue
-        .stream()
-        .map((Double value) -> Rotation2d.fromRadians(value))
-        .toArray(Rotation2d[]::new);
-    Logger.recordOutput(modulePath + "/odometrySteerPositions", angles);
-    turnPositionQueue.clear();
-    return angles;
-  }
-
-  private double[] getOdometryDrivePositions() {
-    var positions = drivePositionQueue
-        .stream()
-        .mapToDouble((Double value) -> value)
-        .toArray();
-    Logger.recordOutput(modulePath + "/odometryDrivePositions", positions);
-    drivePositionQueue.clear();
-    return positions;
-  }
-
-  public double[] getOdometryTimestamps() {
-    var timestamps = timestampQueue
-        .stream()
-        .mapToDouble((Double value) -> value)
-        .toArray();
-    Logger.recordOutput(modulePath + "/odometryTimestamps", timestamps);
-    timestampQueue.clear();
-    return timestamps;
-  }
-
-  public SwerveModulePosition[] getOdometryModPositions() {
-    var drivePositions = getOdometryDrivePositions();
-    var turnPositions = getOdometrySteerPositions();
-    var positions = new SwerveModulePosition[drivePositions.length];
-    for (int i = 0; i < drivePositions.length; i++) {
-      positions[i] = new SwerveModulePosition(drivePositions[i], turnPositions[i]);
-    }
-    return positions;
   }
 
   public void setBrakeCoast(boolean willBrake) {

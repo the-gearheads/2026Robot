@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
-public class GyroSim implements Gyro {
+public class GyroSim implements GyroIO {
 
   double yaw;
   double velocityYaw;

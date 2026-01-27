@@ -34,7 +34,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
-import frc.robot.subsystems.swerve.gyro.Gyro;
+import frc.robot.subsystems.swerve.gyro.GyroIO;
 import frc.robot.subsystems.swerve.gyro.GyroRedux;
 import frc.robot.subsystems.swerve.gyro.GyroSim;
 
@@ -45,7 +45,7 @@ public class Swerve extends SubsystemBase {
   SwerveDrivePoseEstimator multitagPoseEstimator;
   SwerveDriveOdometry wheelOdometry;
   Field2d field = new Field2d();
-  Gyro gyro;
+  GyroIO gyro;
 
   PIDController headingController = new PIDController(ROT_CONTROLLER_PID[0], ROT_CONTROLLER_PID[1], ROT_CONTROLLER_PID[2]);
   PIDController driveController = new PIDController(DRIVE_CONTROLLER_PID[0], DRIVE_CONTROLLER_PID[1], DRIVE_CONTROLLER_PID[2]);

@@ -13,7 +13,7 @@ import edu.wpi.first.math.geometry.CoordinateSystem;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
-public class GyroRedux implements Gyro {
+public class GyroRedux implements GyroIO {
   Canandgyro gyro = new Canandgyro(BORON_ID);
   CanandgyroSettings settings = new CanandgyroSettings();
   public GyroRedux() {
