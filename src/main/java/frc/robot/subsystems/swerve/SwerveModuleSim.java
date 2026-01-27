@@ -8,34 +8,44 @@ import frc.robot.subsystems.swerve.motors.DriveMotorSim;
 import frc.robot.subsystems.swerve.motors.SteerMotor;
 import frc.robot.subsystems.swerve.motors.SteerMotorSim;
 
+import static edu.wpi.first.units.Units.Amps;
 import static frc.robot.constants.SwerveConstants.MOTOR_IDS;
 import static frc.robot.constants.SwerveConstants.WHEEL_OFFSETS;
+
+import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
+import org.ironmaple.simulation.motorsims.SimulatedMotorController;
 import org.littletonrobotics.junction.Logger;
 
 public class SwerveModuleSim implements SwerveModuleIO {
 
-  public final DriveMotorSim drive;
-  public final SteerMotorSim steer;
-  Rotation2d offset;
+  private final SwerveModuleSimulation moduleSimulation;
+  private final SimulatedMotorController.GenericMotorController drive;
+  private final SimulatedMotorController.GenericMotorController steer;
 
   String modulePath;
 
-  public SwerveModuleSim(int id, String moduleName) {
-    this.modulePath = "Swerve/" + moduleName;
-    this.offset = Rotation2d.fromDegrees(WHEEL_OFFSETS[id]);
+  public SwerveModuleSim(SwerveModuleSimulation moduleSimulation) {
+    this.moduleSimulation = moduleSimulation;
 
-    drive = new DriveMotorSim(MOTOR_IDS[id][0], id, modulePath);
-    steer = new SteerMotorSim(MOTOR_IDS[id][1], id, offset, modulePath);
+    this.modulePath = "Swerve/" + moduleSimulation.toString();
+
+    this.drive = moduleSimulation
+            .useGenericMotorControllerForDrive()
+            .withCurrentLimit(Amps.of(60));
+    this.steer = moduleSimulation
+            .useGenericControllerForSteer()
+            .withCurrentLimit(Amps.of(20));
   }
 
   public void setState(SwerveModuleState state) {
     Logger.recordOutput(modulePath + "/DesiredSwerveStatePreOpt", state);
 
-    state.optimize(steer.getAngle());
-    state.cosineScale(steer.getAngle());
+    state.optimize(Rotation2d.fromRadians(moduleSimulation.getSteerAbsoluteAngle().magnitude()));
+    state.cosineScale(Rotation2d.fromRadians(moduleSimulation.getSteerAbsoluteAngle().magnitude()));
 
     Logger.recordOutput(modulePath + "/DesiredSwerveStatePostOpt", state);
 
+    moduleSimulation.set
     steer.setAngle(state.angle);
     drive.setSpeed(state.speedMetersPerSecond);
   }
