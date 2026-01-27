@@ -50,12 +50,7 @@ public class Swerve extends SubsystemBase {
   PIDController headingController = new PIDController(ROT_CONTROLLER_PID[0], ROT_CONTROLLER_PID[1], ROT_CONTROLLER_PID[2]);
   PIDController driveController = new PIDController(DRIVE_CONTROLLER_PID[0], DRIVE_CONTROLLER_PID[1], DRIVE_CONTROLLER_PID[2]);
 
-  SwerveModule[] modules = {
-    new SwerveModule(0, "FL"),
-    new SwerveModule(1, "FR"),
-    new SwerveModule(2, "BL"),
-    new SwerveModule(3, "BR")
-  };
+  SwerveModuleIO[] modules = new SwerveModuleIO[4];
 
   PIDController xPid = new PIDController(XY_PATH_FOLLOWING_PID[0], XY_PATH_FOLLOWING_PID[1], XY_PATH_FOLLOWING_PID[2]);
   PIDController yPid = new PIDController(XY_PATH_FOLLOWING_PID[0], XY_PATH_FOLLOWING_PID[1], XY_PATH_FOLLOWING_PID[2]);
@@ -69,13 +64,22 @@ public class Swerve extends SubsystemBase {
   public Swerve() {
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
+      modules[0] = new SwerveModuleSim(0, "FL");
+      modules[1] = new SwerveModuleSim(1, "FR");
+      modules[2] = new SwerveModuleSim(2, "BL");
+      modules[3] = new SwerveModuleSim(3, "BR");
     } else {
       gyro = new GyroRedux();
-    }
+      modules[0] = new SwerveModule(0, "FL");
+      modules[1] = new SwerveModule(1, "FR");
+      modules[2] = new SwerveModule(2, "BL");
+      modules[3] = new SwerveModule(3, "BR");
+    };
+
     gyro.reset();
     SmartDashboard.putData("Field", field);
     
-    for (SwerveModule module : modules) {
+    for (SwerveModuleIO module : modules) {
       module.configure();
     }
     
@@ -218,9 +222,9 @@ public class Swerve extends SubsystemBase {
 
   public double getCurrentDraw() {
     double totalCurrent = 0;
-    for (SwerveModule module : modules) {
-      totalCurrent += module.drive.getCurrent();
-      totalCurrent += module.steer.getCurrent();
+    for (SwerveModuleIO module : modules) {
+      totalCurrent += module.getDrive().getCurrent();
+      totalCurrent += module.getSteer().getCurrent();
     }
     return totalCurrent;
   }
@@ -235,7 +239,7 @@ public class Swerve extends SubsystemBase {
 
   public void periodic() {
     // gyro.log();
-    for (SwerveModule module : modules) {
+    for (SwerveModuleIO module : modules) {
       module.periodic();
     }
     wheelOdometry.update(getGyroRotation(), getModulePositions());
@@ -283,13 +287,13 @@ public class Swerve extends SubsystemBase {
   }
 
   public void setDriveVoltage(Voltage volts) {
-    for (SwerveModule mod : modules) {
+    for (SwerveModuleIO mod : modules) {
       mod.setDriveVolts(volts.magnitude());
     }
   }
 
   public void setSteerVoltage(Voltage volts) {
-    for (SwerveModule mod : modules) {
+    for (SwerveModuleIO mod : modules) {
       mod.setSteerVolts(volts.magnitude());
     }
   }
@@ -298,10 +302,10 @@ public class Swerve extends SubsystemBase {
     return new SysIdRoutine(
       new SysIdRoutine.Config(null, Volts.of(5.5), null, (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
       new SysIdRoutine.Mechanism((Voltage v) -> {
-        modules[0].steer.setAngle(new Rotation2d());
-        modules[1].steer.setAngle(new Rotation2d());
-        modules[2].steer.setAngle(new Rotation2d());
-        modules[3].steer.setAngle(new Rotation2d());
+        modules[0].getSteer().setAngle(new Rotation2d());
+        modules[1].getSteer().setAngle(new Rotation2d());
+        modules[2].getSteer().setAngle(new Rotation2d());
+        modules[3].getSteer().setAngle(new Rotation2d());
         setDriveVoltage(v);
       }, null, this)
     );
@@ -313,7 +317,7 @@ public class Swerve extends SubsystemBase {
       new SysIdRoutine.Mechanism((Voltage v) -> {
         var states = kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 100));
         for(int i = 0; i < modules.length; i++) {
-          modules[i].steer.setAngle(states[i].angle);
+          modules[i].getSteer().setAngle(states[i].angle);
         }
         setDriveVoltage(v);
       }, null, this)
@@ -385,7 +389,7 @@ public class Swerve extends SubsystemBase {
   public double[] getDrivePositionsRad() {
     double[] positions = new double[4];
     for (int i = 0; i < modules.length; i++) {
-      positions[i] = (modules[i].drive.getPosition() / WHEEL_CIRCUMFERENCE) * 2 * Math.PI;
+      positions[i] = (modules[i].getDrive().getPosition() / WHEEL_CIRCUMFERENCE) * 2 * Math.PI;
     }
     return positions;
   }

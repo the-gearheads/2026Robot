@@ -1,8 +1,8 @@
 package frc.robot.constants;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
+import frc.robot.Robot;
 
 public class MiscConstants {
+        public static final boolean isReal = Robot.isReal();
         public static final double JOYSTICK_DEADBAND = 0.005;
 }

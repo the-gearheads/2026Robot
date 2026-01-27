@@ -95,6 +95,7 @@ public class SteerMotor {
     Logger.recordOutput(modulePath + "/targetAngle", targetAngle);
     Logger.recordOutput(modulePath + "/manualVoltageOnly", manualVoltageOnly);
   }
+  
   public void configure() {
     max.setCANTimeout(250); 
     config.smartCurrentLimit(STEER_CURRENT_LIMIT);
