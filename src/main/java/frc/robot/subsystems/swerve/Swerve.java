@@ -191,6 +191,10 @@ public class Swerve extends SubsystemBase {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 
+  public ChassisSpeeds getFieldRelativeSpeeds(){
+    return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(), getPose().getRotation());
+  }
+  
   @AutoLogOutput
   public Pose2d getPoseMultitag() {
     return multitagPoseEstimator.getEstimatedPosition();

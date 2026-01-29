@@ -5,8 +5,13 @@
 package frc.robot;
 
 import frc.robot.commands.Teleop;
+import frc.robot.constants.RobotContants;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.util.FuelSim;
 import frc.robot.controllers.Controllers;
+
+import static frc.robot.constants.MiscConstants.isReal;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -21,7 +26,18 @@ public class RobotContainer {
     swerve.setDefaultCommand(new Teleop(swerve));
     // Configure the trigger bindings
     configureBindings();
-    
+    if (!isReal) {
+      FuelSim.getInstance().spawnStartingFuel(); // spawns fuel in the depots and neutral zone
+
+      FuelSim.getInstance().registerRobot(
+        RobotContants.ROBOT_WIDTH,  // from left to right
+        RobotContants.ROBOT_LENGTH, // from front to back
+        RobotContants.ROBOT_BUMPER_HEIGHT,// from floor to top of bumpers
+        swerve::getPose, // Supplier<Pose2d> of robot pose
+        swerve::getFieldRelativeSpeeds); // Supplier<ChassisSpeeds> of field-centric chassis speeds
+      
+      FuelSim.getInstance().start();
+    }
   }
 
  
