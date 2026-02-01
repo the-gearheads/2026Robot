@@ -89,9 +89,13 @@ public class Shooter extends SubsystemBase{
    }
 
    public Command runFlywheel(double volts){
-    return run(() -> setFlywheelVoltage(12));
+    return run(() -> setFlywheelVoltage(volts));
    }
    public Command runTopRoller(double volts){
-    return run(() -> setTopRollerVoltage(12));
+    return run(() -> setTopRollerVoltage(volts));
+   }
+
+   public Command runShooter(double volts){
+    return runFlywheel(volts).alongWith(runTopRoller(volts));
    }
 }

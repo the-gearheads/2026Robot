@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.Teleop;
 import frc.robot.constants.RobotContants;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.FuelSim;
 import frc.robot.controllers.Controllers;
@@ -19,11 +20,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class RobotContainer {
  
   private final Swerve swerve;
+  private final Shooter shooter;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerve = new Swerve();
     swerve.setDefaultCommand(new Teleop(swerve));
+    shooter = new Shooter();
     // Configure the trigger bindings
     configureBindings();
     if (!isReal) {
@@ -50,6 +53,10 @@ public class RobotContainer {
 
     // Find new controllers
     Controllers.updateActiveControllerInstance();
+
+    Controllers.driverController.getABtn().whileTrue(shooter.runShooter(12));
+    Controllers.driverController.getBBtn().whileTrue(shooter.runShooter(6));
+    Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
   }
 
   public Command getAutonomousCommand() {
