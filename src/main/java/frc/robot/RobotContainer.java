@@ -23,9 +23,11 @@ public class RobotContainer {
   private final Swerve swerve;
   private final Shooter shooter;
   private final Hood hood;
+  private final SysidAutoPicker sysidPicker;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    sysidPicker = new SysidAutoPicker();
     swerve = new Swerve();
     swerve.setDefaultCommand(new Teleop(swerve));
     shooter = new Shooter();
@@ -44,6 +46,9 @@ public class RobotContainer {
       
       FuelSim.getInstance().start();
     }
+
+    sysidPicker.addSysidRoutines("main Shooter", shooter.getMainFlySysidRoutine());
+    sysidPicker.addSysidRoutines("top Shooter", shooter.getTopFlySysidRoutine());
   }
 
  
