@@ -4,14 +4,14 @@ import static frc.robot.constants.SwerveConstants.*;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.PersistMode;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -51,9 +51,7 @@ public class DriveMotor {
 
   public void setSpeed(double speed) {
     driveSetpoint = speed;
-    double ffVolts = DRIVE_FEEDFORWARD.calculate(speed);
-    Logger.recordOutput(modulePath + "/ffVolts", ffVolts);
-    pid.setReference(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0, ffVolts);
+    pid.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
   }
 
   public double getVoltage() {
@@ -69,7 +67,7 @@ public class DriveMotor {
   }
 
   public void setVoltage(double volts) {
-    pid.setReference(volts, ControlType.kVoltage);
+    pid.setSetpoint(volts, ControlType.kVoltage);
   }
 
   public double getPosition() {
@@ -105,6 +103,10 @@ public class DriveMotor {
     config.closedLoop.p((DRIVE_PID[0] / 12.0) * DRIVE_VEL_FACTOR);
     config.closedLoop.i(0);
     config.closedLoop.d(0);
+
+    config.closedLoop.feedForward.kS(DRIVE_FEEDFORWARD.getKs());
+    config.closedLoop.feedForward.kV(DRIVE_FEEDFORWARD.getKv());
+    config.closedLoop.feedForward.kA(DRIVE_FEEDFORWARD.getKa());
 
     config.signals.appliedOutputPeriodMs(20);
     config.signals.primaryEncoderPositionPeriodMs((int)(1000.0 / ODOMETRY_FREQUENCY));

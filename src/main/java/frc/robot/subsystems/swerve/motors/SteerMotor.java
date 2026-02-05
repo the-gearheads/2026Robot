@@ -9,14 +9,14 @@ import org.littletonrobotics.junction.Logger;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.PersistMode;
 import com.revrobotics.REVLibError;
+import com.revrobotics.ResetMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -109,7 +109,7 @@ public class SteerMotor {
     config.closedLoop.positionWrappingMinInput(0);
     config.closedLoop.positionWrappingMaxInput(Math.PI * 2);
 
-    config.closedLoop.pidf(STEER_PIDF[0], STEER_PIDF[1], STEER_PIDF[2], STEER_PIDF[3]);
+    config.closedLoop.pid(STEER_PIDF[0], STEER_PIDF[1], STEER_PIDF[2]);
     config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
 
