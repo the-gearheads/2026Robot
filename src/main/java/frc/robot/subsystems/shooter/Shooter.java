@@ -15,11 +15,8 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -154,16 +151,11 @@ public class Shooter extends SubsystemBase{
     return topFly.getOutputCurrent();
    }
 
-   public Command runFlywheel(double volts){
-    return run(() -> setFlywheelVoltage(volts));
-   }
-
-   public Command runTopFly(double volts){
-    return run(() -> setTopFlyVoltage(volts));
-   }
-
    public Command runShooter(double volts){
-    return runFlywheel(volts).alongWith(runTopFly(volts));
+    return this.run(() -> {
+        setTopFlyVoltage(volts);
+        setFlywheelVoltage(volts);
+    });
    }
 
    public SysIdRoutine getMainFlySysidRoutine() {

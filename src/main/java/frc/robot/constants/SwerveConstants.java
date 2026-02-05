@@ -8,8 +8,8 @@ public final class SwerveConstants {
     public static final int[][] MOTOR_IDS = {
       {6, 26}, // FL
       {8, 28}, // FR
-      {2, 22}, // BL
-      {4, 24}  // BR
+      {5, 22}, // BL
+      {7, 24}  // BR
     };
 
     public static final int BORON_ID = 1;

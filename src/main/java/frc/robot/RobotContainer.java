@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.Teleop;
 import frc.robot.constants.RobotContants;
 import frc.robot.subsystems.shooter.Hood;
+import frc.robot.subsystems.shooter.HoodSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.FuelSim;
@@ -31,10 +32,11 @@ public class RobotContainer {
     swerve = new Swerve();
     swerve.setDefaultCommand(new Teleop(swerve));
     shooter = new Shooter();
-    hood = new Hood();
     // Configure the trigger bindings
-    configureBindings();
+    
     if (!isReal) {
+
+      hood = new HoodSim();
       FuelSim.getInstance().spawnStartingFuel(); // spawns fuel in the depots and neutral zone
 
       FuelSim.getInstance().registerRobot(
@@ -45,7 +47,11 @@ public class RobotContainer {
         swerve::getFieldRelativeSpeeds); // Supplier<ChassisSpeeds> of field-centric chassis speeds
       
       FuelSim.getInstance().start();
+    } else {
+          hood=  new Hood();
+
     }
+    configureBindings();
 
     sysidPicker.addSysidRoutines("main Shooter", shooter.getMainFlySysidRoutine());
     sysidPicker.addSysidRoutines("top Shooter", shooter.getTopFlySysidRoutine());
@@ -65,12 +71,13 @@ public class RobotContainer {
 
     // voltage numbers are completely arbitrary ngl i just picked things
     Controllers.driverController.getABtn().whileTrue(shooter.runShooter(12));
-    Controllers.driverController.getBBtn().whileTrue(shooter.runShooter(6));
-    Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
+    // Controllers.driverController.getBBtn().whileTrue(shooter.runShooter(6));
+    // Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
 
     Controllers.driverController.getLeftBumper().whileTrue(hood.hoodManual(3));
     Controllers.driverController.getRightBumper().whileTrue(hood.hoodManual(-3));
   }
+
 
   public Command getAutonomousCommand() {
    return Commands.none();

@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.RelativeEncoder;
@@ -59,11 +60,13 @@ public class Hood extends SubsystemBase {
     public void setHoodVoltage(double volts){
         hoodController.setSetpoint(volts, ControlType.kVoltage);
     }
-
+    
     public void setHoodVoltage(Voltage volts){
         setHoodVoltage(volts.magnitude());
     }
 
+
+    @AutoLogOutput
     public void getHoodVelocity(){
         hoodEncoder.getVelocity();
     }
