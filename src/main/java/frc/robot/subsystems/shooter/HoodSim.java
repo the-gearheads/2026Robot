@@ -4,43 +4,56 @@ import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_LENGTH_METERS;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
+import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
 import static frc.robot.constants.ShooterConstants.HOOD_RATIO;
 
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
+
+import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class HoodSim extends Hood {
-    DCMotor hoodMotor = DCMotor.getNeoVortex(1);
-    SingleJointedArmSim hoodSim = new SingleJointedArmSim(
+    DCMotor hoodGearbox = DCMotor.getNeoVortex(1);
+    SparkFlex flexReal = new SparkFlex(HOOD_MOTOR_ID, MotorType.kBrushless);
+    SparkFlexSim flexSim = new SparkFlexSim(flexReal, hoodGearbox);
+    SingleJointedArmSim armSim = new SingleJointedArmSim(
         LinearSystemId.identifyPositionSystem(HOOD_FEEDFORWARD.getKv(), HOOD_FEEDFORWARD.getKa()),
-         hoodMotor, HOOD_RATIO, HOOD_LENGTH_METERS, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE, false, 0,  0, 0 );
+         hoodGearbox, HOOD_RATIO, HOOD_LENGTH_METERS, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE, false, 0,  0, 0 );
 
 
-    public HoodSim() {}
+    public HoodSim() {
+        configure();
+    }
 
     @Override
     public void simulationPeriodic() {
-        hoodSim.update(.02);
-        Logger.recordOutput("Hood/Velocity", getHoodVelocity());
+        armSim.setInput(flexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
+        armSim.update(.02);
+
+        flexSim.iterate(Units.radiansPerSecondToRotationsPerMinute(
+            armSim.getVelocityRadPerSec()
+        ), RoboRioSim.getVInVoltage(), 0.02);
+
+        RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
     }
 
 
     @Override
     @AutoLogOutput
     public double getHoodVelocity() {
-       return hoodSim.getVelocityRadPerSec();
+       return armSim.getVelocityRadPerSec();
     }
 
     @Override
     public void setHoodVoltage(double volts) {
-        hoodSim.setInputVoltage(volts);
+        armSim.setInputVoltage(volts);
     }
-
-
-
-
 }

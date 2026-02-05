@@ -18,6 +18,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -65,6 +66,14 @@ public class Hood extends SubsystemBase {
         setHoodVoltage(volts.magnitude());
     }
 
+    public void setHoodAngle(Rotation2d angle) {
+        hoodController.setSetpoint(angle.getRadians(), ControlType.kPosition);
+    }
+
+    @AutoLogOutput
+    public Rotation2d getHoodAngle() {
+        return Rotation2d.fromRadians(hoodEncoder.getPosition());
+    }
 
     @AutoLogOutput
     public double getHoodVelocity(){
