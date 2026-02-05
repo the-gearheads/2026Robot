@@ -67,8 +67,8 @@ public class Hood extends SubsystemBase {
 
 
     @AutoLogOutput
-    public void getHoodVelocity(){
-        hoodEncoder.getVelocity();
+    public double getHoodVelocity(){
+       return hoodEncoder.getVelocity();
     }
 
     public Command hoodManual(double volts){

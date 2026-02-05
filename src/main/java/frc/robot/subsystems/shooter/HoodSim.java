@@ -7,6 +7,7 @@ import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_RATIO;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -24,12 +25,14 @@ public class HoodSim extends Hood {
     @Override
     public void simulationPeriodic() {
         hoodSim.update(.02);
+        Logger.recordOutput("Hood/Velocity", getHoodVelocity());
     }
+
 
     @Override
     @AutoLogOutput
-    public void getHoodVelocity() {
-       hoodSim.getVelocityRadPerSec();
+    public double getHoodVelocity() {
+       return hoodSim.getVelocityRadPerSec();
     }
 
     @Override
