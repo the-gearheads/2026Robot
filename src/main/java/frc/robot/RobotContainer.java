@@ -49,7 +49,7 @@ public class RobotContainer {
     configureBindings();
 
     // sysidPicker.addSysidRoutines("main Shooter", shooter.getMainFlySysidRoutine());
-    // sysidPicker.addSysidRoutines("top Shooter", shooter.getTopFlySysidRoutine());
+    // sysidPicker.addSysidRoutines("top Shooter", shooter.getKickerSysidRoutine());
     sysidPicker.addSysidRoutines("swerve drive", swerve.getDriveSysIdRoutine());
   }
 

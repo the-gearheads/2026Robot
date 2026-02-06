@@ -1,11 +1,11 @@
 package frc.robot.subsystems.shooter;
 
 import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
+import static frc.robot.constants.ShooterConstants.HOOD_GEAR_RATIO;
 import static frc.robot.constants.ShooterConstants.HOOD_LENGTH_METERS;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
-import static frc.robot.constants.ShooterConstants.HOOD_RATIO;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -26,7 +26,7 @@ public class HoodSim extends Hood {
     SparkFlexSim flexSim = new SparkFlexSim(flexReal, hoodGearbox);
     SingleJointedArmSim armSim = new SingleJointedArmSim(
         LinearSystemId.identifyPositionSystem(HOOD_FEEDFORWARD.getKv(), HOOD_FEEDFORWARD.getKa()),
-         hoodGearbox, HOOD_RATIO, HOOD_LENGTH_METERS, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE, false, 0,  0, 0 );
+         hoodGearbox, HOOD_GEAR_RATIO, HOOD_LENGTH_METERS, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE, false, 0,  0, 0 );
 
 
     public HoodSim() {
