@@ -8,8 +8,8 @@ public final class SwerveConstants {
     public static final int[][] MOTOR_IDS = {
       {6, 26}, // FL
       {8, 28}, // FR
-      {5, 22}, // BL
-      {7, 24}  // BR
+      {2, 22}, // BL
+      {4, 24}  // BR
     };
 
     public static final int BORON_ID = 1;
@@ -51,8 +51,8 @@ public final class SwerveConstants {
     public static final double STEER_VEL_FACTOR = (2 * Math.PI) / 60.0; // rpm -> rad/sec
 
     public static final double[] STEER_PIDF = {1, 0, 0}; // apparently just a P value of 1 worked for us??? i wanna test that a bit more throughly. Update: we tested, 1 is goated
-    public static final double[] DRIVE_PID = {3.6, 0, 0};
-    public static final SimpleMotorFeedforward DRIVE_FEEDFORWARD = new SimpleMotorFeedforward(0.186587, 2.47975, 0.29612);
+    public static final double[] DRIVE_PID = {0.79016, 0, 0}; // 3.6
+    public static final SimpleMotorFeedforward DRIVE_FEEDFORWARD = new SimpleMotorFeedforward(0.11848, 2.3721, 0.43397);
 
     public static final int DRIVE_CURRENT_LIMIT = 60;
     public static final int STEER_CURRENT_LIMIT = 20;

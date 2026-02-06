@@ -6,9 +6,6 @@ package frc.robot;
 
 import frc.robot.commands.Teleop;
 import frc.robot.constants.RobotContants;
-import frc.robot.subsystems.shooter.Hood;
-import frc.robot.subsystems.shooter.HoodSim;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.FuelSim;
 import frc.robot.controllers.Controllers;
@@ -17,13 +14,12 @@ import static frc.robot.constants.MiscConstants.isReal;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer {
  
   private final Swerve swerve;
-  private final Shooter shooter;
-  private final Hood hood;
+  // private final Shooter shooter;
+  // private final Hood hood;
   private final SysidAutoPicker sysidPicker;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -31,12 +27,12 @@ public class RobotContainer {
     sysidPicker = new SysidAutoPicker();
     swerve = new Swerve();
     swerve.setDefaultCommand(new Teleop(swerve));
-    shooter = new Shooter();
+    // shooter = new Shooter();
     // Configure the trigger bindings
     
     if (!isReal) {
 
-      hood = new HoodSim();
+      // hood = new HoodSim();
       FuelSim.getInstance().spawnStartingFuel(); // spawns fuel in the depots and neutral zone
 
       FuelSim.getInstance().registerRobot(
@@ -48,13 +44,13 @@ public class RobotContainer {
       
       FuelSim.getInstance().start();
     } else {
-          hood=  new Hood();
-
+          // hood=  new Hood();
     }
     configureBindings();
 
-    sysidPicker.addSysidRoutines("main Shooter", shooter.getMainFlySysidRoutine());
-    sysidPicker.addSysidRoutines("top Shooter", shooter.getTopFlySysidRoutine());
+    // sysidPicker.addSysidRoutines("main Shooter", shooter.getMainFlySysidRoutine());
+    // sysidPicker.addSysidRoutines("top Shooter", shooter.getTopFlySysidRoutine());
+    sysidPicker.addSysidRoutines("swerve drive", swerve.getDriveSysIdRoutine());
   }
 
  
@@ -70,17 +66,17 @@ public class RobotContainer {
 
 
     // voltage numbers are completely arbitrary ngl i just picked things
-    Controllers.driverController.getABtn().whileTrue(shooter.runShooter(12));
-    // Controllers.driverController.getBBtn().whileTrue(shooter.runShooter(6));
-    // Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
+    // Controllers.driverController.getABtn().whileTrue(shooter.runShooter(12));
+    // // Controllers.driverController.getBBtn().whileTrue(shooter.runShooter(6));
+    // // Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
 
-    Controllers.driverController.getLeftBumper().whileTrue(hood.hoodManual(3));
-    Controllers.driverController.getRightBumper().whileTrue(hood.hoodManual(-3));
+    // Controllers.driverController.getLeftBumper().whileTrue(hood.hoodManual(3));
+    // Controllers.driverController.getRightBumper().whileTrue(hood.hoodManual(-3));
   }
 
 
   public Command getAutonomousCommand() {
-   return Commands.none();
+   return sysidPicker.get();
 
   }
 }
