@@ -64,7 +64,7 @@ public class Shooter extends SubsystemBase{
     mainFlyConfig.closedLoop.feedForward.kA(FLYWHEEL_FEEDFORWARD.getKa());
 
     mainFlyConfig.encoder.positionConversionFactor(FLYWHEEL_POS_FACTOR);
-    mainFlyConfig.encoder.velocityConversionFactor(FLYWHEEL_POS_FACTOR);
+    mainFlyConfig.encoder.velocityConversionFactor(FLYWHEEL_VEL_FACTOR);
     
     followerFlyConfig.smartCurrentLimit(65);
     followerFlyConfig.idleMode(IdleMode.kBrake);
@@ -160,6 +160,9 @@ public class Shooter extends SubsystemBase{
     return this.run(() -> {
         setKickerVoltage(volts);
         setFlywheelVoltage(volts);
+    }).finallyDo(() -> {
+        setKickerVoltage(0);
+        setFlywheelVoltage(0);
     });
    }
 

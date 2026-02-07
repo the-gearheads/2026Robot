@@ -4,10 +4,10 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 public class ShooterConstants {
-    public static final int MAIN_FLY_ID = 1;
-    public static final int FOLLOWER_FLY_ID = 2;
-    public static final int HOOD_MOTOR_ID = 3;
-    public static final int KICKER_ID = 4;
+    public static final int MAIN_FLY_ID = 96;
+    public static final int FOLLOWER_FLY_ID = 97;
+    public static final int HOOD_MOTOR_ID = 98;
+    public static final int KICKER_ID = 99;
 
     
 
@@ -27,13 +27,13 @@ public class ShooterConstants {
 
 
     public static final double[] FLYWHEEL_PID = {0, 0, 0};
-    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(1,1,1);
+    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0.045537, 0.0017932, 0.0001929);
 
     public static final double[] KICKER_PID = {0, 0, 0};
-    public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(1, 1, 1);
+    public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.045537, 0.0017932, 0.0001929);
 
     public static final double[] HOOD_PID = {0, 0, 0};
-    public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(1, 1, 1, 1);
+    public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.2509, 0.099081, 5.5782, 0.28261);
 
     public static final double HOOD_LENGTH_METERS = 0.2032;
     public static final double HOOD_MIN_ANGLE = 0;

@@ -5,13 +5,10 @@ import static frc.robot.constants.ShooterConstants.HOOD_GEAR_RATIO;
 import static frc.robot.constants.ShooterConstants.HOOD_LENGTH_METERS;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
-import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.revrobotics.sim.SparkFlexSim;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -22,8 +19,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class HoodSim extends Hood {
     DCMotor hoodGearbox = DCMotor.getNeoVortex(1);
-    SparkFlex flexReal = new SparkFlex(HOOD_MOTOR_ID, MotorType.kBrushless);
-    SparkFlexSim flexSim = new SparkFlexSim(flexReal, hoodGearbox);
+    SparkFlexSim flexSim = new SparkFlexSim(hood, hoodGearbox);
     SingleJointedArmSim armSim = new SingleJointedArmSim(
         LinearSystemId.identifyPositionSystem(HOOD_FEEDFORWARD.getKv(), HOOD_FEEDFORWARD.getKa()),
          hoodGearbox, HOOD_GEAR_RATIO, HOOD_LENGTH_METERS, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE, false, 0,  0, 0 );
