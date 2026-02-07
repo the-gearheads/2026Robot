@@ -127,7 +127,7 @@ public class Shooter extends SubsystemBase{
    }
 
    @AutoLogOutput
-   public double getKickerVelocity() {
+   public double getKickerVelocityRadPerSec() {
     return kickerEncoder.getVelocity();
    }
 
@@ -137,7 +137,7 @@ public class Shooter extends SubsystemBase{
    }
 
    @AutoLogOutput
-   public double getFlywheelVelocity() {
+   public double getFlywheelVelocityRadPerSec() {
     return flywheelEncoder.getVelocity();
    }
 
