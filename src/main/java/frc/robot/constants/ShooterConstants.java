@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.util.Units;
 
 public class ShooterConstants {
     public static final int MAIN_FLY_ID = 96;
@@ -35,7 +36,10 @@ public class ShooterConstants {
     public static final double[] HOOD_PID = {0, 0, 0};
     public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.2509, 0.099081, 5.5782, 0.28261);
 
-    public static final double HOOD_LENGTH_METERS = 0.2032;
-    public static final double HOOD_MIN_ANGLE = 0;
-    public static final double HOOD_MAX_ANGLE = 1.5708;
+    public static final double HOOD_LENGTH_METERS = Units.inchesToMeters(8.07); // placeholder; from pivot point to out edge, for sim
+    public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);
+    public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(50);
+    
+    public static final double HOOD_MIN_SYSID_ANGLE = Units.degreesToRadians(5);  // more conservative so sysid doesn't break anything
+    public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(45);
 }

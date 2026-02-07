@@ -56,6 +56,7 @@ public class RobotContainer {
     sysidPicker.addSysidRoutines("main Shooter", shooter.getMainFlySysidRoutine());
     sysidPicker.addSysidRoutines("top Shooter", shooter.getKickerSysidRoutine());
     sysidPicker.addSysidRoutines("swerve drive", swerve.getDriveSysIdRoutine());
+    sysidPicker.addSysidRoutines("hood", hood.getSysIdRoutine(), hood::forwardSysIdLimit, hood::reverseSysIdLimit);
   }
 
  
@@ -81,7 +82,6 @@ public class RobotContainer {
 
 
   public Command getAutonomousCommand() {
-   return sysidPicker.get();
-
+    return sysidPicker.get();
   }
 }

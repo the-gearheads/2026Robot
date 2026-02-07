@@ -2,15 +2,21 @@ package frc.robot.subsystems.shooter;
 
 
 import static frc.robot.constants.ShooterConstants.HOOD_PID;
+import static frc.robot.constants.ShooterConstants.HOOD_POS_FACTOR;
+import static frc.robot.constants.ShooterConstants.HOOD_VEL_FACTOR;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
+import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
+import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -54,40 +60,65 @@ public class Hood extends SubsystemBase {
         hoodConfig.closedLoop.feedForward.kV(HOOD_FEEDFORWARD.getKv());
         hoodConfig.closedLoop.feedForward.kA(HOOD_FEEDFORWARD.getKa());
         hoodConfig.closedLoop.feedForward.kG(HOOD_FEEDFORWARD.getKg());
+
+        hoodConfig.encoder.positionConversionFactor(HOOD_POS_FACTOR);  
+        hoodConfig.encoder.velocityConversionFactor(HOOD_VEL_FACTOR);
     
+        hood.configure(hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         hood.setCANTimeout(0);
     }
 
-    public void setHoodVoltage(double volts){
+    public void setVoltage(double volts){
         hoodController.setSetpoint(volts, ControlType.kVoltage);
     }
     
-    public void setHoodVoltage(Voltage volts){
-        setHoodVoltage(volts.magnitude());
+    public void setVoltage(Voltage volts){
+        setVoltage(volts.magnitude());
     }
 
-    public void setHoodAngle(Rotation2d angle) {
+    public void setAngle(Rotation2d angle) {
         hoodController.setSetpoint(angle.getRadians(), ControlType.kPosition);
     }
 
     @AutoLogOutput
-    public Rotation2d getHoodAngle() {
+    public Rotation2d getAngle() {
         return Rotation2d.fromRadians(hoodEncoder.getPosition());
     }
 
     @AutoLogOutput
-    public double getHoodVelocity(){
+    public double getVelocity(){
        return hoodEncoder.getVelocity();
     }
 
-    public Command hoodManual(double volts){
-        return run(() -> setHoodVoltage(volts));
+    @AutoLogOutput
+    public ControlType getControlType() {
+        return hoodController.getControlType();
     }
 
-    public SysIdRoutine getMainFlySysidRoutine() {
-    return new SysIdRoutine(new Config(Volts.of(.5).per(Second), Volts.of(7), null, (state)->{Logger.recordOutput("Hood/SysidTestState", state.toString());}),
-        new Mechanism(this::setHoodVoltage, null, this));
-   }
+    @AutoLogOutput
+    public double getSetpoint() {
+        return hoodController.getSetpoint();
+    }
 
+    @AutoLogOutput
+    public double getCurrent() {
+        return hood.getOutputCurrent();
+    }
 
+    public Command hoodManual(double volts){
+        return run(() -> setVoltage(volts)).finallyDo(() -> setVoltage(0));
+    }
+
+    public SysIdRoutine getSysIdRoutine() {
+        return new SysIdRoutine(new Config(Volts.of(.25).per(Second), Volts.of(4), null, (state)->{Logger.recordOutput("Hood/SysidTestState", state.toString());}),
+            new Mechanism(this::setVoltage, null, this));
+    }
+
+    public boolean forwardSysIdLimit() {
+        return getAngle().getRadians() >= HOOD_MAX_SYSID_ANGLE;
+    } 
+
+    public boolean reverseSysIdLimit() {
+        return getAngle().getRadians() <= HOOD_MIN_SYSID_ANGLE;
+    }
 }
