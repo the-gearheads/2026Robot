@@ -27,10 +27,10 @@ public class Spindexer extends SubsystemBase {
         mainSpinner.setCANTimeout(250);
         feeder.setCANTimeout(250);
 
-         mainSpinnerConfig.smartCurrentLimit(SpindexerConstants.SPINNER_CURRENT_LIMIT);
-         feederConfig.smartCurrentLimit(SpindexerConstants.FEEDER_CURRENT_LIMIT);
-         mainSpinnerConfig.idleMode(IdleMode.kCoast);
-         feederConfig.idleMode(IdleMode.kBrake);
+        mainSpinnerConfig.smartCurrentLimit(SpindexerConstants.SPINNER_CURRENT_LIMIT);
+        feederConfig.smartCurrentLimit(SpindexerConstants.FEEDER_CURRENT_LIMIT);
+        mainSpinnerConfig.idleMode(IdleMode.kBrake);
+        feederConfig.idleMode(IdleMode.kBrake);
 
         mainSpinner.configure(mainSpinnerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         feeder.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
