@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.ConsoleSource.RoboRIO;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
@@ -44,7 +45,10 @@ public class Intake extends SubsystemBase {
         deployConfig.idleMode(IdleMode.kBrake);
         intakeConfig.idleMode(IdleMode.kBrake);
 
+        // deployConfig.
+
         // we prolly dont need ff
+        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid of absolute encoder is technically bad but if it doesn't work we'll find out
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
         deployConfig.closedLoop.i(DEPLOY_PID[1]);
         deployConfig.closedLoop.d(DEPLOY_PID[2]);
