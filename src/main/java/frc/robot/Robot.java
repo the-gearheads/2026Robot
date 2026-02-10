@@ -40,6 +40,7 @@ public class Robot extends LoggedRobot {
     }
     Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
     LoggedPowerDistribution.getInstance(MiscConstants.PDH_ID, ModuleType.kRev);
+    Logger.registerURCL(URCL.startExternal());
     Logger.start();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
