@@ -2,6 +2,8 @@ package frc.robot.subsystems.spindexer;
 
 import frc.robot.constants.SpindexerConstants;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -45,6 +47,16 @@ public class Spindexer extends SubsystemBase {
 
     public void setVoltageFeeder(double voltage) {
         feeder.setVoltage(voltage);
+    }
+    
+    @AutoLogOutput 
+    public double getMainSpinnerVoltage() {
+        return mainSpinner.getAppliedOutput() * mainSpinner.getBusVoltage();
+    }
+    
+    @AutoLogOutput
+    public double getFeederVoltage() {
+        return feeder.getAppliedOutput()*feeder.getBusVoltage();
     }
 
     public void stop() {
