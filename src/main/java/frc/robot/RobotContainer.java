@@ -10,6 +10,8 @@ import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.HoodSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterSim;
+import frc.robot.subsystems.spindexer.Spindexer;
+import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.FuelSim;
 import frc.robot.controllers.Controllers;
@@ -25,6 +27,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Hood hood;
   private final SysidAutoPicker sysidPicker;
+  private final Spindexer spindexer;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -37,6 +40,7 @@ public class RobotContainer {
 
       shooter = new ShooterSim();
       hood = new HoodSim();
+      spindexer = new SpindexerSim();
       FuelSim.getInstance().spawnStartingFuel(); // spawns fuel in the depots and neutral zone
 
       FuelSim.getInstance().registerRobot(
@@ -50,6 +54,7 @@ public class RobotContainer {
     } else {
       shooter = new Shooter();
       hood = new Hood();
+      spindexer = new Spindexer();
     }
     configureBindings();
 

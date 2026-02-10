@@ -69,48 +69,4 @@ public class ShooterSim extends Shooter {
     public double getKickerCurrent() {
         return kickerSim.getCurrentDrawAmps();
     }
-    // @Override
-    // public void setFlywheelVoltage(double volts) {
-    // }
-
-    // @Override
-    // public void setKickerVoltage(double volts) {
-    //     kickerSim.setInputVoltage(volts);
-    // }
-
-    // @Override
-    // @AutoLogOutput
-    // public double getKickerVelocity() {
-    //     return kickerSim.getAngularVelocityRadPerSec();
-    // }
-
-    // @Override
-    // @AutoLogOutput
-    // public double getKickerSetpoint() {
-    //     return kickerFlexSim.getSetpoint();
-    // }
-
-    // @Override
-    // @AutoLogOutput
-    // public double getFlywheelVelocity() {
-    //     return flywheelSim.getAngularVelocityRadPerSec();
-    // }
-
-    // @Override
-    // @AutoLogOutput
-    // public double getFlywheelSetpoint() {
-    //     return flywheelFlexSim.getSetpoint();
-    // }
-
-    // @Override
-    // @AutoLogOutput
-    // public double getFlywheelCurrent() {
-    //     return flywheelSim.getCurrentDrawAmps();
-    // }
-
-    // @Override
-    // @AutoLogOutput
-    // public double getKickerCurrent() {
-    //     return kickerSim.getCurrentDrawAmps();
-    // }
 }

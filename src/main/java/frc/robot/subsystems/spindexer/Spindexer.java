@@ -8,17 +8,17 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Spindexer extends SubsystemBase {
-    SparkFlex mainSpinner;
-    SparkFlex feeder;
+    SparkFlex mainSpinner = new SparkFlex(SpindexerConstants.SPINNER_ID, MotorType.kBrushless);
+    SparkFlex feeder = new SparkFlex(SpindexerConstants.FEEDER_ID, MotorType.kBrushless);
     SparkFlexConfig mainSpinnerConfig = new SparkFlexConfig();
     SparkFlexConfig feederConfig = new SparkFlexConfig();
 
     public Spindexer() {
-        mainSpinner = new SparkFlex(SpindexerConstants.SPINNER_ID, MotorType.kBrushless);
-        feeder = new SparkFlex(SpindexerConstants.FEEDER_ID, MotorType.kBrushless);
         configure();
     }
 
@@ -51,5 +51,15 @@ public class Spindexer extends SubsystemBase {
         feeder.stopMotor(); 
         mainSpinner.stopMotor();
     }
+
+    public Command runSpindexer(double volts){
+    return this.run(() -> {
+        setVoltageMainSpinner(volts);
+        setVoltageFeeder(volts);
+    }).finallyDo(() -> {
+        setVoltageMainSpinner(0);
+        setVoltageFeeder(0);
+    });
+   }
     
 }

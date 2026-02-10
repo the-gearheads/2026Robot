@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake;
 import static frc.robot.constants.IntakeConstants.DEPLOY_LENGTH;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
-import static frc.robot.constants.IntakeConstants.DEPLOY_GEAR_RATIO;
 import static frc.robot.constants.IntakeConstants.INTAKE_GEAR_RATIO;
 
 import com.revrobotics.sim.SparkFlexSim;
