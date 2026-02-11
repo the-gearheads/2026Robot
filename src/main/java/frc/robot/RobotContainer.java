@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.commands.Teleop;
 import frc.robot.constants.RobotContants;
-import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.FuelSim;
 import frc.robot.controllers.Controllers;
