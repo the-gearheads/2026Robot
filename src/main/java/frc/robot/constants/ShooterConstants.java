@@ -43,4 +43,6 @@ public class ShooterConstants {
 
     public static final double HOOD_MIN_SYSID_ANGLE = Units.degreesToRadians(5);  // more conservative so sysid doesn't break anything
     public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(45);
+
+    public static final double FLYWHEEL_RADIUS = Units.inchesToMeters(3.5);
 }

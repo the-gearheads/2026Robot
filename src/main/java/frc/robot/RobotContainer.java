@@ -6,15 +6,23 @@ package frc.robot;
 
 import frc.robot.commands.Teleop;
 import frc.robot.constants.RobotContants;
+import frc.robot.constants.ShooterConstants;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeSim;
 import frc.robot.subsystems.shooter.Hood;
+import frc.robot.subsystems.shooter.HoodSim;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
+import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.FuelSim;
 import frc.robot.controllers.Controllers;
 
+import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,10 +30,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class RobotContainer {
  
   private final Swerve swerve;
-  // private final Shooter shooter;
-  // private final Hood hood;
   private final SysidAutoPicker sysidPicker;
-  // private final Spindexer spindexer;
+  private final Spindexer spindexer;
+  private final Hood hood;
+  private final Shooter shooter;
+  private final Intake intake;
 
   public FuelSim fuelSim = new FuelSim("FuelSim"); // creates a new fuelSim of FuelSim
   //public Dog dog = new Dog;
@@ -38,16 +47,27 @@ public class RobotContainer {
     // Configure the trigger bindings
     
     if (!isReal) {
+      spindexer = new SpindexerSim();
+      hood = new HoodSim();
+      shooter = new ShooterSim();
+      intake = new IntakeSim();
       configureFuelSim();
-      // hood = new HoodSim();
     } else {
-      //pay your taxes, this is the IRS speaking
+      spindexer = new Spindexer();
+      hood = new Hood();
+      shooter = new Shooter();
+      intake = new Intake();
     }
-    configureBindings();
 
-    // sysidPicker.addSysidRoutines("main Shooter", shooter.getMainFlySysidRoutine());
-    // sysidPicker.addSysidRoutines("top Shooter", shooter.getTopFlySysidRoutine());
+    configureBindings();
+    sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
+    // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
+    sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
+    sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
+    sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine());
   }
+  
+
 
  
   public void configureBindings() {
@@ -62,14 +82,16 @@ public class RobotContainer {
 
 
     // voltage numbers are completely arbitrary ngl i just picked things
-    // Controllers.driverController.getABtn().whileTrue(shooter.runShooter(12));
-    // Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
-      // fuelSim.launchFuel(null, null, null, null);
-    // }), null); // launch vel = radius (3.66 inch is average) * radians/sec 
+    Controllers.driverController.getABtn().whileTrue(shooter.runShooter(12));
+    Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
+      fuelSim.launchFuel(MetersPerSecond.of(shooter.getFlywheelVelocityRadPerSec() * ShooterConstants.FLYWHEEL_RADIUS),
+          hood.getAngle().getMeasure(),
+          Rotation2d.kZero.getMeasure(), Inches.of(22));
+    }, shooter));
     // Controllers.driverController.getBBtn().whileTrue(shooter.runShooter(6));
     // Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
-    // Controllers.driverController.getLeftBumper().whileTrue(hood.hoodManual(3));
-    // Controllers.driverController.getRightBumper().whileTrue(hood.hoodManual(-3));
+    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
+    Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
   }
 
 
