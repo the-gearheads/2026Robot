@@ -1,6 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +9,6 @@ import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.estimation.VisionEstimation;
-import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -28,7 +24,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Robot;
 import frc.robot.constants.VisionConstants;
 
 public class Camera {
