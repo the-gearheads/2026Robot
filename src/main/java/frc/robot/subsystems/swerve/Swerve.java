@@ -37,9 +37,12 @@ import frc.robot.Robot;
 import frc.robot.subsystems.swerve.gyro.Gyro;
 import frc.robot.subsystems.swerve.gyro.GyroRedux;
 import frc.robot.subsystems.swerve.gyro.GyroSim;
+import frc.robot.subsystems.vision.Vision;
 
 public class Swerve extends SubsystemBase {
 
+  public Vision vision;
+  
   static final Lock odometryLock = new ReentrantLock();
   SwerveDriveKinematics kinematics = new SwerveDriveKinematics(WHEEL_POSITIONS);
   SwerveDrivePoseEstimator multitagPoseEstimator;
@@ -62,6 +65,7 @@ public class Swerve extends SubsystemBase {
   double driveProfileLastTime = Timer.getFPGATimestamp();
 
   public Swerve() {
+    this.vision = new Vision(this);
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
     } else {
@@ -243,10 +247,9 @@ public class Swerve extends SubsystemBase {
       module.periodic();
     }
     wheelOdometry.update(getGyroRotation(), getModulePositions());
+    vision.feedPoseEstimator(multitagPoseEstimator);
     multitagPoseEstimator.update(getGyroRotation(), getModulePositions());
     field.setRobotPose(getPose());
-
-    // tracker.getCoralObjective();
 
     // calculate twist3d
     Pose2d odom = getPoseWheelsOnly();
