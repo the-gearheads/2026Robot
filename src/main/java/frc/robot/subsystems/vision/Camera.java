@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -31,6 +32,7 @@ public class Camera {
     public final String path;
 
     public final Transform3d transform;
+    public final CameraIntrinsics simIntrinsics;
     
     public final PhotonCamera camera;
     public final PhotonPoseEstimator estimator;
@@ -44,10 +46,11 @@ public class Camera {
     private final AprilTagFieldLayout field;
     Supplier<Pose2d> robotPoseSupplier;
     
-    public Camera(AprilTagFieldLayout field, String name, Transform3d transform, Supplier<Pose2d> robotPose){
+    public Camera(AprilTagFieldLayout field, String name, Transform3d transform, Supplier<Pose2d> robotPose, CameraIntrinsics intrinsics){
         this.name = name;
         this.transform = transform;
         this.field = field;
+        this.simIntrinsics = intrinsics;
         this.robotPoseSupplier = robotPoseSupplier;
         path = "Vision/" + name.replace("_", "");
 
@@ -161,6 +164,24 @@ public class Camera {
         }
 
         return visionObservations;
+    }
+
+    public SimCameraProperties getSimProperties() {
+        SimCameraProperties properties = new SimCameraProperties();
+        properties.setCalibration(simIntrinsics.resX, simIntrinsics.resY, simIntrinsics.getCameraMatrix(),
+            simIntrinsics.getDistCoeffs());
+
+        // Approximate detection noise with average and standard deviation error in
+        // pixels.
+        properties.setCalibError(1, 0.5);
+        // Set the camera image capture framerate (Note: this is limited by robot loop
+        // rate).
+        properties.setFPS(50);
+        // The average and standard deviation in milliseconds of image data latency.
+        properties.setAvgLatencyMs(35);
+        properties.setLatencyStdDevMs(7);
+
+        return properties;
     }
 
     public record VisionObservation(
