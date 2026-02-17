@@ -16,6 +16,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,6 +26,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -95,6 +97,10 @@ public class Swerve extends SubsystemBase {
 
   public Rotation2d getGyroRotation() {
     return gyro.getRotation2d();
+  }
+
+  public Rotation3d getGyro3dRotation() {
+    return gyro.getRotation3d();
   }
 
   public double getGyroVelocity() {
@@ -246,9 +252,50 @@ public class Swerve extends SubsystemBase {
     for (SwerveModule module : modules) {
       module.periodic();
     }
-    wheelOdometry.update(getGyroRotation(), getModulePositions());
+
+    double[] timestamps;
+    // indexed by module then time
+    SwerveModulePosition[][] modPositions = new SwerveModulePosition[modules.length][];
+    // indexed by time then module
+    SwerveModulePosition[][] reshapedPositions;
+
+    odometryLock.lock();
+    try {
+      timestamps = modules[0].getOdometryTimestamps();
+      reshapedPositions = new SwerveModulePosition[timestamps.length][];
+      
+      for (int i = 0; i < modules.length; i++) {
+        modPositions[i] = modules[i].getOdometryModPositions();
+      }
+    } finally {
+      odometryLock.unlock();
+    }
+
+    for (int time = 0; time < timestamps.length; time++) {
+      reshapedPositions[time] = new SwerveModulePosition[modules.length];
+      boolean skipThisBatch = false;
+      for (int mod = 0; mod < modules.length; mod++) {
+        if(modPositions[mod][time].distanceMeters == 0) {
+          skipThisBatch = true;
+          break;
+        }
+        reshapedPositions[time][mod] = modPositions[mod][time];
+      }
+      Logger.recordOutput("Swerve/SkippedBecauseZero", skipThisBatch);
+      if(skipThisBatch) {
+        continue;
+      }
+
+      multitagPoseEstimator.updateWithTime(timestamps[time], getGyroRotation(), reshapedPositions[time]);
+      wheelOdometry.update(getGyroRotation(), reshapedPositions[time]);
+    }
+
+    if (Double.isNaN(getPose().getX())) {
+      DriverStation.reportWarning("We NaNed :(", false);
+      setPose(new Pose2d());
+    }
+
     vision.feedPoseEstimator(multitagPoseEstimator);
-    multitagPoseEstimator.update(getGyroRotation(), getModulePositions());
     field.setRobotPose(getPose());
 
     // calculate twist3d

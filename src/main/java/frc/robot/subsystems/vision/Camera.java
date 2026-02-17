@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static frc.robot.constants.VisionConstants.CONSTAINED_STDDEV_FACTOR;
+import static frc.robot.constants.VisionConstants.THETA_STDDEV_COEF;
+import static frc.robot.constants.VisionConstants.USE_CONSTRAINED_PNP;
+import static frc.robot.constants.VisionConstants.XY_STDDEV_COEF;
+
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -40,9 +45,6 @@ public class Camera {
     private final double MAX_PITCHROLL = VisionConstants.MAX_PITCHROLL;
     private final double MAX_Z = VisionConstants.MAX_Z;
 
-    private final double xyStdDevCoefficient = 0.16;
-    private final double thetaStdDevCoefficient = 0.2;
-
     private final AprilTagFieldLayout field;
     Supplier<Pose2d> robotPoseSupplier;
     
@@ -68,7 +70,7 @@ public class Camera {
         Logger.recordOutput(path + "/CamTranform", camPose);
     }
 
-    private Optional<Pose3d> filterPose(EstimatedRobotPose estimatedPose) {
+    private Optional<Pose3d> filterPose(EstimatedRobotPose estimatedPose, boolean onBump) {
         if (DriverStation.isDisabled()) {
             return Optional.of(estimatedPose.estimatedPose);
         }
@@ -77,8 +79,9 @@ public class Camera {
         double pitch = estPose.getRotation().getX();
         double roll = estPose.getRotation().getY();
 
+        
         if (Math.abs(pitch) > MAX_PITCHROLL || Math.abs(roll) > MAX_PITCHROLL
-        || Math.abs(estPose.getTranslation().getZ()) > MAX_Z) {
+        || Math.abs(estPose.getTranslation().getZ()) > MAX_Z && !onBump) {
             return Optional.empty();
         }
         
@@ -86,7 +89,7 @@ public class Camera {
             return Optional.empty();
         }
 
-        // optional filtering by total and avg dist
+        // optional filtering by ambiguity and avg dist
         // double totalDist = 0;
         // for (var target : estimatedPose.targetsUsed) {
         //     totalDist += target.bestCameraToTarget.getTranslation().getNorm();
@@ -102,23 +105,36 @@ public class Camera {
         return Optional.of(estPose);
     }
     
-    public List<VisionObservation> getObservations(SwerveDrivePoseEstimator poseEstimator) {
+    public List<VisionObservation> getObservations(SwerveDrivePoseEstimator poseEstimator, boolean onBump) {
         boolean posedUnfilitered = false;
         List<VisionObservation> visionObservations = new ArrayList<>();
         List<PhotonPipelineResult> pipelineResults = getPipelineResults();
         Optional<EstimatedRobotPose> poseResult;
+        
 
         for (PhotonPipelineResult result : pipelineResults) {
+            
             poseResult = estimator.estimateCoprocMultiTagPose(result);
-            if (poseResult.isEmpty())
-                continue;
+            if (poseResult.isEmpty()) {
+                if (onBump) {
+                    poseResult = estimator.estimateLowestAmbiguityPose(result);
+                } else {
+                    poseResult = estimator.estimateClosestToCameraHeightPose(result);
+                }
+                if (poseResult.isEmpty()) continue;
 
+                // for now we're not gonnause cconstrained PNP, we can add it if necessary, but I think we'll be getting multiple tags 90% of the time anyway
+                // if (!onBump && USE_CONSTRAINED_PNP) {
+                //     poseResult = estimator.estimateConstrainedSolvepnpPose(result, camera.getCameraMatrix(), camera.getDistCoeffs(), poseResult);
+                // }
+            }
+            
             EstimatedRobotPose pose = poseResult.get();
             
             Logger.recordOutput(path + "/EstPoseUnfilitered", pose.estimatedPose);
             posedUnfilitered = true;
 
-            Optional<Pose3d> filteredPose = filterPose(pose);
+            Optional<Pose3d> filteredPose = filterPose(pose, onBump);
             if (filteredPose.isEmpty())
                 continue;
             
@@ -136,8 +152,13 @@ public class Camera {
             avgTagDist /= numTargets;
 
             double stdDevFactor = Math.pow(avgTagDist, 2.0) / numTargets;
-            double xyStdDev = xyStdDevCoefficient * stdDevFactor;
-            double thetaStdDev = thetaStdDevCoefficient * stdDevFactor;
+            double xyStdDev = XY_STDDEV_COEF * stdDevFactor;
+            double thetaStdDev = THETA_STDDEV_COEF * stdDevFactor;
+
+            if (onBump) {
+                thetaStdDev = Double.POSITIVE_INFINITY;
+                // could also increase xystddev by a factor of 2 or something; but honestly considering our odometry will be COMPLETELY wrong when midair, may as well just rely on vision
+            }
 
             Logger.recordOutput(path + "/XyStdDev", xyStdDev);
             Logger.recordOutput(path + "/ThetaStdDev", thetaStdDev);
@@ -150,6 +171,9 @@ public class Camera {
         }
 
         if (visionObservations.isEmpty()) {
+            // technically our logging here is broken; because in the list of camera obervations were logging the same things for each one
+            // meaning only the last one will actually get logged
+            // but its prob fine
             Logger.recordOutput(path + "/XyStdDev", -1d);
             Logger.recordOutput(path + "/ThetaStdDev", -1d);
             Logger.recordOutput(path + "/NumTargets", 0);

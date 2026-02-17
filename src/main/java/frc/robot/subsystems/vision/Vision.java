@@ -2,8 +2,7 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.constants.VisionConstants.*;
 
-
-
+import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -19,6 +18,8 @@ public class Vision extends SubsystemBase {
     private VisionSim sim = new VisionSim();
 
     private Camera[] cameras = new Camera[CAMERA_NAMES.length];
+    @AutoLogOutput
+    private boolean currentlyOnBump = false;
 
     public Vision(Swerve swerve) {
         this.swerve = swerve;
@@ -41,7 +42,7 @@ public class Vision extends SubsystemBase {
     public boolean feedPoseEstimator(SwerveDrivePoseEstimator poseEstimator) {
         boolean posed = false;
         for (Camera camera : cameras) {
-            for (VisionObservation observation : camera.getObservations(poseEstimator)) {
+            for (VisionObservation observation : camera.getObservations(poseEstimator, currentlyOnBump)) {
                 addVisionMeasurement(poseEstimator, camera, observation);
                 posed = true;
             }
@@ -53,6 +54,12 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (swerve.getGyro3dRotation().getX() > BUMP_ROLL_THRESHOLD.getRadians() || swerve.getGyro3dRotation().getY() > BUMP_PITCH_THRESHOLD.getRadians()) {
+            currentlyOnBump = true;
+        } else {
+            currentlyOnBump = false;
+        }
+
         sim.periodic(swerve.getPoseWheelsOnly());
         for (Camera camera : cameras){
             camera.logCamTransform(swerve.getPose());
