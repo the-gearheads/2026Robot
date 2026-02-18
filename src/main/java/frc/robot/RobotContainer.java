@@ -69,6 +69,11 @@ public class RobotContainer {
     hood.setDefaultCommand(hood.run(() -> {
       hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));
     }));
+
+    shooter.setDefaultCommand(shooter.run(() -> {
+      shooter.setFlywheelVelocity(ShooterCalculations.getHubDistance(swerve.getPose()));
+      shooter.setKickerVelocity(ShooterCalculations.getHubVelocity(swerve.getPose()));
+    }));
   }
   
 
@@ -96,6 +101,21 @@ public class RobotContainer {
     // Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
     Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
     Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
+    Controllers.driverController.getLeftBumper().whileTrue(Commands.run(() -> {
+      intake.setAngle(null); //placeholder idfk what the actual angle is
+      intake.setIntakeVoltage(3); // again placeholder number lowkey 
+    }));
+    Controllers.driverController.getLeftBumper().whileFalse(Commands.run(() -> {
+      intake.setAngle(null); //placeholder for intake up
+      intake.stopIntake();
+    }));
+    Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
+      spindexer.runSpindexer(5); //once again placeholder number
+    }));
+    Controllers.driverController.getXBtn().whileFalse(Commands.run(() ->{
+      spindexer.stop();
+    }));
+    // kind of placeholder shit until we have an actual robot
   }
 
 
