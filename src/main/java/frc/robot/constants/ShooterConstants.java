@@ -45,4 +45,9 @@ public class ShooterConstants {
     public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(45);
 
     public static final double FLYWHEEL_RADIUS = Units.inchesToMeters(3.5);
+
+    public static final double[] SHOOT_DISTANCES = {1, 2, 3};  // in meters
+    public static final double[] SHOOT_ANGLES = {1, 2, 3};  // in Radians
+    public static final double[] SHOOT_RPMS = {1, 2, 3};  // in Radians/Sec
+
 }
