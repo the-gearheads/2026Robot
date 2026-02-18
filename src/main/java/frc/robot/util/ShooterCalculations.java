@@ -20,14 +20,14 @@ public class ShooterCalculations {
 
     // onec we can shoot from anywhere stationary
 
-    // we need yaw to be like the robot swerve point towards goal 👍
+    // we need yaw to be like the robot swerve point towards goal 
     
 
     // TO SHOOT ON MOVE after this:
     // time of flight recursion:
     // basically, its fancy things oblarg and eeswhar frmo the frc discord tell us how to do
     // it gives us a new 'fake' location for the hub, so we aim and shoot as if we were aiming towards that
-    // and if shoot towards that new one while moving, it will go in the real hub 👍
+    // and if shoot towards that new one while moving, it will go in the real hub 
     
     static InterpolatingDoubleTreeMap shooterAngleFunction = createAngleMap();
     static InterpolatingDoubleTreeMap shooterRPMFunction = createRPMFunction();

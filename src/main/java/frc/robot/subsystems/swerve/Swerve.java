@@ -10,7 +10,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -313,19 +312,6 @@ public class Swerve extends SubsystemBase {
 
   public long getTwist3dTimestamp() { 
     return odomTwistTime;
-  }
-
-  public void followTrajectory(SwerveSample sample) {
-    var pose = getPose();
-
-    ChassisSpeeds speeds = new ChassisSpeeds(   
-      sample.vx + xPid.calculate(pose.getX(), sample.x),
-      sample.vy + yPid.calculate(pose.getY(), sample.y),
-      sample.omega + rotPid.calculate(pose.getRotation().getRadians(), sample.heading)
-    );
-
-    Logger.recordOutput("Swerve/Traj/Sample", sample);
-    driveFieldRelative(speeds);
   }
 
   public boolean atPose(Pose2d pose, double distTolerance, Rotation2d rotTolerance) {
