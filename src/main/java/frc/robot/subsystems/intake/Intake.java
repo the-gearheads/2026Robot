@@ -46,7 +46,7 @@ public class Intake extends SubsystemBase {
         // deployConfig.
 
         // we prolly dont need ff
-        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid of absolute encoder is technically bad but if it doesn't work we'll find out
+        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid off of absolute encoder is technically bad but if it doesn't work we'll find out
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
         deployConfig.closedLoop.i(DEPLOY_PID[1]);
         deployConfig.closedLoop.d(DEPLOY_PID[2]);

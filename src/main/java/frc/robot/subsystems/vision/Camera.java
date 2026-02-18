@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static frc.robot.constants.VisionConstants.CONSTAINED_STDDEV_FACTOR;
 import static frc.robot.constants.VisionConstants.THETA_STDDEV_COEF;
-import static frc.robot.constants.VisionConstants.USE_CONSTRAINED_PNP;
 import static frc.robot.constants.VisionConstants.XY_STDDEV_COEF;
 
 import org.littletonrobotics.junction.Logger;

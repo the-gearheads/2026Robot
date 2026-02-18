@@ -17,6 +17,7 @@ import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.FuelSim;
+import frc.robot.util.ShooterCalculations;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
@@ -45,7 +46,6 @@ public class RobotContainer {
     swerve = new Swerve();
     swerve.setDefaultCommand(new Teleop(swerve));
     // Configure the trigger bindings
-    
     if (!isReal) {
       spindexer = new SpindexerSim();
       hood = new HoodSim();
@@ -65,6 +65,10 @@ public class RobotContainer {
     sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
     sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
     sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine());
+
+    hood.setDefaultCommand(hood.run(() -> {
+      hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));
+    }));
   }
   
 

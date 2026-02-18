@@ -4,16 +4,14 @@ import static frc.robot.constants.VisionConstants.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.vision.Camera.VisionObservation;
 
 public class Vision extends SubsystemBase {
-    public static AprilTagFieldLayout field = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     private Swerve swerve;
     private VisionSim sim = new VisionSim();
 
@@ -25,7 +23,7 @@ public class Vision extends SubsystemBase {
         this.swerve = swerve;
 
         for (int i = 0; i<CAMERA_NAMES.length; i++) {
-            cameras[i] = new Camera(field, CAMERA_NAMES[i], CAMERA_TRANSFORMS[i], swerve::getPose, CAMERA_INTRINSICS[i]);
+            cameras[i] = new Camera(FieldConstants.ATFL, CAMERA_NAMES[i], CAMERA_TRANSFORMS[i], swerve::getPose, CAMERA_INTRINSICS[i]);
         }
 
         if (Robot.isSimulation()) {
