@@ -43,8 +43,6 @@ public class Intake extends SubsystemBase {
         deployConfig.idleMode(IdleMode.kBrake);
         intakeConfig.idleMode(IdleMode.kBrake);
 
-        // deployConfig.
-
         // we prolly dont need ff
         deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid off of absolute encoder is technically bad but if it doesn't work we'll find out
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
