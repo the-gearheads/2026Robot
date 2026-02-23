@@ -5,10 +5,10 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 
 public class ShooterConstants {
-    public static final int MAIN_FLY_ID = 96;
-    public static final int FOLLOWER_FLY_ID = 97;
-    public static final int HOOD_MOTOR_ID = 98;
-    public static final int KICKER_ID = 99;
+    public static final int MAIN_FLY_ID = 40;
+    public static final int FOLLOWER_FLY_ID = 41;
+    public static final int HOOD_MOTOR_ID = 42;
+    public static final int KICKER_ID = 43;
 
     
 
