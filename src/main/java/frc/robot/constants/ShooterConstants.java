@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 public class ShooterConstants {
@@ -49,5 +50,7 @@ public class ShooterConstants {
     public static final double[] SHOOT_DISTANCES = {1, 2, 3};  // in meters
     public static final double[] SHOOT_ANGLES = {1, 2, 3};  // in Radians
     public static final double[] SHOOT_RPMS = {1, 2, 3};  // in Radians/Sec
+
+    public static final Translation3d CENTER_BOT_TOSHOOT = new Translation3d(Units.inchesToMeters(-7.5572), Units.inchesToMeters(9.2307), Units.inchesToMeters(20.5469));
 
 }

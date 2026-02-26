@@ -3,7 +3,9 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.ShooterConstants;
@@ -29,49 +31,57 @@ public class ShooterCalculations {
     // it gives us a new 'fake' location for the hub, so we aim and shoot as if we were aiming towards that
     // and if shoot towards that new one while moving, it will go in the real hub 
     
-    static InterpolatingDoubleTreeMap shooterAngleFunction = createAngleMap();
-    static InterpolatingDoubleTreeMap shooterRPMFunction = createRPMFunction();
-
-    static InterpolatingDoubleTreeMap createAngleMap() {
-        InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
-
-        for(int i=0; i<ShooterConstants.SHOOT_DISTANCES.length; i++) {
-            map.put(ShooterConstants.SHOOT_DISTANCES[i], ShooterConstants.SHOOT_ANGLES[i]);
-        }
-
-        return map;
-    }
-
+        static InterpolatingDoubleTreeMap shooterAngleFunction = createAngleMap();
+        static InterpolatingDoubleTreeMap shooterRPMFunction = createRPMFunction();
     
-    static InterpolatingDoubleTreeMap createRPMFunction() {
-        InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+        static InterpolatingDoubleTreeMap createAngleMap() {
+            InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+    
+            for(int i=0; i<ShooterConstants.SHOOT_DISTANCES.length; i++) {
+                map.put(ShooterConstants.SHOOT_DISTANCES[i], ShooterConstants.SHOOT_ANGLES[i]);
+            }
+    
+            return map;
+        }
+    
         
-        for(int i=0; i<ShooterConstants.SHOOT_RPMS.length; i++) {
-            map.put(ShooterConstants.SHOOT_DISTANCES[i], ShooterConstants.SHOOT_RPMS[i]);
-        }
-
-        return map;
-    }
-
-
-    public static double getHubDistance(Pose2d robotPose) {
-        Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-        return hubPosition.getDistance(robotPose.getTranslation());
-    } 
-
-    public static Rotation2d getRobotYaw(Translation2d robotPose){
-        Translation2d targetAngle = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-
-        Rotation2d angle = targetAngle.minus(robotPose).getAngle();
-        return angle;
-    }
+        static InterpolatingDoubleTreeMap createRPMFunction() {
+            InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+            
+            for(int i=0; i<ShooterConstants.SHOOT_RPMS.length; i++) {
+                map.put(ShooterConstants.SHOOT_DISTANCES[i], ShooterConstants.SHOOT_RPMS[i]);
+            }
     
-    public static Rotation2d getHubAngle(Pose2d robotPose) {
-        return Rotation2d.fromRadians(shooterAngleFunction.get(getHubDistance(robotPose)));
-    }
+            return map;
+        }
+    
+    
+        public static double getHubDistance(Pose2d robotPose) {
+            Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
+            return hubPosition.getDistance(getShooterPosition(robotPose).getTranslation());
+        } 
+    
+        public static Rotation2d getRobotYaw(Translation2d robotPose){
+            Translation2d targetAngle = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
+    
+            Rotation2d angle = targetAngle.minus(robotPose).getAngle();
+            return angle;
+        }
+        
+        public static Rotation2d getHubAngle(Pose2d robotPose) {
+            return Rotation2d.fromRadians(shooterAngleFunction.get(getHubDistance(getShooterPosition(robotPose))));
+        }
+    
+        public static double getHubVelocity(Pose2d robotPose) {
+            return shooterRPMFunction.get(getHubDistance(getShooterPosition(robotPose)));
+        }
+    
+        public static Pose2d getShooterPosition(Pose2d robotPose) {
+            Translation2d shooterDistance = ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d();
+            
+            Pose2d shooterPose = robotPose.plus(new Transform2d(shooterDistance, new Rotation2d(0)));
 
-    public static double getHubVelocity(Pose2d robotPose) {
-        return shooterRPMFunction.get(getHubDistance(robotPose));
-    }
+            return  shooterPose;
+        }
 
 }
