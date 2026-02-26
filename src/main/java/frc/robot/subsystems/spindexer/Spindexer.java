@@ -2,7 +2,11 @@ package frc.robot.subsystems.spindexer;
 
 import frc.robot.constants.SpindexerConstants;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -13,8 +17,12 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 
 public class Spindexer extends SubsystemBase {
     SparkFlex mainSpinner = new SparkFlex(SpindexerConstants.SPINNER_ID, MotorType.kBrushless);
@@ -53,9 +61,13 @@ public class Spindexer extends SubsystemBase {
         mainSpinner.setVoltage(voltage);
     }
 
-    public void setVoltageFeeder(double voltage) {
-        feederController.setSetpoint(voltage, ControlType.kVoltage);
+    public void setVoltageFeeder(double volts) {
+        feederController.setSetpoint(volts, ControlType.kVoltage);
     }
+    
+    public void setVoltageFeeder(Voltage volts) {
+        setVoltageFeeder(volts.magnitude());
+   }
     
     @AutoLogOutput 
     public double getMainSpinnerVoltage() {
@@ -84,6 +96,11 @@ public class Spindexer extends SubsystemBase {
         setVoltageMainSpinner(0);
         setVoltageFeeder(0);
     });
+   }
+
+   public SysIdRoutine getFeederSysidRoutine() {
+    return new SysIdRoutine(new Config(Volts.of(.5).per(Second), Volts.of(7), null, (state)->{Logger.recordOutput("Shooter/mainFlySysidTestState", state.toString());}),
+        new Mechanism(this::setVoltageFeeder, null, this));
    }
     
 }
