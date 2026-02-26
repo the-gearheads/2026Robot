@@ -3,8 +3,8 @@ package frc.robot.constants;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 public final class SpindexerConstants {
-    public static final int SPINNER_ID = 30;
-    public static final int FEEDER_ID = 31;
+    public static final int SPINNER_ID = 35;
+    public static final int FEEDER_ID = 36;
 
     public static final int SPINNER_CURRENT_LIMIT = 60;
     public static final int FEEDER_CURRENT_LIMIT = 60;

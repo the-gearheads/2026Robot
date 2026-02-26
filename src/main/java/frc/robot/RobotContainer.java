@@ -42,38 +42,38 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    sysidPicker = new SysidAutoPicker();
-    swerve = new Swerve();
-    swerve.setDefaultCommand(new Teleop(swerve));
+    // sysidPicker = new SysidAutoPicker();
+    // swerve = new Swerve();
+    // swerve.setDefaultCommand(new Teleop(swerve));
     // Configure the trigger bindings
     if (!isReal) {
       spindexer = new SpindexerSim();
-      hood = new HoodSim();
-      shooter = new ShooterSim();
-      intake = new IntakeSim();
-      configureFuelSim();
+      // hood = new HoodSim();
+      // shooter = new ShooterSim();
+      // intake = new IntakeSim();
+      // configureFuelSim();
     } else {
       spindexer = new Spindexer();
-      hood = new Hood();
-      shooter = new Shooter();
-      intake = new Intake();
+      // hood = new Hood();
+      // shooter = new Shooter();
+      // intake = new Intake();
     }
 
     configureBindings();
-    sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
-    // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
-    sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
-    sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
-    sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine());
+    // sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
+    // // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
+    // sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
+    // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
+    // sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine());
 
-    hood.setDefaultCommand(hood.run(() -> {
-      hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));
-    }));
+    // hood.setDefaultCommand(hood.run(() -> {
+    //   hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));
+    // }));
 
-    shooter.setDefaultCommand(shooter.run(() -> {
-      shooter.setFlywheelVelocity(ShooterCalculations.getHubDistance(swerve.getPose()));
-      shooter.setKickerVelocity(ShooterCalculations.getHubVelocity(swerve.getPose()));
-    }));
+    // shooter.setDefaultCommand(shooter.run(() -> {
+    //   shooter.setFlywheelVelocity(ShooterCalculations.getHubDistance(swerve.getPose()));
+    //   shooter.setKickerVelocity(ShooterCalculations.getHubVelocity(swerve.getPose()));
+    // }));
   }
   
 
@@ -91,26 +91,26 @@ public class RobotContainer {
 
 
     // voltage numbers are completely arbitrary ngl i just picked things
-    Controllers.driverController.getABtn().whileTrue(shooter.runShooter(12));
-    Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
-      fuelSim.launchFuel(MetersPerSecond.of(shooter.getFlywheelVelocityRadPerSec() * ShooterConstants.FLYWHEEL_RADIUS),
-          hood.getAngle().getMeasure(),
-          Rotation2d.kZero.getMeasure(), Inches.of(22));
-    }, shooter));
-    // Controllers.driverController.getBBtn().whileTrue(shooter.runShooter(6));
-    // Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
-    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
-    Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
+    // Controllers.driverController.getABtn().whileTrue(shooter.runShooter(12));
+    // Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
+    //   fuelSim.launchFuel(MetersPerSecond.of(shooter.getFlywheelVelocityRadPerSec() * ShooterConstants.FLYWHEEL_RADIUS),
+    //       hood.getAngle().getMeasure(),
+    //       Rotation2d.kZero.getMeasure(), Inches.of(22));
+    // }, shooter));
+    // // Controllers.driverController.getBBtn().whileTrue(shooter.runShooter(6));
+    // // Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
+    // Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
+    // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(Commands.run(() -> {
-      intake.setAngle(null); //placeholder idfk what the actual angle is
-      intake.setIntakeVoltage(3); // again placeholder number lowkey 
+      // intake.setAngle(null); //placeholder idfk what the actual angle is
+      intake.setIntakeVoltage(6); // again placeholder number lowkey 
     }));
     Controllers.driverController.getLeftBumper().whileFalse(Commands.run(() -> {
-      intake.setAngle(null); //placeholder for intake up
+      // intake.setAngle(null); //placeholder for intake up
       intake.stopIntake();
     }));
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-      spindexer.runSpindexer(5); //once again placeholder number
+      spindexer.runSpindexer(6); //once again placeholder number
     }));
     Controllers.driverController.getXBtn().whileFalse(Commands.run(() ->{
       spindexer.stop();
