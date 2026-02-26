@@ -4,26 +4,18 @@
 
 package frc.robot;
 
-import frc.robot.commands.Teleop;
 import frc.robot.constants.RobotContants;
-import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSim;
-import frc.robot.subsystems.shooter.Hood;
-import frc.robot.subsystems.shooter.HoodSim;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.FuelSim;
-import frc.robot.util.ShooterCalculations;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -33,8 +25,8 @@ public class RobotContainer {
   private final Swerve swerve;
   private final SysidAutoPicker sysidPicker;
   private final Spindexer spindexer;
-  private final Hood hood;
-  private final Shooter shooter;
+  // private final Hood hood;
+  // private final Shooter shooter;
   private final Intake intake;
 
   public FuelSim fuelSim = new FuelSim("FuelSim"); // creates a new fuelSim of FuelSim
@@ -42,21 +34,21 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // sysidPicker = new SysidAutoPicker();
-    // swerve = new Swerve();
+    sysidPicker = new SysidAutoPicker();
+    swerve = new Swerve();
     // swerve.setDefaultCommand(new Teleop(swerve));
     // Configure the trigger bindings
     if (!isReal) {
       spindexer = new SpindexerSim();
       // hood = new HoodSim();
       // shooter = new ShooterSim();
-      // intake = new IntakeSim();
+      intake = new IntakeSim();
       // configureFuelSim();
     } else {
       spindexer = new Spindexer();
       // hood = new Hood();
       // shooter = new Shooter();
-      // intake = new Intake();
+      intake = new Intake();
     }
 
     configureBindings();
