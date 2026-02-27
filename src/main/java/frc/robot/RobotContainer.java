@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSim;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
@@ -26,7 +28,7 @@ public class RobotContainer {
   private final SysidAutoPicker sysidPicker;
   private final Spindexer spindexer;
   // private final Hood hood;
-  // private final Shooter shooter;
+  private final Shooter shooter;
   private final Intake intake;
 
   // public FuelSim fuelSim = new FuelSim("FuelSim"); // creates a new fuelSim of FuelSim
@@ -41,13 +43,13 @@ public class RobotContainer {
     if (!isReal) {
       spindexer = new SpindexerSim();
       // hood = new HoodSim();
-      // shooter = new ShooterSim();
+      shooter = new ShooterSim();
       intake = new IntakeSim();
       // configureFuelSim();
     } else {
       spindexer = new Spindexer();
       // hood = new Hood();
-      // shooter = new Shooter();
+      shooter = new Shooter();
       intake = new Intake();
     }
 
@@ -96,7 +98,6 @@ public class RobotContainer {
     Controllers.driverController.getLeftBumper().whileTrue(Commands.run(() -> {
       intake.setIntakeVoltage(-12); 
       intake.setAngle(DEPLOY_MIN_ANGLE);
-      intake.shimmy();
     }));
     Controllers.driverController.getLeftBumper().whileFalse(Commands.run(() -> {
       intake.setAngle(DEPLOY_MAX_ANGLE);
