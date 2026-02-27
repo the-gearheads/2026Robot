@@ -91,4 +91,19 @@ public class Intake extends SubsystemBase {
     public double getIntakeVoltage() {
         return intake.get() * intake.getBusVoltage();
     }    
+
+    public void shimmy() {
+
+        if (doWeShimmy == true) {
+            setAngle(DEPLOY_SHIMMY_ANGLE);
+            doWeShimmy = false;
+
+        }
+        
+        if (doWeShimmy == false) {
+            setAngle(DEPLOY_MAX_ANGLE);
+            doWeShimmy = true;
+        } 
+
+    }
 }

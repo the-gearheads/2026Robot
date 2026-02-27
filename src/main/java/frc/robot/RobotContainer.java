@@ -12,6 +12,8 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
+import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -92,11 +94,12 @@ public class RobotContainer {
     // Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
     // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(Commands.run(() -> {
-      // intake.setAngle(null); //placeholder idfk what the actual angle is
-      intake.setIntakeVoltage(-12); // again placeholder number lowkey 
+      intake.setIntakeVoltage(-12); 
+      intake.setAngle(DEPLOY_MIN_ANGLE);
+      intake.shimmy();
     }));
     Controllers.driverController.getLeftBumper().whileFalse(Commands.run(() -> {
-      // intake.setAngle(null); //placeholder for intake up
+      intake.setAngle(DEPLOY_MAX_ANGLE);
       intake.stopIntake();
     }));
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
