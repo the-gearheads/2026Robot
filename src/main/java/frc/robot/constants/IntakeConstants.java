@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 public class IntakeConstants {
     public static final int DEPLOY_ID = 30;
     public static final int INTAKE_ID = 31;
-
+    public static final int INTAKE_ENCODER_ID = 34;
     public static final int INTAKE_CURRENT_LIMIT = 60;
     public static final int DEPLOY_CURRENT_LIMIT = 60;
 

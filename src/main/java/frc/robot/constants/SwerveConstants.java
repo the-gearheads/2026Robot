@@ -12,7 +12,7 @@ public final class SwerveConstants {
       {4, 24}  // BR
     };
 
-    public static final int BORON_ID = 1;
+    public static final int BORON_ID = 12;
     
     public static final Translation2d[] WHEEL_POSITIONS = {
       new Translation2d(0.3556, 0.31115),

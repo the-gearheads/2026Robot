@@ -4,13 +4,11 @@
 
 package frc.robot;
 
-import frc.robot.constants.RobotContants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.util.FuelSim;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
@@ -29,7 +27,7 @@ public class RobotContainer {
   // private final Shooter shooter;
   private final Intake intake;
 
-  public FuelSim fuelSim = new FuelSim("FuelSim"); // creates a new fuelSim of FuelSim
+  // public FuelSim fuelSim = new FuelSim("FuelSim"); // creates a new fuelSim of FuelSim
   //public Dog dog = new Dog;
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -95,35 +93,42 @@ public class RobotContainer {
     // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(Commands.run(() -> {
       // intake.setAngle(null); //placeholder idfk what the actual angle is
-      intake.setIntakeVoltage(6); // again placeholder number lowkey 
+      intake.setIntakeVoltage(-12); // again placeholder number lowkey 
     }));
     Controllers.driverController.getLeftBumper().whileFalse(Commands.run(() -> {
       // intake.setAngle(null); //placeholder for intake up
       intake.stopIntake();
     }));
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-      spindexer.runSpindexer(6); //once again placeholder number
+      spindexer.setVoltageMainSpinner(-12); //once again placeholder number
     }));
     Controllers.driverController.getXBtn().whileFalse(Commands.run(() ->{
-      spindexer.stop();
+      spindexer.setVoltageMainSpinner(0);
+    }));
+        Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
+      spindexer.setVoltageFeeder(12); //once again placeholder number
+    }));
+    Controllers.driverController.getXBtn().whileFalse(Commands.run(() ->{
+      spindexer.setVoltageFeeder(0);
     }));
     // kind of placeholder shit until we have an actual robot
   }
 
 
   public Command getAutonomousCommand() {
-    return sysidPicker.get();
+    // return sysidPicker.get();
+    return Commands.none();
   }
 
-  private void configureFuelSim() {
-    fuelSim.spawnStartingFuel();
+  // private void configureFuelSim() {
+  //   fuelSim.spawnStartingFuel();
 
-    fuelSim.registerRobot(RobotContants.ROBOT_WIDTH,  // from left to right
-        RobotContants.ROBOT_LENGTH, // from front to back
-        RobotContants.ROBOT_BUMPER_HEIGHT,// from floor to top of bumpers
-        swerve::getPose, // Supplier<Pose2d> of robot pose
-        swerve::getFieldRelativeSpeeds); // Supplier<ChassisSpeeds> of field-centric chassis speeds
+  //   fuelSim.registerRobot(RobotContants.ROBOT_WIDTH,  // from left to right
+  //       RobotContants.ROBOT_LENGTH, // from front to back
+  //       RobotContants.ROBOT_BUMPER_HEIGHT,// from floor to top of bumpers
+  //       swerve::getPose, // Supplier<Pose2d> of robot pose
+  //       swerve::getFieldRelativeSpeeds); // Supplier<ChassisSpeeds> of field-centric chassis speeds
     
-    fuelSim.start();
-  }
+  //   fuelSim.start();
+  // }
 }
