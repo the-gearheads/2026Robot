@@ -25,7 +25,7 @@ public final class SwerveConstants {
     public static final double TRACK_WIDTH = WHEEL_POSITIONS[0].getY() - WHEEL_POSITIONS[1].getY();
     public static final double DRIVE_BASE_RADIUS = Math.hypot(TRACK_WIDTH / 2.0, WHEEL_BASE / 2.0);
 
-    public static final double[] WHEEL_OFFSETS = {270, 0, 0, 90};
+    public static final double[] WHEEL_OFFSETS = {270, 0, 0, 270};
     public static final boolean[] IS_INVERTED = {true, false, true, true};
 
     public static final double WHEEL_RADIUS = 1.4609 / 100.0 * 2.54;  // derived from wheel radius characterizaiton

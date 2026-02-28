@@ -4,9 +4,10 @@ import static frc.robot.constants.IntakeConstants.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.encoder.SplineEncoder;
+import com.revrobotics.encoder.config.DetachedEncoderConfig;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -23,7 +24,8 @@ import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
     public SparkFlex deploy = new SparkFlex(DEPLOY_ID, MotorType.kBrushless);  // vortex
-    public AbsoluteEncoder deployEncoder = deploy.getAbsoluteEncoder();
+    public SplineEncoder deployEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
+    public DetachedEncoderConfig deployEncoderConfig = new DetachedEncoderConfig();
     public SparkClosedLoopController deployController = deploy.getClosedLoopController();
     public SparkFlexConfig deployConfig = new SparkFlexConfig();
 
@@ -40,9 +42,14 @@ public class Intake extends SubsystemBase {
 
         deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
         intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
-        deployConfig.idleMode(IdleMode.kBrake);
-        intakeConfig.idleMode(IdleMode.kBrake);
+        deployConfig.idleMode(IdleMode.kCoast);
+        intakeConfig.idleMode(IdleMode.kCoast);
 
+        deployConfig.inverted(true);
+
+        deployEncoderConfig.positionConversionFactor(DEPLOY_POS_FACTOR);
+        deployEncoderConfig.velocityConversionFactor(DEPLOY_VEL_FACTOR);
+        deployEncoderConfig.inverted(true);
         // we prolly dont need ff
         deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid off of absolute encoder is technically bad but if it doesn't work we'll find out
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
@@ -51,7 +58,8 @@ public class Intake extends SubsystemBase {
 
         deploy.configure(deployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
+
+        deployEncoder.configure(deployEncoderConfig, ResetMode.kResetSafeParameters);
         intake.setCANTimeout(0);
         deploy.setCANTimeout(0);
     }

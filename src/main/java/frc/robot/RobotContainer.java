@@ -17,6 +17,7 @@ import frc.robot.controllers.Controllers;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -115,10 +116,14 @@ public class RobotContainer {
     Controllers.driverController.getXBtn().whileFalse(Commands.run(() ->{
       spindexer.setVoltageFeeder(0);
     }));
+
   }
 
   public Command getAutonomousCommand() {
-    return sysidPicker.get();
+    // return sysidPicker.get();
+    return intake.run(() -> {
+      intake.setAngle(Rotation2d.fromDegrees(10));
+    });
     // return Commands.none();
   }
 
