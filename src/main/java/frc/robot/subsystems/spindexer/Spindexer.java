@@ -42,8 +42,8 @@ public class Spindexer extends SubsystemBase {
 
         mainSpinnerConfig.smartCurrentLimit(SpindexerConstants.SPINNER_CURRENT_LIMIT);
         feederConfig.smartCurrentLimit(SpindexerConstants.FEEDER_CURRENT_LIMIT);
-        mainSpinnerConfig.idleMode(IdleMode.kBrake);
-        feederConfig.idleMode(IdleMode.kBrake);
+        mainSpinnerConfig.idleMode(IdleMode.kCoast);
+        feederConfig.idleMode(IdleMode.kCoast);
 
         mainSpinner.configure(mainSpinnerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         feeder.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

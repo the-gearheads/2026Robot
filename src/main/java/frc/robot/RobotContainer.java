@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSim;
+import frc.robot.subsystems.shooter.Hood;
+import frc.robot.subsystems.shooter.HoodSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
@@ -17,7 +19,6 @@ import frc.robot.controllers.Controllers;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -27,7 +28,7 @@ public class RobotContainer {
   private final Swerve swerve;
   private final SysidAutoPicker sysidPicker;
   private final Spindexer spindexer;
-  // private final Hood hood;
+  private final Hood hood;
   private final Shooter shooter;
   private final Intake intake;
 
@@ -42,13 +43,13 @@ public class RobotContainer {
     // Configure the trigger bindings
     if (!isReal) {
       spindexer = new SpindexerSim();
-      // hood = new HoodSim();
+      hood = new HoodSim();
       shooter = new ShooterSim();
       intake = new IntakeSim();
       // configureFuelSim();
     } else {
       spindexer = new Spindexer();
-      // hood = new Hood();
+      hood = new Hood();
       shooter = new Shooter();
       intake = new Intake();
     }
@@ -87,37 +88,31 @@ public class RobotContainer {
 
     // voltage numbers are completely arbitrary ngl i just picked things
     Controllers.driverController.getABtn().whileTrue(shooter.runShooter(6));
-    // Controllers.driverController.getABtn().whileTrue(shooter.(-12));
+
     // Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
     //   fuelSim.launchFuel(MetersPerSecond.of(shooter.getFlywheelVelocityRadPerSec() * ShooterConstants.FLYWHEEL_RADIUS),
     //       hood.getAngle().getMeasure(),
     //       Rotation2d.kZero.getMeasure(), Inches.of(22));
     // }, shooter));
-    // // Controllers.driverController.getBBtn().whileTrue(shooter.runShooter(6));
-    // // Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
-    // Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
-    // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
+
+    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
+    Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     // Controllers.driverController.getLeftBumper().whileTrue(intake.shimmy());
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-      spindexer.setVoltageMainSpinner(-12); //once again placeholder number
-    }));
-    Controllers.driverController.getXBtn().whileFalse(Commands.run(() ->{
-      spindexer.setVoltageMainSpinner(0);
-    }));
-        Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-      spindexer.setVoltageFeeder(12); //once again placeholder number
-    }));
-    Controllers.driverController.getXBtn().whileFalse(Commands.run(() ->{
-      spindexer.setVoltageFeeder(0);
-    }));
+      spindexer.setVoltageMainSpinner(-12);
+    }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
 
+    Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
+      spindexer.setVoltageFeeder(12);
+    }).finallyDo(() ->{spindexer.setVoltageFeeder(0);}));
+  
   }
 
   public Command getAutonomousCommand() {
-    // return sysidPicker.get();
-    return intake.run(() -> {
-      intake.setAngle(Rotation2d.fromDegrees(10));
-    });
+    return sysidPicker.get();
+    // return intake.run(() -> {
+    //   intake.setAngle(Rotation2d.fromDegrees(10));
+    // });
     // return Commands.none();
   }
 
