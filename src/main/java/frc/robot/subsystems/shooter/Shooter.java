@@ -159,7 +159,7 @@ public class Shooter extends SubsystemBase{
    public Command runShooter(double volts){
     return this.run(() -> {
         setKickerVoltage(volts);
-        setFlywheelVoltage(volts);
+        setFlywheelVoltage(-volts);
     }).finallyDo(() -> {
         setKickerVoltage(0);
         setFlywheelVoltage(0);

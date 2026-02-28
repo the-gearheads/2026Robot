@@ -10,7 +10,6 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
-import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
@@ -24,8 +23,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer {
  
-  private final Swerve swerve;
-  private final SysidAutoPicker sysidPicker;
+  // private final Swerve swerve;
+  // private final SysidAutoPicker sysidPicker;
   private final Spindexer spindexer;
   // private final Hood hood;
   private final Shooter shooter;
@@ -36,8 +35,8 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    sysidPicker = new SysidAutoPicker();
-    swerve = new Swerve();
+    // sysidPicker = new SysidAutoPicker();
+    // swerve = new Swerve();
     // swerve.setDefaultCommand(new Teleop(swerve));
     // Configure the trigger bindings
     if (!isReal) {
@@ -85,7 +84,8 @@ public class RobotContainer {
 
 
     // voltage numbers are completely arbitrary ngl i just picked things
-    // Controllers.driverController.getABtn().whileTrue(shooter.runShooter(12));
+    Controllers.driverController.getABtn().whileTrue(shooter.runShooter(6));
+    // Controllers.driverController.getABtn().whileTrue(shooter.(-12));
     // Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
     //   fuelSim.launchFuel(MetersPerSecond.of(shooter.getFlywheelVelocityRadPerSec() * ShooterConstants.FLYWHEEL_RADIUS),
     //       hood.getAngle().getMeasure(),
