@@ -15,18 +15,18 @@ public final class SwerveConstants {
     public static final int BORON_ID = 12;
     
     public static final Translation2d[] WHEEL_POSITIONS = {
-      new Translation2d(0.3556, 0.31115),
-      new Translation2d(0.3556, -0.31115),
-      new Translation2d(-0.3556, 0.31115),
-      new Translation2d(-0.3556, -0.31115)
+      new Translation2d(Units.inchesToMeters(13.250), Units.inchesToMeters(10.750)),
+      new Translation2d(Units.inchesToMeters(13.250), Units.inchesToMeters(-10.750)),
+      new Translation2d(Units.inchesToMeters(-13.250), Units.inchesToMeters(10.750)),
+      new Translation2d(Units.inchesToMeters(-13.250), Units.inchesToMeters(-10.750))
     };
   
     public static final double WHEEL_BASE = WHEEL_POSITIONS[0].getX() - WHEEL_POSITIONS[2].getX();
     public static final double TRACK_WIDTH = WHEEL_POSITIONS[0].getY() - WHEEL_POSITIONS[1].getY();
     public static final double DRIVE_BASE_RADIUS = Math.hypot(TRACK_WIDTH / 2.0, WHEEL_BASE / 2.0);
 
-    public static final double[] WHEEL_OFFSETS = {270, 180, 180, 90};
-    public static final boolean[] IS_INVERTED = {true, false, true, false};
+    public static final double[] WHEEL_OFFSETS = {270, 0, 0, 90};
+    public static final boolean[] IS_INVERTED = {true, false, true, true};
 
     public static final double WHEEL_RADIUS = 1.4609 / 100.0 * 2.54;  // derived from wheel radius characterizaiton
     public static final double WHEEL_DIAMETER = WHEEL_RADIUS * 2.0;

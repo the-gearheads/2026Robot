@@ -10,11 +10,11 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
+import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.commands.Teleop;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
-import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer {
  
-  // private final Swerve swerve;
-  // private final SysidAutoPicker sysidPicker;
+  private final Swerve swerve;
+  private final SysidAutoPicker sysidPicker;
   private final Spindexer spindexer;
   // private final Hood hood;
   private final Shooter shooter;
@@ -35,9 +35,9 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // sysidPicker = new SysidAutoPicker();
-    // swerve = new Swerve();
-    // swerve.setDefaultCommand(new Teleop(swerve));
+    sysidPicker = new SysidAutoPicker();
+    swerve = new Swerve();
+    swerve.setDefaultCommand(new Teleop(swerve));
     // Configure the trigger bindings
     if (!isReal) {
       spindexer = new SpindexerSim();
@@ -53,7 +53,7 @@ public class RobotContainer {
     }
 
     configureBindings();
-    // sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
+    sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
     // // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
     // sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
     // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
@@ -97,10 +97,10 @@ public class RobotContainer {
     // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(Commands.run(() -> {
       intake.setIntakeVoltage(-12); 
-      intake.shimmy();
+      // intake.shimmy();
     }));
     Controllers.driverController.getLeftBumper().whileFalse(Commands.run(() -> {
-      intake.setAngle(DEPLOY_MAX_ANGLE);
+      // intake.setAngle(DEPLOY_MAX_ANGLE);
       intake.stopIntake();
     }));
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
@@ -115,13 +115,11 @@ public class RobotContainer {
     Controllers.driverController.getXBtn().whileFalse(Commands.run(() ->{
       spindexer.setVoltageFeeder(0);
     }));
-    // kind of placeholder shit until we have an actual robot
   }
 
-
   public Command getAutonomousCommand() {
-    // return sysidPicker.get();
-    return Commands.none();
+    return sysidPicker.get();
+    // return Commands.none();
   }
 
   // private void configureFuelSim() {
