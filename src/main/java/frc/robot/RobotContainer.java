@@ -97,7 +97,7 @@ public class RobotContainer {
     // // Controllers.driverController.getXBtn().whileTrue(shooter.runShooter(9));
     // Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
     // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
-    Controllers.driverController.getLeftBumper().whileTrue(intake.shimmy());
+    // Controllers.driverController.getLeftBumper().whileTrue(intake.shimmy());
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageMainSpinner(-12); //once again placeholder number
     }));

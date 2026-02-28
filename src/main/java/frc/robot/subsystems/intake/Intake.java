@@ -112,14 +112,19 @@ public class Intake extends SubsystemBase {
         return intake.get() * intake.getBusVoltage();
     }    
 
-    public void shimmy() {
-            if (getAngle().getRadians() >= DEPLOY_MIN_ANGLE.getRadians() +- 5) {
-                setAngle(DEPLOY_SHIMMY_ANGLE);
-        }
+    public Command shimmy() {
+        return this.run(() -> {
 
-            if (getAngle().getRadians() == DEPLOY_SHIMMY_ANGLE.getRadians() +- DEPLOY_SHIMMY_TOLERANCE) {
+            if (Math.abs(getAngle().getRadians() - DEPLOY_MIN_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
+                setAngle(DEPLOY_SHIMMY_ANGLE);
+            }
+
+            if (Math.abs(getAngle().getRadians() - DEPLOY_SHIMMY_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
                 setAngle(DEPLOY_MIN_ANGLE);
-        }
+            }
+
+            setIntakeVoltage(12);
+        }).finallyDo(this::stopIntake);
     }
 
     public boolean getForwardSysidLimit() {
