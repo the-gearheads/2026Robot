@@ -1,8 +1,11 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.IntakeConstants.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -19,8 +22,12 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
@@ -73,6 +80,10 @@ public class Intake extends SubsystemBase {
         deployController.setSetpoint(volts, ControlType.kVoltage);
     }
 
+    public void setDeployVoltage(Voltage volts) {
+        setDeployVoltage(volts.magnitude());
+    }
+
     @AutoLogOutput
     public double getDeploySetpoint() {
         return deployController.getSetpoint();
@@ -101,21 +112,28 @@ public class Intake extends SubsystemBase {
         return intake.get() * intake.getBusVoltage();
     }    
 
-    public Command shimmy() {
-
-
-        return this.run(() -> {
-
-            if (Math.abs(getAngle().getRadians() - DEPLOY_MIN_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
+    public void shimmy() {
+            if (getAngle().getRadians() >= DEPLOY_MIN_ANGLE.getRadians() +- 5) {
                 setAngle(DEPLOY_SHIMMY_ANGLE);
-            }
-
-            if (Math.abs(getAngle().getRadians() - DEPLOY_SHIMMY_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
-                setAngle(DEPLOY_MIN_ANGLE);
         }
 
-            setIntakeVoltage(12);
-        }).finallyDo(this::stopIntake);
-    
-}
+            if (getAngle().getRadians() == DEPLOY_SHIMMY_ANGLE.getRadians() +- DEPLOY_SHIMMY_TOLERANCE) {
+                setAngle(DEPLOY_MIN_ANGLE);
+        }
+    }
+
+    public boolean getForwardSysidLimit() {
+        return getAngle().getRadians() > DEPLOY_MAX_SYSID_ANGLE.getRadians();
+    }
+
+    public boolean getBackwardSysidLimit() {
+        return getAngle().getRadians() < DEPLOY_MIN_SYSID_ANGLE.getRadians();
+    }
+
+    public SysIdRoutine getDeploySysid() {
+        return new SysIdRoutine(
+            new Config(Volts.of(.25).per(Second), Volts.of(3), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
+            new Mechanism(this::setDeployVoltage, null, this)
+        );
+    }
 }
