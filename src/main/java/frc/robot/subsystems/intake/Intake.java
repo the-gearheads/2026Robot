@@ -18,6 +18,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
 
@@ -92,13 +93,21 @@ public class Intake extends SubsystemBase {
         return intake.get() * intake.getBusVoltage();
     }    
 
-    public void shimmy() {
-        if (getAngle().getRadians() >= DEPLOY_MIN_ANGLE.getRadians() +- 5) {
-            setAngle(DEPLOY_SHIMMY_ANGLE);
-    }
+    public Command shimmy() {
 
-        if (getAngle().getRadians() == DEPLOY_SHIMMY_ANGLE.getRadians() +- DEPLOY_SHIMMY_TOLERANCE) {
-            setAngle(DEPLOY_MIN_ANGLE);
-    }
+
+        return this.run(() -> {
+
+            if (Math.abs(getAngle().getRadians() - DEPLOY_MIN_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
+                setAngle(DEPLOY_SHIMMY_ANGLE);
+            }
+
+            if (Math.abs(getAngle().getRadians() - DEPLOY_SHIMMY_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
+                setAngle(DEPLOY_MIN_ANGLE);
+        }
+
+            setIntakeVoltage(12);
+        }).finallyDo(this::stopIntake);
+    
 }
 }

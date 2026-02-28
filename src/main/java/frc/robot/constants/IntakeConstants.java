@@ -22,7 +22,7 @@ public class IntakeConstants {
     public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.kZero;
     public static final Rotation2d DEPLOY_MAX_ANGLE = Rotation2d.fromDegrees(50);
     public static final Rotation2d DEPLOY_SHIMMY_ANGLE = Rotation2d.fromDegrees(30);
-    public static final double DEPLOY_SHIMMY_TOLERANCE = 10;
+    public static final double DEPLOY_SHIMMY_TOLERANCE = 2.5;
 
 
 }
