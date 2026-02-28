@@ -97,7 +97,7 @@ public class RobotContainer {
     // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(Commands.run(() -> {
       intake.setIntakeVoltage(-12); 
-      intake.setAngle(DEPLOY_MIN_ANGLE);
+      intake.shimmy();
     }));
     Controllers.driverController.getLeftBumper().whileFalse(Commands.run(() -> {
       intake.setAngle(DEPLOY_MAX_ANGLE);
