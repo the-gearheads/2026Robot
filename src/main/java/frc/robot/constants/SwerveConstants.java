@@ -15,10 +15,10 @@ public final class SwerveConstants {
     public static final int BORON_ID = 12;
     
     public static final Translation2d[] WHEEL_POSITIONS = {
-      new Translation2d(0.3556, 0.31115),
-      new Translation2d(0.3556, -0.31115),
-      new Translation2d(-0.3556, 0.31115),
-      new Translation2d(-0.3556, -0.31115)
+      new Translation2d(Units.inchesToMeters(13.250), Units.inchesToMeters(10.750)),
+      new Translation2d(Units.inchesToMeters(13.250), Units.inchesToMeters(-10.750)),
+      new Translation2d(Units.inchesToMeters(-13.250), Units.inchesToMeters(10.750)),
+      new Translation2d(Units.inchesToMeters(-13.250), Units.inchesToMeters(-10.750))
     };
   
     public static final double WHEEL_BASE = WHEEL_POSITIONS[0].getX() - WHEEL_POSITIONS[2].getX();
