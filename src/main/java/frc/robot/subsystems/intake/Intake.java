@@ -56,8 +56,11 @@ public class Intake extends SubsystemBase {
         deployConfig.inverted(true);
 
         deployEncoderConfig.positionConversionFactor(DEPLOY_POS_FACTOR);
+        deployEncoderConfig.angleConversionFactor(DEPLOY_POS_FACTOR);
         deployEncoderConfig.velocityConversionFactor(DEPLOY_VEL_FACTOR);
         deployEncoderConfig.inverted(true);
+        deployEncoderConfig.dutyCycleZeroCentered(true);
+        deployEncoderConfig.dutyCycleOffset(DEPLOY_OFFSET);
         // we prolly dont need ff
         deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid off of absolute encoder is technically bad but if it doesn't work we'll find out
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
@@ -66,8 +69,8 @@ public class Intake extends SubsystemBase {
 
         deploy.configure(deployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
         deployEncoder.configure(deployEncoderConfig, ResetMode.kResetSafeParameters);
+                
         intake.setCANTimeout(0);
         deploy.setCANTimeout(0);
     }
@@ -100,7 +103,7 @@ public class Intake extends SubsystemBase {
 
     @AutoLogOutput
     public Rotation2d getAngle() {
-        return Rotation2d.fromRadians(deployEncoder.getPosition());
+        return Rotation2d.fromRadians(deployEncoder.getAngle());
     }
 
     public void stopIntake() {

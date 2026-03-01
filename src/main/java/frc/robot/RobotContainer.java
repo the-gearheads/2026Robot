@@ -19,6 +19,8 @@ import frc.robot.controllers.Controllers;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.RobotController.RadioLEDState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -32,11 +34,23 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
 
+  public static final boolean deathMode = true;
+
   // public FuelSim fuelSim = new FuelSim("FuelSim"); // creates a new fuelSim of FuelSim
   //public Dog dog = new Dog;
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    if(deathMode) {
+      Commands.repeatingSequence(
+        Commands.runOnce(()->{RobotController.setRadioLEDState(RadioLEDState.kRed);}),
+        Commands.waitSeconds(0.3),
+        Commands.runOnce(()->{RobotController.setRadioLEDState(RadioLEDState.kOrange);}),
+        Commands.waitSeconds(0.3)
+      ).schedule();
+    }
+
     sysidPicker = new SysidAutoPicker();
     swerve = new Swerve();
     swerve.setDefaultCommand(new Teleop(swerve));
@@ -105,7 +119,14 @@ public class RobotContainer {
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageFeeder(12);
     }).finallyDo(() ->{spindexer.setVoltageFeeder(0);}));
-  
+    
+    Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
+      shooter.runShooter(-6);
+      spindexer.setVoltageFeeder(-6);
+    }).finallyDo(() -> {
+      shooter.runShooter(0);
+      spindexer.setVoltageFeeder(0);
+    }));
   }
 
   public Command getAutonomousCommand() {
