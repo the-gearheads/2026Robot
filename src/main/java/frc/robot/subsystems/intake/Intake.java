@@ -42,6 +42,7 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
         configure();
+        deployEncoder.setPosition(deployEncoder.getAngle() / DEPLOY_POS_FACTOR);
     }
 
     public void configure() {
@@ -53,6 +54,7 @@ public class Intake extends SubsystemBase {
         deployConfig.idleMode(IdleMode.kCoast);
         intakeConfig.idleMode(IdleMode.kCoast);
 
+        intakeConfig.inverted(true);
         deployConfig.inverted(true);
 
         deployEncoderConfig.positionConversionFactor(DEPLOY_POS_FACTOR);
@@ -84,7 +86,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setDeployVoltage(Voltage volts) {
-        setDeployVoltage(volts.magnitude());
+        deploy.setVoltage(volts);
     }
 
     @AutoLogOutput
@@ -104,6 +106,16 @@ public class Intake extends SubsystemBase {
     @AutoLogOutput
     public Rotation2d getAngle() {
         return Rotation2d.fromRadians(deployEncoder.getAngle());
+    }
+
+    @AutoLogOutput
+    public Rotation2d getRelativeDeployAngle() {
+        return Rotation2d.fromRadians(deployEncoder.getPosition());
+    }
+
+    @AutoLogOutput
+    public double getRelativeDeployVelocity() {
+        return deployEncoder.getVelocity();
     }
 
     public void stopIntake() {
@@ -140,7 +152,7 @@ public class Intake extends SubsystemBase {
 
     public SysIdRoutine getDeploySysid() {
         return new SysIdRoutine(
-            new Config(Volts.of(.25).per(Second), Volts.of(3), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
+            new Config(Volts.of(.25).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
             new Mechanism(this::setDeployVoltage, null, this)
         );
     }

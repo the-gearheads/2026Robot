@@ -57,7 +57,7 @@ public class Shooter extends SubsystemBase{
     mainFlyConfig.smartCurrentLimit(65);
     mainFlyConfig.inverted(false);
     mainFlyConfig.idleMode(IdleMode.kCoast);
-    mainFlyConfig.voltageCompensation(12);
+    mainFlyConfig.disableVoltageCompensation();
     mainFlyConfig.closedLoop.pid(FLYWHEEL_PID[0], FLYWHEEL_PID[1], FLYWHEEL_PID[2]);
     mainFlyConfig.closedLoop.feedForward.kS(FLYWHEEL_FEEDFORWARD.getKs());
     mainFlyConfig.closedLoop.feedForward.kV(FLYWHEEL_FEEDFORWARD.getKv());
@@ -75,14 +75,14 @@ public class Shooter extends SubsystemBase{
 
     
     followerFlyConfig.smartCurrentLimit(65);
-    followerFlyConfig.idleMode(IdleMode.kBrake);
+    followerFlyConfig.idleMode(IdleMode.kCoast);
     followerFlyConfig.follow(mainFly, true);
-    followerFlyConfig.voltageCompensation(12);
+    followerFlyConfig.disableVoltageCompensation();
 
     kickerConfig.smartCurrentLimit(65);
     kickerConfig.inverted(false);
     kickerConfig.idleMode(IdleMode.kCoast);
-    kickerConfig.voltageCompensation(12);
+    kickerConfig.disableVoltageCompensation();
     kickerConfig.closedLoop.pid(KICKER_PID[0], KICKER_PID[1], KICKER_PID[2]);
     kickerConfig.closedLoop.feedForward.kS(KICKER_FEEDFORWARD.getKs());
     kickerConfig.closedLoop.feedForward.kV(KICKER_FEEDFORWARD.getKv());

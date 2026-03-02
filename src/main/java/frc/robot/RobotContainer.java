@@ -101,7 +101,7 @@ public class RobotContainer {
 
 
     // voltage numbers are completely arbitrary ngl i just picked things
-    Controllers.driverController.getABtn().whileTrue(shooter.runShooter(6));
+    Controllers.driverController.getABtn().whileTrue(shooter.runShooter(4));
 
     // Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
     //   fuelSim.launchFuel(MetersPerSecond.of(shooter.getFlywheelVelocityRadPerSec() * ShooterConstants.FLYWHEEL_RADIUS),
@@ -111,7 +111,7 @@ public class RobotContainer {
 
     Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
     Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
-    // Controllers.driverController.getLeftBumper().whileTrue(intake.shimmy());
+    Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageMainSpinner(-12);
     }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
@@ -121,12 +121,22 @@ public class RobotContainer {
     }).finallyDo(() ->{spindexer.setVoltageFeeder(0);}));
     
     Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
-      shooter.runShooter(-6);
-      spindexer.setVoltageFeeder(-6);
+      // shooter.setKickerVoltage(-6);
+      shooter.setFlywheelVoltage(6);
+      // spindexer.setVoltageFeeder(-6);
     }).finallyDo(() -> {
-      shooter.runShooter(0);
-      spindexer.setVoltageFeeder(0);
+      // shooter.setKickerVoltage(0);
+      shooter.setFlywheelVoltage(0);
+      // spindexer.setVoltageFeeder(0);
     }));
+
+    Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
+      intake.setDeployVoltage(2);
+    }).finallyDo(() ->{intake.setDeployVoltage(0);}));
+    Controllers.driverController.getBBtn().whileTrue(Commands.run(() -> {
+      intake.setDeployVoltage(-2);
+    }).finallyDo(() ->{intake.setDeployVoltage(0);}));
+
   }
 
   public Command getAutonomousCommand() {
