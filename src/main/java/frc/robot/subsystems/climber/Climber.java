@@ -3,7 +3,10 @@ package frc.robot.subsystems.climber;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.ClimberConstants;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -38,6 +41,19 @@ public class Climber extends SubsystemBase {
         return climbEncoder.getPosition();
     }
 
+    public Command climberUp() {
+        return this.run(()->{
+            setClimberVoltage(ClimberConstants.CLIMB_UP_VOLTAGE);
+        }).until(()->{return getClimbPosition()>=ClimberConstants.MAX_CLIMBER_POS;}).finallyDo(()->{
+            setClimberVoltage(0);
+        });
+    }
     
-    
+    public Command climberDown() {
+        return this.run(()->{
+            setClimberVoltage(-ClimberConstants.CLIMB_DOWN_VOLTAGE);
+        }).until(()->{return getClimbPosition()<=ClimberConstants.MIN_CLIMBER_POS;}).finallyDo(()->{
+            setClimberVoltage(0);
+        });
+    }  // these are super naiive. TODO: at some point add pid maybe + feedforward to climber bc why not and good for auto. Also motion profiling
 }
