@@ -17,7 +17,7 @@ public class Climber extends SubsystemBase {
     public SparkFlex climber = new SparkFlex(60,MotorType.kBrushless);
     public RelativeEncoder climbEncoder = climber.getEncoder();
     public SparkFlexConfig climbConfig = new SparkFlexConfig();
-    
+
     public Climber() {
         configure();
     }
@@ -29,7 +29,11 @@ public class Climber extends SubsystemBase {
         climbConfig.idleMode(IdleMode.kBrake);
         climber.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+        climbConfig.encoder.quadratureMeasurementPeriod(10);
+        climbConfig.encoder.quadratureAverageDepth(2); 
+
         climber.setCANTimeout(0);
+
     }
 
 

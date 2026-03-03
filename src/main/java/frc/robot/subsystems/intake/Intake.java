@@ -49,6 +49,12 @@ public class Intake extends SubsystemBase {
         intake.setCANTimeout(250);
         deploy.setCANTimeout(250);
 
+        deployConfig.encoder.quadratureMeasurementPeriod(10);
+        deployConfig.encoder.quadratureAverageDepth(2); 
+
+        intakeConfig.encoder.quadratureMeasurementPeriod(64);
+        intakeConfig.encoder.quadratureAverageDepth(16); 
+
         deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
         intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
         deployConfig.idleMode(IdleMode.kCoast);
