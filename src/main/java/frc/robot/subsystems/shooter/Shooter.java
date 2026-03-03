@@ -70,13 +70,13 @@ public class Shooter extends SubsystemBase{
     followerFlyConfig.signals.primaryEncoderVelocityPeriodMs(5);
     kickerConfig.signals.primaryEncoderVelocityPeriodMs(5);
     
-    mainFlyConfig.encoder.quadratureMeasurementPeriod(6);
-    mainFlyConfig.encoder.quadratureAverageDepth(2);  // subject to change
-    followerFlyConfig.encoder.quadratureMeasurementPeriod(6);
-    followerFlyConfig.encoder.quadratureAverageDepth(2);  // subject to change
-    kickerConfig.encoder.quadratureMeasurementPeriod(6);
-    kickerConfig.encoder.quadratureAverageDepth(2);  // subject to change
-
+    mainFlyConfig.encoder.quadratureMeasurementPeriod(10);
+    mainFlyConfig.encoder.quadratureAverageDepth(2);
+    followerFlyConfig.encoder.quadratureMeasurementPeriod(10);
+    followerFlyConfig.encoder.quadratureAverageDepth(2); 
+    kickerConfig.encoder.quadratureMeasurementPeriod(10);
+    kickerConfig.encoder.quadratureAverageDepth(2);
+    
     followerFlyConfig.smartCurrentLimit(80);
     followerFlyConfig.idleMode(IdleMode.kCoast);
     followerFlyConfig.follow(mainFly, true);
