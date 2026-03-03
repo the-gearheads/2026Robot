@@ -54,7 +54,7 @@ public class Shooter extends SubsystemBase{
     followerFly.setCANTimeout(250);
     kicker.setCANTimeout(250);
     
-    mainFlyConfig.smartCurrentLimit(65);
+    mainFlyConfig.smartCurrentLimit(80);
     mainFlyConfig.inverted(false);
     mainFlyConfig.idleMode(IdleMode.kCoast);
     mainFlyConfig.disableVoltageCompensation();
@@ -65,21 +65,24 @@ public class Shooter extends SubsystemBase{
 
     mainFlyConfig.encoder.positionConversionFactor(FLYWHEEL_POS_FACTOR);
     mainFlyConfig.encoder.velocityConversionFactor(FLYWHEEL_VEL_FACTOR);
+
+    mainFlyConfig.signals.primaryEncoderVelocityPeriodMs(5);
+    followerFlyConfig.signals.primaryEncoderVelocityPeriodMs(5);
+    kickerConfig.signals.primaryEncoderVelocityPeriodMs(5);
     
-    mainFlyConfig.encoder.quadratureMeasurementPeriod(10);
+    mainFlyConfig.encoder.quadratureMeasurementPeriod(6);
     mainFlyConfig.encoder.quadratureAverageDepth(2);  // subject to change
-    followerFlyConfig.encoder.quadratureMeasurementPeriod(10);
+    followerFlyConfig.encoder.quadratureMeasurementPeriod(6);
     followerFlyConfig.encoder.quadratureAverageDepth(2);  // subject to change
-    kickerConfig.encoder.quadratureMeasurementPeriod(10);
+    kickerConfig.encoder.quadratureMeasurementPeriod(6);
     kickerConfig.encoder.quadratureAverageDepth(2);  // subject to change
 
-    
-    followerFlyConfig.smartCurrentLimit(65);
+    followerFlyConfig.smartCurrentLimit(80);
     followerFlyConfig.idleMode(IdleMode.kCoast);
     followerFlyConfig.follow(mainFly, true);
     followerFlyConfig.disableVoltageCompensation();
 
-    kickerConfig.smartCurrentLimit(65);
+    kickerConfig.smartCurrentLimit(80);
     kickerConfig.inverted(false);
     kickerConfig.idleMode(IdleMode.kCoast);
     kickerConfig.disableVoltageCompensation();
