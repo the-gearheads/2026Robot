@@ -1,10 +1,15 @@
 package frc.robot.util;
 
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.swerve.Swerve;
@@ -84,13 +89,30 @@ public class ShooterCalculations {
             return  shooterPose;
         }
 
-        // private static Rectangle2d getTrenchAvoidanceRectanlges(Pose2d pose, ChassisSpeeds robotSpeed) {
-        //     Translation2d centerHubSide = new Translation2d(4.63, 1.5);
-        //     Translation2d centerWallSide = new Translation2d(4.63, 0);
+        private static Rectangle2d[] getTrenchAvoidanceRectanlges(Pose2d pose, ChassisSpeeds robotSpeed) {
+            Translation2d[] hubSideCorners = {
+                new Translation2d(4.63, 1.5),
+                new Translation2d(4.63, 6.68),
+                new Translation2d(11.918, 1.5),
+                new Translation2d(11.918, 6.68)
+            };
 
-        //     double rectWidth = robotSpeed.vxMetersPerSecond * 0.5;
-        //     Rectangle2d trenchScaryZone = new Rectangle2d(centerHubSide.plus(new Translation2d(rectWidth, 0)), centerWallSide.plus(new Translation2d(-rectWidth, 0)));
+            Translation2d[] WallSideCorners = {
+                new Translation2d(4.63, 0),
+                new Translation2d(4.63, FieldConstants.fieldWidth),
+                new Translation2d(11.918, 0),
+                new Translation2d(11.918, FieldConstants.fieldWidth)
+            };
+
+            double rectWidth = robotSpeed.vxMetersPerSecond * 0.5;
+            Rectangle2d[] scaryZones = {};
+            for(int i=0; i<hubSideCorners.length; i++) {
+                Rectangle2d currentZone = new Rectangle2d(hubSideCorners[i].plus(new Translation2d(rectWidth, 0)), WallSideCorners[i].plus(new Translation2d(-rectWidth, 0)));
+                scaryZones[i] = currentZone;
+            }
             
-        //     return trenchScaryZone;
-        // }
+
+            Logger.recordOutput("ShooterCalculations/scaryZones", scaryZones);
+            return scaryZones;
+        }
 }
