@@ -74,8 +74,8 @@ public class RobotContainer {
     sysidPicker.addSysidRoutines("Intake Deploy", intake.getDeploySysid(), intake::getForwardSysidLimit, intake::getBackwardSysidLimit);
     // // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
     sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
-    // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.get;;;lKickerSysidRoutine());
-    // sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine());
+    sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
+    sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine());
 
     // hood.setDefaultCommand(hood.run(() -> {
     //   hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));
@@ -103,8 +103,8 @@ public class RobotContainer {
 
     // voltage numbers are completely arbitrary ngl i just picked things
     Controllers.driverController.getABtn().whileTrue(shooter.run(()->{
-      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(-4000));
-      shooter.setKickerVoltage(4);
+      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(-2000));
+      shooter.setKickerVoltage(2);
     }).finallyDo(()->{
       shooter.setFlywheelVoltage(0);
       shooter.setKickerVoltage(0);
@@ -118,7 +118,7 @@ public class RobotContainer {
 
     Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
     Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
-    // Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
+    Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageMainSpinner(-12);
     }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
@@ -137,12 +137,12 @@ public class RobotContainer {
     //   // spindexer.setVoltageFeeder(0);
     // }));
 
-    // Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
-    //   intake.setDeployVoltage(2);
-    // }).finallyDo(() ->{intake.setDeployVoltage(0);}));
-    // Controllers.driverController.getBBtn().whileTrue(Commands.run(() -> {
-    //   intake.setDeployVoltage(-2);
-    // }).finallyDo(() ->{intake.setDeployVoltage(0);}));
+    Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
+      intake.setDeployVoltage(2);
+    }).finallyDo(() ->{intake.setDeployVoltage(0);}));
+    Controllers.driverController.getBBtn().whileTrue(Commands.run(() -> {
+      intake.setDeployVoltage(-2);
+    }).finallyDo(() ->{intake.setDeployVoltage(0);}));
 
   }
 

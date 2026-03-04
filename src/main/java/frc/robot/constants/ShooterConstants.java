@@ -29,8 +29,8 @@ public class ShooterConstants {
 
 
 
-    public static final double[] FLYWHEEL_PID = {0.0047715, 0, 0.0003};
-    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0.080448, 0.013476, 0.00073212);
+    public static final double[] FLYWHEEL_PID = {0.0046686, 0, 0};
+    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0.088376, 0.013468, 0.00072178);
 
     public static final double[] KICKER_PID = {1, 0, 0};
     public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.045537, 0.0017932, 0.0001929);
