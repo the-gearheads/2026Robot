@@ -42,11 +42,17 @@ public class Spindexer extends SubsystemBase {
 
         mainSpinnerConfig.smartCurrentLimit(SpindexerConstants.SPINNER_CURRENT_LIMIT);
         feederConfig.smartCurrentLimit(SpindexerConstants.FEEDER_CURRENT_LIMIT);
-        mainSpinnerConfig.idleMode(IdleMode.kBrake);
-        feederConfig.idleMode(IdleMode.kBrake);
+        mainSpinnerConfig.idleMode(IdleMode.kCoast);
+        feederConfig.idleMode(IdleMode.kCoast);
 
         mainSpinner.configure(mainSpinnerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         feeder.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        feederConfig.encoder.quadratureMeasurementPeriod(10);
+        feederConfig.encoder.quadratureAverageDepth(2); 
+
+        mainSpinnerConfig.encoder.quadratureMeasurementPeriod(10);
+        mainSpinnerConfig.encoder.quadratureAverageDepth(2); 
 
        feederConfig.closedLoop.pid(SpindexerConstants.FEEDER_PID[0], SpindexerConstants.FEEDER_PID[1], SpindexerConstants.FEEDER_PID[2]);
        feederConfig.closedLoop.feedForward.kS(SpindexerConstants.FEEDER_FEEDFORWARD.getKs());

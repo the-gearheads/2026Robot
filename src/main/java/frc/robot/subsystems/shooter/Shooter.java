@@ -54,10 +54,10 @@ public class Shooter extends SubsystemBase{
     followerFly.setCANTimeout(250);
     kicker.setCANTimeout(250);
     
-    mainFlyConfig.smartCurrentLimit(65);
+    mainFlyConfig.smartCurrentLimit(80);
     mainFlyConfig.inverted(false);
-    mainFlyConfig.idleMode(IdleMode.kBrake);
-    mainFlyConfig.voltageCompensation(12);
+    mainFlyConfig.idleMode(IdleMode.kCoast);
+    mainFlyConfig.disableVoltageCompensation();
     mainFlyConfig.closedLoop.pid(FLYWHEEL_PID[0], FLYWHEEL_PID[1], FLYWHEEL_PID[2]);
     mainFlyConfig.closedLoop.feedForward.kS(FLYWHEEL_FEEDFORWARD.getKs());
     mainFlyConfig.closedLoop.feedForward.kV(FLYWHEEL_FEEDFORWARD.getKv());
@@ -65,16 +65,27 @@ public class Shooter extends SubsystemBase{
 
     mainFlyConfig.encoder.positionConversionFactor(FLYWHEEL_POS_FACTOR);
     mainFlyConfig.encoder.velocityConversionFactor(FLYWHEEL_VEL_FACTOR);
-    
-    followerFlyConfig.smartCurrentLimit(65);
-    followerFlyConfig.idleMode(IdleMode.kBrake);
-    followerFlyConfig.follow(mainFly, true);
-    followerFlyConfig.voltageCompensation(12);
 
-    kickerConfig.smartCurrentLimit(65);
+    mainFlyConfig.signals.primaryEncoderVelocityPeriodMs(5);
+    followerFlyConfig.signals.primaryEncoderVelocityPeriodMs(5);
+    kickerConfig.signals.primaryEncoderVelocityPeriodMs(5);
+    
+    mainFlyConfig.encoder.quadratureMeasurementPeriod(10);
+    mainFlyConfig.encoder.quadratureAverageDepth(2);  // subject to change
+    followerFlyConfig.encoder.quadratureMeasurementPeriod(10);
+    followerFlyConfig.encoder.quadratureAverageDepth(2);  // subject to change
+    kickerConfig.encoder.quadratureMeasurementPeriod(10);
+    kickerConfig.encoder.quadratureAverageDepth(2);  // subject to change
+
+    followerFlyConfig.smartCurrentLimit(80);
+    followerFlyConfig.idleMode(IdleMode.kCoast);
+    followerFlyConfig.follow(mainFly, true);
+    followerFlyConfig.disableVoltageCompensation();
+
+    kickerConfig.smartCurrentLimit(80);
     kickerConfig.inverted(false);
-    kickerConfig.idleMode(IdleMode.kBrake);
-    kickerConfig.voltageCompensation(12);
+    kickerConfig.idleMode(IdleMode.kCoast);
+    kickerConfig.disableVoltageCompensation();
     kickerConfig.closedLoop.pid(KICKER_PID[0], KICKER_PID[1], KICKER_PID[2]);
     kickerConfig.closedLoop.feedForward.kS(KICKER_FEEDFORWARD.getKs());
     kickerConfig.closedLoop.feedForward.kV(KICKER_FEEDFORWARD.getKv());

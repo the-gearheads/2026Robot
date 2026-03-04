@@ -29,21 +29,21 @@ public class ShooterConstants {
 
 
 
-    public static final double[] FLYWHEEL_PID = {0, 0, 0};
-    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0.045537, 0.0017932, 0.0001929);
+    public static final double[] FLYWHEEL_PID = {0.0046686, 0, 0};
+    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0.088376, 0.013468, 0.00072178);
 
-    public static final double[] KICKER_PID = {0, 0, 0};
-    public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.045537, 0.0017932, 0.0001929);
+    public static final double[] KICKER_PID = {0.0010106, 0, 0};
+    public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017894, 0.00038719);
 
     public static final double[] HOOD_PID = {0.040053, 0, 0};
     public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.19624, 0.050267, 0.77833, 0.019925);
 
     public static final double HOOD_LENGTH_METERS = Units.inchesToMeters(8.07); // placeholder; from pivot point to out edge, for sim
-    public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);
-    public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(50);
+    public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);  // hood 0 is 7.5 deg up
+    public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(56);
 
     public static final double HOOD_MIN_SYSID_ANGLE = Units.degreesToRadians(5);  // more conservative so sysid doesn't break anything
-    public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(45);
+    public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(50);
 
     public static final double FLYWHEEL_RADIUS = Units.inchesToMeters(3);  // i mean its not, but it is, but its not
 

@@ -1,8 +1,11 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.IntakeConstants.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -19,8 +22,12 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
@@ -35,22 +42,33 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
         configure();
+        deployEncoder.setPosition(deployEncoder.getAngle() / DEPLOY_POS_FACTOR);
     }
 
     public void configure() {
         intake.setCANTimeout(250);
         deploy.setCANTimeout(250);
 
+        deployConfig.encoder.quadratureMeasurementPeriod(10);
+        deployConfig.encoder.quadratureAverageDepth(2); 
+
+        intakeConfig.encoder.quadratureMeasurementPeriod(64);
+        intakeConfig.encoder.quadratureAverageDepth(16); 
+
         deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
         intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
-        deployConfig.idleMode(IdleMode.kCoast);
+        deployConfig.idleMode(IdleMode.kBrake);
         intakeConfig.idleMode(IdleMode.kCoast);
 
+        intakeConfig.inverted(true);
         deployConfig.inverted(true);
 
         deployEncoderConfig.positionConversionFactor(DEPLOY_POS_FACTOR);
+        deployEncoderConfig.angleConversionFactor(DEPLOY_POS_FACTOR);
         deployEncoderConfig.velocityConversionFactor(DEPLOY_VEL_FACTOR);
         deployEncoderConfig.inverted(true);
+        deployEncoderConfig.dutyCycleZeroCentered(true);
+        deployEncoderConfig.dutyCycleOffset(DEPLOY_OFFSET);
         // we prolly dont need ff
         deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid off of absolute encoder is technically bad but if it doesn't work we'll find out
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
@@ -59,8 +77,8 @@ public class Intake extends SubsystemBase {
 
         deploy.configure(deployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
         deployEncoder.configure(deployEncoderConfig, ResetMode.kResetSafeParameters);
+                
         intake.setCANTimeout(0);
         deploy.setCANTimeout(0);
     }
@@ -71,6 +89,10 @@ public class Intake extends SubsystemBase {
 
     public void setDeployVoltage(double volts) {
         deployController.setSetpoint(volts, ControlType.kVoltage);
+    }
+
+    public void setDeployVoltage(Voltage volts) {
+        deploy.setVoltage(volts);
     }
 
     @AutoLogOutput
@@ -89,7 +111,17 @@ public class Intake extends SubsystemBase {
 
     @AutoLogOutput
     public Rotation2d getAngle() {
+        return Rotation2d.fromRadians(deployEncoder.getAngle());
+    }
+
+    @AutoLogOutput
+    public Rotation2d getRelativeDeployAngle() {
         return Rotation2d.fromRadians(deployEncoder.getPosition());
+    }
+
+    @AutoLogOutput
+    public double getRelativeDeployVelocity() {
+        return deployEncoder.getVelocity();
     }
 
     public void stopIntake() {
@@ -102,8 +134,6 @@ public class Intake extends SubsystemBase {
     }    
 
     public Command shimmy() {
-
-
         return this.run(() -> {
 
             if (Math.abs(getAngle().getRadians() - DEPLOY_MIN_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
@@ -112,10 +142,24 @@ public class Intake extends SubsystemBase {
 
             if (Math.abs(getAngle().getRadians() - DEPLOY_SHIMMY_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
                 setAngle(DEPLOY_MIN_ANGLE);
-        }
+            }
 
             setIntakeVoltage(12);
         }).finallyDo(this::stopIntake);
-    
-}
+    }
+
+    public boolean getForwardSysidLimit() {
+        return getAngle().getRadians() > DEPLOY_MAX_SYSID_ANGLE.getRadians();
+    }
+
+    public boolean getBackwardSysidLimit() {
+        return getAngle().getRadians() < DEPLOY_MIN_SYSID_ANGLE.getRadians();
+    }
+
+    public SysIdRoutine getDeploySysid() {
+        return new SysIdRoutine(
+            new Config(Volts.of(.25).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
+            new Mechanism(this::setDeployVoltage, null, this)
+        );
+    }
 }

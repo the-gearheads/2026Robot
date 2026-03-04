@@ -51,7 +51,10 @@ public class Hood extends SubsystemBase {
     public void configure(){
         hood.setCANTimeout(250);
 
+        hoodConfig.encoder.quadratureMeasurementPeriod(10);
+        hoodConfig.encoder.quadratureAverageDepth(2); 
         hoodConfig.smartCurrentLimit(65);
+      
         hoodConfig.inverted(false);
         hoodConfig.idleMode(IdleMode.kBrake);
         hoodConfig.voltageCompensation(12);

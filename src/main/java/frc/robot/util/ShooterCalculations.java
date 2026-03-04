@@ -1,6 +1,5 @@
 package frc.robot.util;
 
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -8,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.ShooterConstants;
+import frc.robot.subsystems.swerve.Swerve;
 
 public class ShooterCalculations {
     // position of the goal, so we know where to shoot
@@ -67,11 +67,12 @@ public class ShooterCalculations {
             return angle;
         }
         
-        public static Rotation2d getHubAngle(Pose2d robotPose) {
-            return Rotation2d.fromRadians(shooterAngleFunction.get(getHubDistance(getShooterPosition(robotPose))));
+        public static Rotation2d getHoodAngle(Swerve swerve) {
+            Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(getHubDistance(getShooterPosition(swerve.getPose()))));
+            return hubAngle;
         }
     
-        public static double getHubVelocity(Pose2d robotPose) {
+        public static double getShooterVelocity(Pose2d robotPose) {
             return shooterRPMFunction.get(getHubDistance(getShooterPosition(robotPose)));
         }
     
@@ -83,4 +84,13 @@ public class ShooterCalculations {
             return  shooterPose;
         }
 
+        // private static Rectangle2d getTrenchAvoidanceRectanlges(Pose2d pose, ChassisSpeeds robotSpeed) {
+        //     Translation2d centerHubSide = new Translation2d(4.63, 1.5);
+        //     Translation2d centerWallSide = new Translation2d(4.63, 0);
+
+        //     double rectWidth = robotSpeed.vxMetersPerSecond * 0.5;
+        //     Rectangle2d trenchScaryZone = new Rectangle2d(centerHubSide.plus(new Translation2d(rectWidth, 0)), centerWallSide.plus(new Translation2d(-rectWidth, 0)));
+            
+        //     return trenchScaryZone;
+        // }
 }
