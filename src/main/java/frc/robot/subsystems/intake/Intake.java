@@ -57,7 +57,7 @@ public class Intake extends SubsystemBase {
 
         deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
         intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
-        deployConfig.idleMode(IdleMode.kCoast);
+        deployConfig.idleMode(IdleMode.kBrake);
         intakeConfig.idleMode(IdleMode.kCoast);
 
         intakeConfig.inverted(true);

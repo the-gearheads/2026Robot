@@ -13,6 +13,7 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.commands.Teleop;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
@@ -53,7 +54,7 @@ public class RobotContainer {
 
     sysidPicker = new SysidAutoPicker();
     swerve = new Swerve();
-    // swerve.setDefaultCommand(new Teleop(swerve));
+    swerve.setDefaultCommand(new Teleop(swerve));
     // Configure the trigger bindings
     if (!isReal) {
       spindexer = new SpindexerSim();
