@@ -27,7 +27,7 @@ public class IntakeConstants {
     public static final Rotation2d DEPLOY_MAX_ANGLE = Rotation2d.fromDegrees(60);
 
     public static final Rotation2d DEPLOY_MIN_SYSID_ANGLE = Rotation2d.fromDegrees(4);
-    public static final Rotation2d DEPLOY_MAX_SYSID_ANGLE = Rotation2d.fromDegrees(60);
+    public static final Rotation2d DEPLOY_MAX_SYSID_ANGLE = Rotation2d.fromDegrees(54);
 
     public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromRadians(0.002);
     public static final Rotation2d DEPLOY_SHIMMY_ANGLE = Rotation2d.fromDegrees(30);

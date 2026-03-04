@@ -13,7 +13,6 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.commands.Teleop;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
@@ -54,7 +53,7 @@ public class RobotContainer {
 
     sysidPicker = new SysidAutoPicker();
     swerve = new Swerve();
-    swerve.setDefaultCommand(new Teleop(swerve));
+    // swerve.setDefaultCommand(new Teleop(swerve));
     // Configure the trigger bindings
     if (!isReal) {
       spindexer = new SpindexerSim();
@@ -73,9 +72,10 @@ public class RobotContainer {
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
     sysidPicker.addSysidRoutines("Intake Deploy", intake.getDeploySysid(), intake::getForwardSysidLimit, intake::getBackwardSysidLimit);
     // // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
-    sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
-    sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
-    sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine());
+    // sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
+    // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
+    sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine(), hood::forwardSysIdLimit, hood::reverseSysIdLimit);
+    sysidPicker.addSysidRoutines("Feeder", spindexer.getFeederSysidRoutine());
 
     // hood.setDefaultCommand(hood.run(() -> {
     //   hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));

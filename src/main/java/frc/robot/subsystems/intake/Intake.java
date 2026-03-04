@@ -158,7 +158,7 @@ public class Intake extends SubsystemBase {
 
     public SysIdRoutine getDeploySysid() {
         return new SysIdRoutine(
-            new Config(Volts.of(.25).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
+            new Config(Volts.of(.5).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
             new Mechanism(this::setDeployVoltage, null, this)
         );
     }

@@ -41,6 +41,7 @@ public class Hood extends SubsystemBase {
     
     public Hood() {
         configure();
+        hoodEncoder.setPosition(0);
     }
 
     @Override
@@ -113,7 +114,7 @@ public class Hood extends SubsystemBase {
     }
 
     public SysIdRoutine getSysIdRoutine() {
-        return new SysIdRoutine(new Config(Volts.of(.25).per(Second), Volts.of(4), null, (state)->{Logger.recordOutput("Hood/SysidTestState", state.toString());}),
+        return new SysIdRoutine(new Config(Volts.of(.35).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Hood/SysidTestState", state.toString());}),
             new Mechanism(this::setVoltage, null, this));
     }
 

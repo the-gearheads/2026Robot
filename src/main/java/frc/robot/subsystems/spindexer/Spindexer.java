@@ -105,7 +105,7 @@ public class Spindexer extends SubsystemBase {
    }
 
    public SysIdRoutine getFeederSysidRoutine() {
-    return new SysIdRoutine(new Config(Volts.of(.5).per(Second), Volts.of(7), null, (state)->{Logger.recordOutput("Shooter/mainFlySysidTestState", state.toString());}),
+    return new SysIdRoutine(new Config(Volts.of(.5).per(Second), Volts.of(7), null, (state)->{Logger.recordOutput("Spindexer/feederSysidTestState", state.toString());}),
         new Mechanism(this::setVoltageFeeder, null, this));
    }
     
