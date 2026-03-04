@@ -38,7 +38,7 @@ public class RobotContainer {
   public static final boolean deathMode = true;
 
   // public FuelSim fuelSim = new FuelSim("FuelSim"); // creates a new fuelSim of FuelSim
-  //public Dog dog = new Dog;
+  // public Dog dog = new Dog;
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
