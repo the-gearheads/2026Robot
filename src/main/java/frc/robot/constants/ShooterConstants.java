@@ -35,8 +35,8 @@ public class ShooterConstants {
     public static final double[] KICKER_PID = {0, 0, 0};
     public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.045537, 0.0017932, 0.0001929);
 
-    public static final double[] HOOD_PID = {0, 0, 0};
-    public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.2509, 0.099081, 5.5782, 0.28261);
+    public static final double[] HOOD_PID = {0.040053, 0, 0};
+    public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.19624, 0.050267, 0.77833, 0.019925);
 
     public static final double HOOD_LENGTH_METERS = Units.inchesToMeters(8.07); // placeholder; from pivot point to out edge, for sim
     public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);
