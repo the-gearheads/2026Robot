@@ -50,7 +50,7 @@ public class Hood extends SubsystemBase {
     
 
     public void configure(){
-        hood.setCANTimeout(250);
+        hood.setCANTimeout(10);
 
         hoodConfig.encoder.quadratureMeasurementPeriod(10);
         hoodConfig.encoder.quadratureAverageDepth(2); 

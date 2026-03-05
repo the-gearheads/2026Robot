@@ -50,9 +50,9 @@ public class Shooter extends SubsystemBase{
    }
 
    public void configure() {
-    mainFly.setCANTimeout(250);
-    followerFly.setCANTimeout(250);
-    kicker.setCANTimeout(250);
+    mainFly.setCANTimeout(10);
+    followerFly.setCANTimeout(10);
+    kicker.setCANTimeout(10);
     
     mainFlyConfig.smartCurrentLimit(80);
     mainFlyConfig.inverted(false);

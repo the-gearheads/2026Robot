@@ -13,11 +13,13 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.commands.Teleop;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotController.RadioLEDState;
@@ -52,8 +54,9 @@ public class RobotContainer {
     }
 
     sysidPicker = new SysidAutoPicker();
+
     swerve = new Swerve();
-    // swerve.setDefaultCommand(new Teleop(swerve));
+    swerve.setDefaultCommand(new Teleop(swerve));
     // Configure the trigger bindings
     if (!isReal) {
       spindexer = new SpindexerSim();
@@ -110,6 +113,10 @@ public class RobotContainer {
       shooter.setKickerVoltage(0);
     }));
 
+    Controllers.driverController.getLeftPaddle().whileTrue(hood.run(()->{
+      hood.setAngle(Rotation2d.fromDegrees(20));
+    }).andThen(hood.run(()->{hood.setVoltage(0);})));
+
     // Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
     //   fuelSim.launchFuel(MetersPerSecond.of(shooter.getFlywheelVelocityRadPerSec() * ShooterConstants.FLYWHEEL_RADIUS),
     //       hood.getAngle().getMeasure(),
@@ -119,23 +126,28 @@ public class RobotContainer {
     Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
     Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
+
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageMainSpinner(-12);
     }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
 
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageFeeder(12);
-    }).finallyDo(() ->{spindexer.setVoltageFeeder(0);}));
+    }));
+
+    Controllers.driverController.getXBtn().whileFalse(Commands.run(() -> {
+      spindexer.setVoltageFeeder(0);
+    }));
     
-    // Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
-    //   // shooter.setKickerVoltage(-6);
-    //   shooter.setFlywheelVoltage(6);
-    //   // spindexer.setVoltageFeeder(-6);
-    // }).finallyDo(() -> {
-    //   // shooter.setKickerVoltage(0);
-    //   shooter.setFlywheelVoltage(0);
-    //   // spindexer.setVoltageFeeder(0);
-    // }));
+    Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
+      // shooter.setKickerVoltage(-6);
+      shooter.setFlywheelVoltage(6);
+      // spindexer.setVoltageFeeder(-6);
+    }).finallyDo(() -> {
+      // shooter.setKickerVoltage(0);
+      shooter.setFlywheelVoltage(0);
+      // spindexer.setVoltageFeeder(0);
+    }));
 
     Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
       intake.setDeployVoltage(2);
@@ -144,6 +156,9 @@ public class RobotContainer {
       intake.setDeployVoltage(-2);
     }).finallyDo(() ->{intake.setDeployVoltage(0);}));
 
+    // Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
+    //   spindexer.setVoltageFeeder(12);
+    // }));
   }
 
   public Command getAutonomousCommand() {

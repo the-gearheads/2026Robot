@@ -93,7 +93,7 @@ public class DriveMotor {
 
   /* then this, after a delay */
   public void configure() {
-    flex.setCANTimeout(250);
+    flex.setCANTimeout(10);
     config.smartCurrentLimit(DRIVE_CURRENT_LIMIT);
     config.idleMode(IdleMode.kBrake);
     config.inverted(IS_INVERTED[index]);

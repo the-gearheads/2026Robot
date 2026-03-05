@@ -23,7 +23,7 @@ public class Climber extends SubsystemBase {
     }
     
     public void configure(){
-        climber.setCANTimeout(250);
+        climber.setCANTimeout(10);
 
         climbConfig.smartCurrentLimit(60);
         climbConfig.idleMode(IdleMode.kBrake);

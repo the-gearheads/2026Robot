@@ -46,8 +46,8 @@ public class Intake extends SubsystemBase {
     }
 
     public void configure() {
-        intake.setCANTimeout(250);
-        deploy.setCANTimeout(250);
+        intake.setCANTimeout(10);
+        deploy.setCANTimeout(10);
 
         deployConfig.encoder.quadratureMeasurementPeriod(10);
         deployConfig.encoder.quadratureAverageDepth(2); 

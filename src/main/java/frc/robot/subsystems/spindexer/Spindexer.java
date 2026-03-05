@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -26,8 +27,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 
 public class Spindexer extends SubsystemBase {
     SparkFlex mainSpinner = new SparkFlex(SpindexerConstants.SPINNER_ID, MotorType.kBrushless);
-    SparkFlex feeder = new SparkFlex(SpindexerConstants.FEEDER_ID, MotorType.kBrushless);
     SparkFlexConfig mainSpinnerConfig = new SparkFlexConfig();
+
+    SparkFlex feeder = new SparkFlex(SpindexerConstants.FEEDER_ID, MotorType.kBrushless);
+    RelativeEncoder feederEncoder = feeder.getEncoder();
     SparkFlexConfig feederConfig = new SparkFlexConfig();
     SparkClosedLoopController feederController = feeder.getClosedLoopController();
 
@@ -37,28 +40,28 @@ public class Spindexer extends SubsystemBase {
 
     public void configure()
     {
-        mainSpinner.setCANTimeout(250);
-        feeder.setCANTimeout(250);
+        mainSpinner.setCANTimeout(10);
+        feeder.setCANTimeout(10);
 
         mainSpinnerConfig.smartCurrentLimit(SpindexerConstants.SPINNER_CURRENT_LIMIT);
         feederConfig.smartCurrentLimit(SpindexerConstants.FEEDER_CURRENT_LIMIT);
         mainSpinnerConfig.idleMode(IdleMode.kCoast);
         feederConfig.idleMode(IdleMode.kCoast);
 
+        // feederConfig.encoder.quadratureMeasurementPeriod(20);
+        // feederConfig.encoder.quadratureAverageDepth(4); 
+
+        // mainSpinnerConfig.encoder.quadratureMeasurementPeriod(20);
+        // mainSpinnerConfig.encoder.quadratureAverageDepth(4); 
+
+        feederConfig.closedLoop.pid(SpindexerConstants.FEEDER_PID[0], SpindexerConstants.FEEDER_PID[1], SpindexerConstants.FEEDER_PID[2]);
+        feederConfig.closedLoop.feedForward.kS(SpindexerConstants.FEEDER_FEEDFORWARD.getKs());
+        feederConfig.closedLoop.feedForward.kV(SpindexerConstants.FEEDER_FEEDFORWARD.getKv());
+        feederConfig.closedLoop.feedForward.kA(SpindexerConstants.FEEDER_FEEDFORWARD.getKa());
+               
         mainSpinner.configure(mainSpinnerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         feeder.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        feederConfig.encoder.quadratureMeasurementPeriod(10);
-        feederConfig.encoder.quadratureAverageDepth(2); 
-
-        mainSpinnerConfig.encoder.quadratureMeasurementPeriod(10);
-        mainSpinnerConfig.encoder.quadratureAverageDepth(2); 
-
-       feederConfig.closedLoop.pid(SpindexerConstants.FEEDER_PID[0], SpindexerConstants.FEEDER_PID[1], SpindexerConstants.FEEDER_PID[2]);
-       feederConfig.closedLoop.feedForward.kS(SpindexerConstants.FEEDER_FEEDFORWARD.getKs());
-       feederConfig.closedLoop.feedForward.kV(SpindexerConstants.FEEDER_FEEDFORWARD.getKv());
-       feederConfig.closedLoop.feedForward.kA(SpindexerConstants.FEEDER_FEEDFORWARD.getKa());
-        
         mainSpinner.setCANTimeout(0);
         feeder.setCANTimeout(0);
     }
@@ -68,12 +71,16 @@ public class Spindexer extends SubsystemBase {
     }
 
     public void setVoltageFeeder(double volts) {
-        feederController.setSetpoint(volts, ControlType.kVoltage);
+        feeder.setVoltage(volts);
     }
     
     public void setVoltageFeeder(Voltage volts) {
         setVoltageFeeder(volts.magnitude());
-   }
+    }
+    
+    public void setFeederSpeed(double speed) {
+        feederController.setSetpoint(speed, ControlType.kVelocity);
+    }
     
     @AutoLogOutput 
     public double getMainSpinnerVoltage() {
@@ -85,6 +92,17 @@ public class Spindexer extends SubsystemBase {
         return feeder.getAppliedOutput()*feeder.getBusVoltage();
     }
 
+    @AutoLogOutput
+    public double getFeederVelocity() {
+        return feederEncoder.getVelocity();
+    }
+
+    @AutoLogOutput
+    public double getFeederPosition() {
+        return feederEncoder.getPosition();
+    }
+
+    @AutoLogOutput
     public double getFeederSetpoint() {
         return feederController.getSetpoint();
     }
