@@ -113,6 +113,10 @@ public class Hood extends SubsystemBase {
         return run(() -> setVoltage(volts)).finallyDo(() -> setVoltage(0));
     }
 
+    public Command hoodHome (double volts){
+        return run(() -> setVoltage(volts)).withTimeout(2);
+    }
+
     public SysIdRoutine getSysIdRoutine() {
         return new SysIdRoutine(new Config(Volts.of(.35).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Hood/SysidTestState", state.toString());}),
             new Mechanism(this::setVoltage, null, this));

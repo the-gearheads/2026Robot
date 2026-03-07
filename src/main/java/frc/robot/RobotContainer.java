@@ -149,6 +149,7 @@ public class RobotContainer {
       // spindexer.setVoltageFeeder(0);
     }));
 
+    Controllers.driverController.getPovUp().onTrue(hood.hoodHome(-2));
     Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
       intake.setDeployVoltage(2);
     }).finallyDo(() ->{intake.setDeployVoltage(0);}));
