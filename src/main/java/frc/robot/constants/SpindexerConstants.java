@@ -12,6 +12,6 @@ public final class SpindexerConstants {
     public static final double MAINSPINNER_GEAR_RATIO = 15.0/1;
     public static final double FEEDER_GEAR_RATIO = 3.0/1;
 
-    public static final double[] FEEDER_PID = {0, 0, 0};
-    public static final SimpleMotorFeedforward FEEDER_FEEDFORWARD = new SimpleMotorFeedforward(0.13472, 0.0018284, 0, 0.02); // placeholder values
+    public static final double[] FEEDER_PID = {0.008, 0.001, 0};
+    public static final SimpleMotorFeedforward FEEDER_FEEDFORWARD = new SimpleMotorFeedforward(0.15, 0.0172, 0, 0.02);
 }

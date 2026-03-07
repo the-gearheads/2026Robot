@@ -48,11 +48,11 @@ public class Spindexer extends SubsystemBase {
         mainSpinnerConfig.idleMode(IdleMode.kCoast);
         feederConfig.idleMode(IdleMode.kCoast);
 
-        // feederConfig.encoder.quadratureMeasurementPeriod(20);
-        // feederConfig.encoder.quadratureAverageDepth(4); 
+        feederConfig.encoder.quadratureMeasurementPeriod(20);
+        feederConfig.encoder.quadratureAverageDepth(4); 
 
-        // mainSpinnerConfig.encoder.quadratureMeasurementPeriod(20);
-        // mainSpinnerConfig.encoder.quadratureAverageDepth(4); 
+        mainSpinnerConfig.encoder.quadratureMeasurementPeriod(20);
+        mainSpinnerConfig.encoder.quadratureAverageDepth(4); 
 
         feederConfig.closedLoop.pid(SpindexerConstants.FEEDER_PID[0], SpindexerConstants.FEEDER_PID[1], SpindexerConstants.FEEDER_PID[2]);
         feederConfig.closedLoop.feedForward.kS(SpindexerConstants.FEEDER_FEEDFORWARD.getKs());
