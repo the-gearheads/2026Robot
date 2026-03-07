@@ -69,6 +69,8 @@ public class Intake extends SubsystemBase {
         deployEncoderConfig.inverted(true);
         deployEncoderConfig.dutyCycleZeroCentered(true);
         deployEncoderConfig.dutyCycleOffset(DEPLOY_OFFSET);
+
+        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, DEPLOY_ENCODER_ID);
         // we prolly dont need ff
         deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid off of absolute encoder is technically bad but if it doesn't work we'll find out
         deployConfig.closedLoop.p(DEPLOY_PID[0]);

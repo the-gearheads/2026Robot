@@ -6,7 +6,6 @@ import static frc.robot.constants.ShooterConstants.HOOD_POS_FACTOR;
 import static frc.robot.constants.ShooterConstants.HOOD_VEL_FACTOR;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
@@ -18,6 +17,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -38,18 +38,20 @@ public class Hood extends SubsystemBase {
     SparkFlexConfig hoodConfig = new SparkFlexConfig();
     RelativeEncoder hoodEncoder = hood.getEncoder();
 
-    
+    Rotation2d goalAngle = Rotation2d.kZero;
+    boolean profiling = false;
     public Hood() {
         configure();
         hoodEncoder.setPosition(0);
     }
 
     @Override
-    public void periodic(){}
+    public void periodic() {
+    }
 
     
 
-    public void configure(){
+    public void configure() {
         hood.setCANTimeout(10);
 
         hoodConfig.encoder.quadratureMeasurementPeriod(10);
@@ -59,11 +61,12 @@ public class Hood extends SubsystemBase {
         hoodConfig.inverted(false);
         hoodConfig.idleMode(IdleMode.kBrake);
         hoodConfig.voltageCompensation(12);
-        hoodConfig.closedLoop.pid(HOOD_PID[0], HOOD_PID[1], HOOD_PID[2]);
-        hoodConfig.closedLoop.feedForward.kS(HOOD_FEEDFORWARD.getKs());
-        hoodConfig.closedLoop.feedForward.kV(HOOD_FEEDFORWARD.getKv());
-        hoodConfig.closedLoop.feedForward.kA(HOOD_FEEDFORWARD.getKa());
-        hoodConfig.closedLoop.feedForward.kG(HOOD_FEEDFORWARD.getKg());
+        hoodConfig.closedLoop.pid(HOOD_PID[0], HOOD_PID[1], HOOD_PID[2], ClosedLoopSlot.kSlot0);
+        // hoodConfig.closedLoop.feedForward.kS(HOOD_FEEDFORWARD.getKs(), ClosedLoopSlot.kSlot0);
+        // hoodConfig.closedLoop.feedForward.kV(HOOD_FEEDFORWARD.getKv(), ClosedLoopSlot.kSlot0);
+        // hoodConfig.closedLoop.feedForward.kA(HOOD_FEEDFORWARD.getKa(), ClosedLoopSlot.kSlot0);
+        // hoodConfig.closedLoop.feedForward.kG(HOOD_FEEDFORWARD.getKg(), ClosedLoopSlot.kSlot0);
+        hoodConfig.closedLoop.outputRange(-1, 1);
 
         hoodConfig.encoder.positionConversionFactor(HOOD_POS_FACTOR);  
         hoodConfig.encoder.velocityConversionFactor(HOOD_VEL_FACTOR);
@@ -73,7 +76,7 @@ public class Hood extends SubsystemBase {
     }
 
     public void setVoltage(double volts){
-        hoodController.setSetpoint(volts, ControlType.kVoltage);
+        hoodController.setSetpoint(volts, ControlType.kVoltage, ClosedLoopSlot.kSlot0);
     }
     
     public void setVoltage(Voltage volts){
@@ -81,7 +84,7 @@ public class Hood extends SubsystemBase {
     }
 
     public void setAngle(Rotation2d angle) {
-        hoodController.setSetpoint(angle.getRadians(), ControlType.kPosition);
+        hoodController.setSetpoint(angle.getRadians(), ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
     @AutoLogOutput

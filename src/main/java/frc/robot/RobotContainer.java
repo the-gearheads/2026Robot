@@ -14,6 +14,7 @@ import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.commands.Teleop;
+import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
@@ -71,6 +72,8 @@ public class RobotContainer {
       intake = new Intake();
     }
 
+    hood.setDefaultCommand(new HoodNTControl(hood));
+
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
     sysidPicker.addSysidRoutines("Intake Deploy", intake.getDeploySysid(), intake::getForwardSysidLimit, intake::getBackwardSysidLimit);
@@ -106,8 +109,8 @@ public class RobotContainer {
 
     // voltage numbers are completely arbitrary ngl i just picked things
     Controllers.driverController.getABtn().whileTrue(shooter.run(()->{
-      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(-2000));
-      shooter.setKickerVoltage(2);
+      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(-4000));
+      shooter.setKickerVelocity(Units.rotationsPerMinuteToRadiansPerSecond(4000));
     }).finallyDo(()->{
       shooter.setFlywheelVoltage(0);
       shooter.setKickerVoltage(0);
@@ -132,7 +135,7 @@ public class RobotContainer {
     }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
 
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-      spindexer.setVoltageFeeder(12);
+      spindexer.setFeederSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4000));
     }));
 
     Controllers.driverController.getXBtn().whileFalse(Commands.run(() -> {
