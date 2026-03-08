@@ -42,7 +42,7 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
         configure();
-        deployEncoder.setPosition(deployEncoder.getAngle() / DEPLOY_POS_FACTOR);
+        deployEncoder.setPosition(deployEncoder.getAngle());
     }
 
     public void configure() {

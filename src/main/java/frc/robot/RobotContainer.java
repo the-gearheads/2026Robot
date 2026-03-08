@@ -20,7 +20,6 @@ import frc.robot.controllers.Controllers;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotController.RadioLEDState;
@@ -33,7 +32,7 @@ public class RobotContainer {
   private final Swerve swerve;
   private final SysidAutoPicker sysidPicker;
   private final Spindexer spindexer;
-  // private final Hood hood;
+  private final Hood hood;
   private final Shooter shooter;
   private final Intake intake;
 
@@ -61,18 +60,18 @@ public class RobotContainer {
     // Configure the trigger bindings
     if (!isReal) {
       spindexer = new SpindexerSim();
-      // hood = new HoodSim();
+      hood = new HoodSim();
       shooter = new ShooterSim();
       intake = new IntakeSim();
       // configureFuelSim();
     } else {
       spindexer = new Spindexer();
-      // hood = new Hood();
+      hood = new Hood();
       shooter = new Shooter();
       intake = new Intake();
     }
 
-    // hood.setDefaultCommand(new HoodNTControl(hood));
+    hood.setDefaultCommand(new HoodNTControl(hood));
 
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
@@ -81,7 +80,7 @@ public class RobotContainer {
     // sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
     // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
     // sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine(), hood::forwardSysIdLimit, hood::reverseSysIdLimit);
-    sysidPicker.addSysidRoutines("Feeder", spindexer.getFeederSysidRoutine());
+    // sysidPicker.addSysidRoutines("Feeder", spindexer.getFeederSysidRoutine());
 
     // hood.setDefaultCommand(hood.run(() -> {
     //   hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));
@@ -109,8 +108,8 @@ public class RobotContainer {
 
     // voltage numbers are completely arbitrary ngl i just picked things
     Controllers.driverController.getABtn().whileTrue(shooter.run(()->{
-      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(-4000));
-      shooter.setKickerVelocity(Units.rotationsPerMinuteToRadiansPerSecond(4000));
+      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(-2600));
+      shooter.setKickerVelocity(Units.rotationsPerMinuteToRadiansPerSecond(2600));
     }).finallyDo(()->{
       shooter.setFlywheelVoltage(0);
       shooter.setKickerVoltage(0);
@@ -126,16 +125,16 @@ public class RobotContainer {
     //       Rotation2d.kZero.getMeasure(), Inches.of(22));
     // }, shooter));
 
-    // Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
-    // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
-    Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
+    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
+    Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
+    Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(8);}, ()->{intake.setIntakeVoltage(0);}));
 
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageMainSpinner(-12);
     }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
 
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-      spindexer.setFeederSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4000));
+      spindexer.setFeederSpeed(Units.rotationsPerMinuteToRadiansPerSecond(6200));
     }));
 
     Controllers.driverController.getXBtn().whileFalse(Commands.run(() -> {
@@ -152,7 +151,7 @@ public class RobotContainer {
       // spindexer.setVoltageFeeder(0);
     }));
 
-    Controllers.driverController.getPovUp().onTrue(hood.hoodHome(-2));
+    // Controllers.driverController.getPovUp().onTrue(hood.hoodHome(-2));
     Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
       intake.setDeployVoltage(2);
     }).finallyDo(() ->{intake.setDeployVoltage(0);}));

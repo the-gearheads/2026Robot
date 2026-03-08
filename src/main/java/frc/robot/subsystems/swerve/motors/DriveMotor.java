@@ -104,7 +104,7 @@ public class DriveMotor {
     config.encoder.quadratureMeasurementPeriod(10);
     config.encoder.quadratureAverageDepth(2);  // subject to change
 
-    config.closedLoop.p((DRIVE_PID[0] / 12.0) * DRIVE_VEL_FACTOR);
+    config.closedLoop.p((DRIVE_PID[0] / 12.0));
     config.closedLoop.i(0);
     config.closedLoop.d(0);
 
