@@ -6,6 +6,7 @@ import static frc.robot.constants.ShooterConstants.HOOD_POS_FACTOR;
 import static frc.robot.constants.ShooterConstants.HOOD_VEL_FACTOR;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
@@ -25,6 +26,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,6 +39,7 @@ public class Hood extends SubsystemBase {
     SparkClosedLoopController hoodController = hood.getClosedLoopController();
     SparkFlexConfig hoodConfig = new SparkFlexConfig();
     RelativeEncoder hoodEncoder = hood.getEncoder();
+    TrapezoidProfile profile = new TrapezoidProfile(null);
 
     Rotation2d goalAngle = Rotation2d.kZero;
     boolean profiling = false;
@@ -61,11 +64,13 @@ public class Hood extends SubsystemBase {
         hoodConfig.inverted(false);
         hoodConfig.idleMode(IdleMode.kBrake);
         hoodConfig.voltageCompensation(12);
-        hoodConfig.closedLoop.pid(HOOD_PID[0], HOOD_PID[1], HOOD_PID[2], ClosedLoopSlot.kSlot0);
+        hoodConfig.closedLoop.pid(HOOD_PID[0] / 12.0, HOOD_PID[1] / 12.0, HOOD_PID[2] / 12.0, ClosedLoopSlot.kSlot0);
         // hoodConfig.closedLoop.feedForward.kS(HOOD_FEEDFORWARD.getKs(), ClosedLoopSlot.kSlot0);
         // hoodConfig.closedLoop.feedForward.kV(HOOD_FEEDFORWARD.getKv(), ClosedLoopSlot.kSlot0);
         // hoodConfig.closedLoop.feedForward.kA(HOOD_FEEDFORWARD.getKa(), ClosedLoopSlot.kSlot0);
         // hoodConfig.closedLoop.feedForward.kG(HOOD_FEEDFORWARD.getKg(), ClosedLoopSlot.kSlot0);
+        // hoodConfig.closedLoop.feedForward.kCos(HOOD_FEEDFORWARD.getKg(), ClosedLoopSlot.kSlot0);
+        // hoodConfig.closedLoop.feedForward.kCosRatio(idek);
         hoodConfig.closedLoop.outputRange(-1, 1);
 
         hoodConfig.encoder.positionConversionFactor(HOOD_POS_FACTOR);  
@@ -77,14 +82,15 @@ public class Hood extends SubsystemBase {
 
     public void setVoltage(double volts){
         hoodController.setSetpoint(volts, ControlType.kVoltage, ClosedLoopSlot.kSlot0);
-    }
+    }                                                                       
     
     public void setVoltage(Voltage volts){
         setVoltage(volts.magnitude());
     }
 
     public void setAngle(Rotation2d angle) {
-        hoodController.setSetpoint(angle.getRadians(), ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        double ff = HOOD_FEEDFORWARD.calculate(angle.getRadians(), 0);
+        hoodController.setSetpoint(angle.getRadians(), ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
     }
 
     @AutoLogOutput
@@ -116,8 +122,8 @@ public class Hood extends SubsystemBase {
         return run(() -> setVoltage(volts)).finallyDo(() -> setVoltage(0));
     }
 
-    public Command hoodHome (double volts){
-        return run(() -> setVoltage(volts)).withTimeout(2);
+    public Command hoodHome (){
+        return runEnd(() -> setVoltage(-2), ()->{hoodEncoder.setPosition(0);}).withTimeout(2);
     }
 
     public SysIdRoutine getSysIdRoutine() {

@@ -58,7 +58,7 @@ public class Shooter extends SubsystemBase{
     mainFlyConfig.inverted(false);
     mainFlyConfig.idleMode(IdleMode.kCoast);
     mainFlyConfig.disableVoltageCompensation();
-    mainFlyConfig.closedLoop.pid(FLYWHEEL_PID[0], FLYWHEEL_PID[1], FLYWHEEL_PID[2]);
+    mainFlyConfig.closedLoop.pid(FLYWHEEL_PID[0] / 12.0, FLYWHEEL_PID[1] / 12.0, FLYWHEEL_PID[2] / 12.0);
     mainFlyConfig.closedLoop.feedForward.kS(FLYWHEEL_FEEDFORWARD.getKs());
     mainFlyConfig.closedLoop.feedForward.kV(FLYWHEEL_FEEDFORWARD.getKv());
     mainFlyConfig.closedLoop.feedForward.kA(FLYWHEEL_FEEDFORWARD.getKa());
@@ -86,7 +86,7 @@ public class Shooter extends SubsystemBase{
     kickerConfig.inverted(false);
     kickerConfig.idleMode(IdleMode.kCoast);
     kickerConfig.disableVoltageCompensation();
-    kickerConfig.closedLoop.pid(KICKER_PID[0], KICKER_PID[1], KICKER_PID[2]);
+    kickerConfig.closedLoop.pid(KICKER_PID[0] / 12.0, KICKER_PID[1] / 12.0, KICKER_PID[2] / 12.0);
     kickerConfig.closedLoop.feedForward.kS(KICKER_FEEDFORWARD.getKs());
     kickerConfig.closedLoop.feedForward.kV(KICKER_FEEDFORWARD.getKv());
     kickerConfig.closedLoop.feedForward.kA(KICKER_FEEDFORWARD.getKa());

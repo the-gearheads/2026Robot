@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.encoder.SplineEncoder;
 import com.revrobotics.encoder.config.DetachedEncoderConfig;
@@ -38,7 +39,9 @@ public class Intake extends SubsystemBase {
     public SparkFlexConfig deployConfig = new SparkFlexConfig();
 
     public SparkMax intake = new SparkMax(INTAKE_ID, MotorType.kBrushless);  // neo 2.0
+    public RelativeEncoder intakEncoder = intake.getEncoder();
     public SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    public SparkClosedLoopController intakeController = intake.getClosedLoopController();
 
     public Intake() {
         configure();
@@ -76,6 +79,12 @@ public class Intake extends SubsystemBase {
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
         deployConfig.closedLoop.i(DEPLOY_PID[1]);
         deployConfig.closedLoop.d(DEPLOY_PID[2]);
+
+        intakeConfig.closedLoop.feedForward.kA(INTAKE_FEEDFORWARD.getKa());
+        intakeConfig.closedLoop.feedForward.kV(INTAKE_FEEDFORWARD.getKv());
+        intakeConfig.closedLoop.feedForward.kS(INTAKE_FEEDFORWARD.getKs());
+
+        intakeConfig.closedLoop.pid(INTAKE_PID[0]/12.0, INTAKE_PID[1]/12.0, INTAKE_PID[2]/12.0);
 
         deploy.configure(deployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -135,6 +144,14 @@ public class Intake extends SubsystemBase {
         return intake.get() * intake.getBusVoltage();
     }    
 
+    public double getIntakeVelocity() {
+        return intakEncoder.getVelocity();
+    }
+
+    public void setIntakeVelocity(double velocity) {
+        intakeController.setSetpoint(velocity, ControlType.kVelocity);
+    } 
+
     public Command shimmy() {
         return this.run(() -> {
 
@@ -146,7 +163,7 @@ public class Intake extends SubsystemBase {
                 setAngle(DEPLOY_MIN_ANGLE);
             }
 
-            setIntakeVoltage(12);
+            setIntakeVelocity(INTAKE_VELOCITY);
         }).finallyDo(this::stopIntake);
     }
 
