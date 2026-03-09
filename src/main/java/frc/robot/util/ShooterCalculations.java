@@ -114,4 +114,10 @@ public class ShooterCalculations {
         }
         return scaryZones;
     }
+
+    // see https://gemini.google.com/share/e8d7da86ce5d for explanation, returns motor velocity to get kicker to proportional speed as flywheel; keep in mind flywheel is geared up.
+    public static double getKickerSpeed(double flywheelSpeed) {
+        double kickerSpeed = flywheelSpeed * ShooterConstants.KICKER_SURFACE_SPEED_RATIO * (ShooterConstants.EFFECTIVE_FLYWHEEL_DIAMETER / ShooterConstants.EFFECTIVE_KICKER_DIAMETER);
+        return kickerSpeed;
+    }
 }

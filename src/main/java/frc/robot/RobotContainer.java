@@ -99,11 +99,9 @@ public class RobotContainer {
 
     // voltage numbers are completely arbitrary ngl i just picked things
     Controllers.driverController.getABtn().whileTrue(shooter.run(()->{
-      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(-2600));
-      shooter.setKickerVelocity(Units.rotationsPerMinuteToRadiansPerSecond(2600));
+      shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(2000));
     }).finallyDo(()->{
-      shooter.setFlywheelVoltage(0);
-      shooter.setKickerVoltage(0);
+      shooter.setShooterVelocity(0);
     }));
 
     // Controllers.driverController.getLeftPaddle().whileTrue(hood.run(()->{

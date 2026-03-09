@@ -23,37 +23,37 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
+import frc.robot.util.ShooterCalculations;
 
+public class Shooter extends SubsystemBase {
 
-public class Shooter extends SubsystemBase{
-    
-    SparkFlex mainFly = new SparkFlex(MAIN_FLY_ID, MotorType.kBrushless);
-    SparkClosedLoopController flywheelController = mainFly.getClosedLoopController();
-    SparkFlexConfig mainFlyConfig = new SparkFlexConfig();
-    RelativeEncoder flywheelEncoder = mainFly.getEncoder(); 
-    
-    SparkFlex followerFly = new SparkFlex(FOLLOWER_FLY_ID, MotorType.kBrushless);
-    SparkFlexConfig followerFlyConfig = new SparkFlexConfig();
+  SparkFlex mainFly = new SparkFlex(MAIN_FLY_ID, MotorType.kBrushless);
+  SparkClosedLoopController flywheelController = mainFly.getClosedLoopController();
+  SparkFlexConfig mainFlyConfig = new SparkFlexConfig();
+  RelativeEncoder flywheelEncoder = mainFly.getEncoder();
 
-    SparkFlex kicker = new SparkFlex(KICKER_ID, MotorType.kBrushless);
-    SparkClosedLoopController kickerController = kicker.getClosedLoopController();
-    SparkFlexConfig kickerConfig = new SparkFlexConfig();
-    RelativeEncoder kickerEncoder = kicker.getEncoder();
+  SparkFlex followerFly = new SparkFlex(FOLLOWER_FLY_ID, MotorType.kBrushless);
+  SparkFlexConfig followerFlyConfig = new SparkFlexConfig();
 
-   public Shooter() {
+  SparkFlex kicker = new SparkFlex(KICKER_ID, MotorType.kBrushless);
+  SparkClosedLoopController kickerController = kicker.getClosedLoopController();
+  SparkFlexConfig kickerConfig = new SparkFlexConfig();
+  RelativeEncoder kickerEncoder = kicker.getEncoder();
+
+  public Shooter() {
     configure();
-   }
-   
-   @Override
-   public void periodic(){
-    
-   }
+  }
 
-   public void configure() {
+  @Override
+  public void periodic() {
+
+  }
+
+  public void configure() {
     mainFly.setCANTimeout(10);
     followerFly.setCANTimeout(10);
     kicker.setCANTimeout(10);
-    
+
     mainFlyConfig.smartCurrentLimit(80);
     mainFlyConfig.inverted(true);
     mainFlyConfig.idleMode(IdleMode.kCoast);
@@ -69,13 +69,13 @@ public class Shooter extends SubsystemBase{
     mainFlyConfig.signals.primaryEncoderVelocityPeriodMs(5);
     followerFlyConfig.signals.primaryEncoderVelocityPeriodMs(5);
     kickerConfig.signals.primaryEncoderVelocityPeriodMs(5);
-    
+
     mainFlyConfig.encoder.quadratureMeasurementPeriod(10);
-    mainFlyConfig.encoder.quadratureAverageDepth(2);  // subject to change
+    mainFlyConfig.encoder.quadratureAverageDepth(2); // subject to change
     followerFlyConfig.encoder.quadratureMeasurementPeriod(10);
-    followerFlyConfig.encoder.quadratureAverageDepth(2);  // subject to change
+    followerFlyConfig.encoder.quadratureAverageDepth(2); // subject to change
     kickerConfig.encoder.quadratureMeasurementPeriod(10);
-    kickerConfig.encoder.quadratureAverageDepth(2);  // subject to change
+    kickerConfig.encoder.quadratureAverageDepth(2); // subject to change
 
     followerFlyConfig.smartCurrentLimit(80);
     followerFlyConfig.idleMode(IdleMode.kCoast);
@@ -101,90 +101,99 @@ public class Shooter extends SubsystemBase{
     mainFly.configure(mainFlyConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     followerFly.configure(followerFlyConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-   }
+  }
 
-   public void setFlywheelVoltage(double volts) {
+  public void setFlywheelVoltage(double volts) {
     flywheelController.setSetpoint(volts, ControlType.kVoltage);
-   }
-   
-   public void setFlywheelVoltage(Voltage volts) {
+  }
+
+  public void setFlywheelVoltage(Voltage volts) {
     setFlywheelVoltage(volts.magnitude());
-   }
-   
-   public void setKickerVoltage(double volts){
+  }
+
+  public void setKickerVoltage(double volts) {
     kickerController.setSetpoint(volts, ControlType.kVoltage);
-   }
+  }
 
-   public void setKickerVoltage(Voltage volts) {
+  public void setKickerVoltage(Voltage volts) {
     setKickerVoltage(volts.magnitude());
-   }
+  }
 
-   @AutoLogOutput
-   public ControlType getKickerControlType() {
+  @AutoLogOutput
+  public ControlType getKickerControlType() {
     return kickerController.getControlType();
-   }
-   
-   @AutoLogOutput
-   public ControlType getFlywheelControlType(){
+  }
+
+  @AutoLogOutput
+  public ControlType getFlywheelControlType() {
     return flywheelController.getControlType();
-   }
+  }
 
-   public void setFlywheelVelocity(double velocity) {
+  public void setShooterVelocity(double velocity) {
+    setFlywheelVelocity(velocity);
+    setKickerVelocity(ShooterCalculations.getKickerSpeed(velocity));
+  }
+
+  public void setFlywheelVelocity(double velocity) {
     flywheelController.setSetpoint(velocity, ControlType.kVelocity);
-   }
+  }
 
-   public void setKickerVelocity(double velocity){
+  public void setKickerVelocity(double velocity) {
     kickerController.setSetpoint(velocity, ControlType.kVelocity);
-   }
+  }
 
-   @AutoLogOutput
-   public double getKickerVelocityRadPerSec() {
+  @AutoLogOutput
+  public double getKickerVelocityRadPerSec() {
     return kickerEncoder.getVelocity();
-   }
+  }
 
-   @AutoLogOutput
-   public double getKickerSetpoint() {
+  @AutoLogOutput
+  public double getKickerSetpoint() {
     return kickerController.getSetpoint();
-   }
+  }
 
-   @AutoLogOutput
-   public double getFlywheelVelocityRadPerSec() {
+  @AutoLogOutput
+  public double getFlywheelVelocityRadPerSec() {
     return flywheelEncoder.getVelocity();
-   }
+  }
 
-   @AutoLogOutput
-   public double getFlywheelSetpoint() {
+  @AutoLogOutput
+  public double getFlywheelSetpoint() {
     return flywheelController.getSetpoint();
-   }
+  }
 
-   @AutoLogOutput
-   public double getFlywheelCurrent() {
+  @AutoLogOutput
+  public double getFlywheelCurrent() {
     return mainFly.getOutputCurrent();
-   }
+  }
 
-   @AutoLogOutput
-   public double getKickerCurrent() {
+  @AutoLogOutput
+  public double getKickerCurrent() {
     return kicker.getOutputCurrent();
-   }
+  }
 
-   public Command runShooter(double volts){
+  public Command manualShooter(double volts) {
     return this.run(() -> {
-        setKickerVoltage(volts);
-        setFlywheelVoltage(-volts);
+      setKickerVoltage(volts);
+      setFlywheelVoltage(-volts);
     }).finallyDo(() -> {
-        setKickerVoltage(0);
-        setFlywheelVoltage(0);
+      setKickerVoltage(0);
+      setFlywheelVoltage(0);
     });
-   }
+  }
 
-   public SysIdRoutine getMainFlySysidRoutine() {
-    return new SysIdRoutine(new Config(Volts.of(.5).per(Second), Volts.of(7), null, (state)->{Logger.recordOutput("Shooter/mainFlySysidTestState", state.toString());}),
+  public SysIdRoutine getMainFlySysidRoutine() {
+    return new SysIdRoutine(new Config(Volts.of(.5).per(Second), Volts.of(7), null, (state) -> {
+      Logger.recordOutput("Shooter/mainFlySysidTestState", state.toString());
+    }),
         new Mechanism(this::setFlywheelVoltage, null, this));
-   }
+  }
 
-   public SysIdRoutine getKickerSysidRoutine() {
-    return new SysIdRoutine(new Config(Volts.of(.5).per(Second), Volts.of(7), null, (state)->{Logger.recordOutput("Shooter/kickerSysidTestState", state.toString());}),
+  public SysIdRoutine getKickerSysidRoutine() {
+    return new SysIdRoutine(new Config(Volts.of(.5).per(Second), Volts.of(7), null, (state) -> {
+      Logger.recordOutput("Shooter/kickerSysidTestState", state.toString());
+    }),
         new Mechanism(this::setKickerVoltage, null, this));
-   }
-   
+  }
+
 }
