@@ -14,9 +14,9 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 
 public class Climber extends SubsystemBase {
-    public SparkFlex climber = new SparkFlex(60,MotorType.kBrushless);
-    public RelativeEncoder climbEncoder = climber.getEncoder();
-    public SparkFlexConfig climbConfig = new SparkFlexConfig();
+    SparkFlex climber = new SparkFlex(60,MotorType.kBrushless);
+    RelativeEncoder climbEncoder = climber.getEncoder();
+    SparkFlexConfig climbConfig = new SparkFlexConfig();
 
     public Climber() {
         configure();
