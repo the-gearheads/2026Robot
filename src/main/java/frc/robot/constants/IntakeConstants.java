@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 public class IntakeConstants {
@@ -12,6 +13,11 @@ public class IntakeConstants {
     public static final int DEPLOY_CURRENT_LIMIT = 40;
 
     public static final double[] DEPLOY_PID = {1.2, 0, 0};
+    public static final Constraints DEPLOY_CONSTRAINTS = new Constraints(
+        Units.degreesToRadians(100), // per second; max vel
+        Units.degreesToRadians(50)  //  per sec^2; max accel
+    );
+
 
     public static final double[] INTAKE_PID = {0, 0, 0};
     public static final SimpleMotorFeedforward INTAKE_FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);

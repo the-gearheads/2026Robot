@@ -6,6 +6,7 @@ import static frc.robot.constants.ShooterConstants.HOOD_POS_FACTOR;
 import static frc.robot.constants.ShooterConstants.HOOD_VEL_FACTOR;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.constants.ShooterConstants.HOOD_CONSTRAINTS;
 import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
@@ -42,10 +43,7 @@ public class Hood extends SubsystemBase {
     SparkClosedLoopController hoodController = hood.getClosedLoopController();
     SparkFlexConfig hoodConfig = new SparkFlexConfig();
     RelativeEncoder hoodEncoder = hood.getEncoder();
-    TrapezoidProfile profile = new TrapezoidProfile(new Constraints(
-        Units.degreesToRadians(100), // per second; max vel
-        Units.degreesToRadians(50)  //  per sec^2; max accel
-    ));
+    TrapezoidProfile profile = new TrapezoidProfile(HOOD_CONSTRAINTS);
 
     public Hood() {
         configure();

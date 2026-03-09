@@ -32,16 +32,17 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
-    public SparkFlex deploy = new SparkFlex(DEPLOY_ID, MotorType.kBrushless);  // vortex
-    public SplineEncoder deployEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
-    public DetachedEncoderConfig deployEncoderConfig = new DetachedEncoderConfig();
-    public SparkClosedLoopController deployController = deploy.getClosedLoopController();
-    public SparkFlexConfig deployConfig = new SparkFlexConfig();
+    SparkFlex deploy = new SparkFlex(DEPLOY_ID, MotorType.kBrushless);  // vortex
+    SplineEncoder deployEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
+    DetachedEncoderConfig deployEncoderConfig = new DetachedEncoderConfig();
+    SparkClosedLoopController deployController = deploy.getClosedLoopController();
+    SparkFlexConfig deployConfig = new SparkFlexConfig();
 
-    public SparkMax intake = new SparkMax(INTAKE_ID, MotorType.kBrushless);  // neo 2.0
-    public RelativeEncoder intakEncoder = intake.getEncoder();
-    public SparkMaxConfig intakeConfig = new SparkMaxConfig();
-    public SparkClosedLoopController intakeController = intake.getClosedLoopController();
+    SparkMax intake = new SparkMax(INTAKE_ID, MotorType.kBrushless);  // neo 2.0
+    RelativeEncoder intakEncoder = intake.getEncoder();
+    SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    SparkClosedLoopController intakeController = intake.getClosedLoopController();
+
 
     public Intake() {
         configure();
@@ -73,9 +74,7 @@ public class Intake extends SubsystemBase {
         deployEncoderConfig.dutyCycleZeroCentered(true);
         deployEncoderConfig.dutyCycleOffset(DEPLOY_OFFSET);
 
-        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, DEPLOY_ENCODER_ID);
         // we prolly dont need ff
-        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid off of absolute encoder is technically bad but if it doesn't work we'll find out
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
         deployConfig.closedLoop.i(DEPLOY_PID[1]);
         deployConfig.closedLoop.d(DEPLOY_PID[2]);
@@ -117,6 +116,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setAngle(Rotation2d angle) {
+
         deployController.setSetpoint(angle.getRadians(), ControlType.kPosition);
     }
 
