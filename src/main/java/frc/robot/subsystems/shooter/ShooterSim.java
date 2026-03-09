@@ -2,8 +2,8 @@ package frc.robot.subsystems.shooter;
 
 
 
-import static frc.robot.constants.ShooterConstants.FLYWHEEL_GEAR_RATIO;
-import static frc.robot.constants.ShooterConstants.KICKER_GEAR_RATIO;
+import static frc.robot.constants.ShooterConstants.FLYWHEEL_FEEDFORWARD;
+import static frc.robot.constants.ShooterConstants.KICKER_FEEDFORWARD;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -25,7 +25,7 @@ public class ShooterSim extends Shooter {
     DCMotor flywheelGearbox = DCMotor.getNeoVortex(2);
     SparkFlexSim flywheelFlexSim = new SparkFlexSim(mainFly, flywheelGearbox);
     FlywheelSim flywheelSim = new FlywheelSim(
-            LinearSystemId.createFlywheelSystem(flywheelGearbox, 0.002, FLYWHEEL_GEAR_RATIO),
+            LinearSystemId.identifyVelocitySystem(FLYWHEEL_FEEDFORWARD.getKv(), FLYWHEEL_FEEDFORWARD.getKa()),
             // LinearSystemId.identifyVelocitySystem(0.04553, 0.0001929),
             // LinearSystemId.identifyVelocitySystem(FLYWHEEL_FEEDFORWARD.getKv(), FLYWHEEL_FEEDFORWARD.getKa()),
             flywheelGearbox, 0);
@@ -34,7 +34,7 @@ public class ShooterSim extends Shooter {
     DCMotor kickerGearbox = DCMotor.getNeoVortex(1);
     SparkFlexSim kickerFlexSim = new SparkFlexSim(kicker, kickerGearbox);
     FlywheelSim kickerSim = new FlywheelSim(
-            LinearSystemId.createFlywheelSystem(kickerGearbox, 0.002, KICKER_GEAR_RATIO),
+            LinearSystemId.identifyVelocitySystem(KICKER_FEEDFORWARD.getKv(), KICKER_FEEDFORWARD.getKa()),
             // LinearSystemId.identifyVelocitySystem(KICKER_FEEDFORWARD.getKv(), KICKER_FEEDFORWARD.getKa()),
             // LinearSystemId.identifyVelocitySystem(0.04553, 0.0001929),
             kickerGearbox, 0);

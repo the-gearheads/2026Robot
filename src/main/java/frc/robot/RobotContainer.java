@@ -20,6 +20,7 @@ import frc.robot.controllers.Controllers;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotController.RadioLEDState;
@@ -165,7 +166,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return sysidPicker.get();
+    // return sysidPicker.get();
+    return hood.run(()->{hood.setAngle(Rotation2d.fromDegrees(30));});
     // return intake.run(() -> {
     //   intake.setAngle(Rotation2d.fromDegrees(10));
     // });

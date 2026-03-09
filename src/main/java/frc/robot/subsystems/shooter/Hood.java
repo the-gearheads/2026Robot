@@ -27,6 +27,9 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,18 +42,18 @@ public class Hood extends SubsystemBase {
     SparkClosedLoopController hoodController = hood.getClosedLoopController();
     SparkFlexConfig hoodConfig = new SparkFlexConfig();
     RelativeEncoder hoodEncoder = hood.getEncoder();
-    TrapezoidProfile profile = new TrapezoidProfile(null);
+    TrapezoidProfile profile = new TrapezoidProfile(new Constraints(
+        Units.degreesToRadians(100), // per second; max vel
+        Units.degreesToRadians(50)  //  per sec^2; max accel
+    ));
 
-    Rotation2d goalAngle = Rotation2d.kZero;
-    boolean profiling = false;
     public Hood() {
         configure();
         hoodEncoder.setPosition(0);
     }
 
     @Override
-    public void periodic() {
-    }
+    public void periodic() {}
 
     
 
@@ -89,7 +92,10 @@ public class Hood extends SubsystemBase {
     }
 
     public void setAngle(Rotation2d angle) {
-        double ff = HOOD_FEEDFORWARD.calculate(angle.getRadians(), 0);
+        Logger.recordOutput("Hood/LastGoalAngle", angle);
+        State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getVelocity()), new State(angle.getRadians(), 0));
+        double ff = HOOD_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
+        Logger.recordOutput("Hood/ff", ff);
         hoodController.setSetpoint(angle.getRadians(), ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
     }
 
