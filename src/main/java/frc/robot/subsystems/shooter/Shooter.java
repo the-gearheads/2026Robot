@@ -55,7 +55,7 @@ public class Shooter extends SubsystemBase{
     kicker.setCANTimeout(10);
     
     mainFlyConfig.smartCurrentLimit(80);
-    mainFlyConfig.inverted(false);
+    mainFlyConfig.inverted(true);
     mainFlyConfig.idleMode(IdleMode.kCoast);
     mainFlyConfig.disableVoltageCompensation();
     mainFlyConfig.closedLoop.pid(FLYWHEEL_PID[0] / 12.0, FLYWHEEL_PID[1] / 12.0, FLYWHEEL_PID[2] / 12.0);

@@ -22,9 +22,9 @@ public class IntakeConstants {
     public static final double[] INTAKE_PID = {0, 0, 0};
     public static final SimpleMotorFeedforward INTAKE_FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
 
-    public static final float DEPLOY_POS_FACTOR = (float)(2 * Math.PI);
-    public static final float DEPLOY_VEL_FACTOR = (float)((2 * Math.PI) / 60.0);  // why tf does it want a float TODO: complain to rev
-    public static final float DEPLOY_OFFSET = (float)0.476;  // this must be in rotations
+    public static final float DEPLOY_ABS_ENC_POS_FACTOR = (float)(2 * Math.PI);
+    public static final float DEPLOY_ABS_ENC_VEL_FACTOR = (float)((2 * Math.PI) / 60.0);  // why tf does it want a float TODO: complain to rev
+    public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.476;  // this must be in rotations
 
     public static final double INTAKE_GEAR_RATIO = 1;
 

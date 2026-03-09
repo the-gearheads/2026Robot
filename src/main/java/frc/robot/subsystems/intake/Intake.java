@@ -24,6 +24,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,8 +59,8 @@ public class Intake extends SubsystemBase {
         deployConfig.encoder.quadratureMeasurementPeriod(10);
         deployConfig.encoder.quadratureAverageDepth(2); 
 
-        intakeConfig.encoder.quadratureMeasurementPeriod(64);
-        intakeConfig.encoder.quadratureAverageDepth(16); 
+        intakeConfig.encoder.quadratureMeasurementPeriod(10);
+        intakeConfig.encoder.quadratureAverageDepth(2); 
 
         deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
         intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
@@ -69,12 +70,12 @@ public class Intake extends SubsystemBase {
         intakeConfig.inverted(true);
         deployConfig.inverted(true);
 
-        deployEncoderConfig.positionConversionFactor(DEPLOY_POS_FACTOR);
-        deployEncoderConfig.angleConversionFactor(DEPLOY_POS_FACTOR);
-        deployEncoderConfig.velocityConversionFactor(DEPLOY_VEL_FACTOR);
+        deployEncoderConfig.positionConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
+        deployEncoderConfig.angleConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
+        deployEncoderConfig.velocityConversionFactor(DEPLOY_ABS_ENC_VEL_FACTOR);
         deployEncoderConfig.inverted(true);
         deployEncoderConfig.dutyCycleZeroCentered(true);
-        deployEncoderConfig.dutyCycleOffset(DEPLOY_OFFSET);
+        deployEncoderConfig.dutyCycleOffset(DEPLOY_ABS_ENC_OFFSET);
 
         // we prolly dont need ff
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
@@ -118,8 +119,12 @@ public class Intake extends SubsystemBase {
     }
 
     public void setAngle(Rotation2d angle) {
+        Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
+        State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getRelativeDeployVelocity()), new State(angle.getRadians(), 0));
+        double ff = INTAKE_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
+        Logger.recordOutput("Intake/Deployff", ff);
 
-        deployController.setSetpoint(angle.getRadians(), ControlType.kPosition);
+        deployController.setSetpoint(setpoint.position, ControlType.kPosition);
     }
 
     @AutoLogOutput

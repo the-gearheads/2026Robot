@@ -143,13 +143,13 @@ public class RobotContainer {
     }));
     
     Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
-      // shooter.setKickerVoltage(-6);
+      shooter.setKickerVoltage(-6);
       shooter.setFlywheelVoltage(6);
-      // spindexer.setVoltageFeeder(-6);
+      spindexer.setVoltageFeeder(-6);
     }).finallyDo(() -> {
-      // shooter.setKickerVoltage(0);
+      shooter.setKickerVoltage(0);
       shooter.setFlywheelVoltage(0);
-      // spindexer.setVoltageFeeder(0);
+      spindexer.setVoltageFeeder(0);
     }));
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
@@ -166,8 +166,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return sysidPicker.get();
-    return hood.run(()->{hood.setAngle(Rotation2d.fromDegrees(30));});
+    return sysidPicker.get();
+    // return hood.run(()->{hood.setAngle(Rotation2d.fromDegrees(30));});
     // return intake.run(() -> {
     //   intake.setAngle(Rotation2d.fromDegrees(10));
     // });
