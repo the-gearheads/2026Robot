@@ -39,6 +39,7 @@ import frc.robot.subsystems.swerve.gyro.Gyro;
 import frc.robot.subsystems.swerve.gyro.GyroRedux;
 import frc.robot.subsystems.swerve.gyro.GyroSim;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.util.ShooterCalculations;
 
 public class Swerve extends SubsystemBase {
 
@@ -113,6 +114,9 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
+    ShooterCalculations.getTrenchAvoidanceRectanlges(getPose(), getFieldRelativeSpeeds());
+
+
     double rotationSpeed = getRobotRelativeSpeeds().omegaRadiansPerSecond;
     if(gyro instanceof GyroSim) {
       ((GyroSim) gyro).setVelocityYaw(rotationSpeed);
