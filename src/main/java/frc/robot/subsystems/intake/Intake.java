@@ -23,6 +23,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,6 +44,7 @@ public class Intake extends SubsystemBase {
     SparkMaxConfig intakeConfig = new SparkMaxConfig();
     SparkClosedLoopController intakeController = intake.getClosedLoopController();
 
+    TrapezoidProfile profile = new TrapezoidProfile(DEPLOY_CONSTRAINTS);
 
     public Intake() {
         configure();

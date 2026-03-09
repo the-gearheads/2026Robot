@@ -94,7 +94,7 @@ public class Hood extends SubsystemBase {
         State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getVelocity()), new State(angle.getRadians(), 0));
         double ff = HOOD_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
         Logger.recordOutput("Hood/ff", ff);
-        hoodController.setSetpoint(angle.getRadians(), ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
+        hoodController.setSetpoint(setpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
     }
 
     @AutoLogOutput
