@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.intake.Deploy;
+import frc.robot.subsystems.intake.DeploySim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSim;
 import frc.robot.subsystems.shooter.Hood;
@@ -13,16 +15,14 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
 import frc.robot.controllers.Controllers;
 
-import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.RobotController.RadioLEDState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -35,6 +35,7 @@ public class RobotContainer {
   private final Hood hood;
   private final Shooter shooter;
   private final Intake intake;
+  private final Deploy deploy;
 
   public static final boolean deathMode = true;
 
@@ -43,16 +44,6 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    if(deathMode) {
-      Commands.repeatingSequence(
-        Commands.runOnce(()->{RobotController.setRadioLEDState(RadioLEDState.kRed);}),
-        Commands.waitSeconds(0.3),
-        Commands.runOnce(()->{RobotController.setRadioLEDState(RadioLEDState.kOrange);}),
-        Commands.waitSeconds(0.3)
-      ).schedule();
-    }
-
     sysidPicker = new SysidAutoPicker();
 
     swerve = new Swerve();
@@ -63,12 +54,14 @@ public class RobotContainer {
       hood = new HoodSim();
       shooter = new ShooterSim();
       intake = new IntakeSim();
+      deploy = new DeploySim();
       // configureFuelSim();
     } else {
       spindexer = new Spindexer();
       hood = new Hood();
       shooter = new Shooter();
       intake = new Intake();
+      deploy = new Deploy();
     }
 
     // hood.setDefaultCommand(new HoodNTControl(hood));
@@ -79,7 +72,7 @@ public class RobotContainer {
 
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
-    sysidPicker.addSysidRoutines("Intake Deploy", intake.getDeploySysid(), intake::getForwardSysidLimit, intake::getBackwardSysidLimit);
+    sysidPicker.addSysidRoutines("Intake Deploy", deploy.getDeploySysid(), deploy::getForwardSysidLimit, deploy::getBackwardSysidLimit);
     // // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
     // sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
     // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
@@ -155,13 +148,13 @@ public class RobotContainer {
       // spindexer.setVoltageFeeder(0);
     }));
 
-    Controllers.driverController.getPovUp().onTrue(hood.hoodHome(-2));
+    Controllers.driverController.getPovUp().onTrue(hood.hoodHome());
     Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
-      intake.setDeployVoltage(2);
-    }).finallyDo(() ->{intake.setDeployVoltage(0);}));
+      deploy.setDeployVoltage(2);
+    }).finallyDo(() ->{deploy.setDeployVoltage(0);}));
     Controllers.driverController.getBBtn().whileTrue(Commands.run(() -> {
-      intake.setDeployVoltage(-2);
-    }).finallyDo(() ->{intake.setDeployVoltage(0);}));
+      deploy.setDeployVoltage(-2);
+    }).finallyDo(() ->{deploy.setDeployVoltage(0);}));
 
     // Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
     //   spindexer.setVoltageFeeder(12);
