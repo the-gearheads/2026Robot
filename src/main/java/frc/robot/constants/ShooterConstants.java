@@ -52,7 +52,7 @@ public class ShooterConstants {
 
     public static final double HOOD_LENGTH_METERS = Units.inchesToMeters(8.07); // placeholder; from pivot point to out edge, for sim
     public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);  // hood 0 is 7.5 deg up
-    public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(50);
+    public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(47);
 
     public static final double HOOD_MIN_SYSID_ANGLE = Units.degreesToRadians(5);  // more conservative so sysid doesn't break anything
     public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(45);
