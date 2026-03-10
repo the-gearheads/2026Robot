@@ -4,6 +4,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -30,10 +31,10 @@ public class VisionConstants {
 
     public static final PoseStrategy[] INITIAL_CAMERA_STRATEGIES = {PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR};
     public static final Transform3d[] CAMERA_TRANSFORMS = {
-        new Transform3d(),
-        new Transform3d(),
-        new Transform3d(),
-        new Transform3d()
+        new Transform3d(Units.inchesToMeters(-13.934), Units.inchesToMeters(11.52), Units.inchesToMeters(9.0), new Rotation3d(0, 23*Math.PI/12 , Math.PI)), //pearl2? back?
+        new Transform3d(Units.inchesToMeters(-13.958), Units.inchesToMeters(-11.576), Units.inchesToMeters(9.25), new Rotation3d(0, 23*Math.PI/12 , 13*Math.PI/9)), //cthulu? right side?
+        new Transform3d(Units.inchesToMeters(14.19), Units.inchesToMeters(-11.536), Units.inchesToMeters(9.0), new Rotation3d(0, 17*Math.PI/9,0)), //allan? //front?
+        new Transform3d(Units.inchesToMeters(13.887), Units.inchesToMeters(11.6), Units.inchesToMeters(9.25), new Rotation3d(0, 35*Math.PI/18, 4*Math.PI/9)) //annie? left side?
     };
 
     // maybe intrinsics in here sometime
