@@ -38,7 +38,7 @@ public class Intake extends SubsystemBase {
     SplineEncoder deployEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
     RelativeEncoder deployRelativeEncoder = deploy.getEncoder();
     EncoderConfig deployRelativeEncoderConfig = new EncoderConfig();
-    DetachedEncoderConfig deployEncoderConfig = new DetachedEncoderConfig();
+    DetachedEncoderConfig deployAbsEncoderConfig = new DetachedEncoderConfig();
     SparkClosedLoopController deployController = deploy.getClosedLoopController();
     SparkFlexConfig deployConfig = new SparkFlexConfig();
 
@@ -55,9 +55,6 @@ public class Intake extends SubsystemBase {
     }
 
     public void configure() {
-        intake.setCANTimeout(10);
-        deploy.setCANTimeout(10);
-
         deployConfig.encoder.quadratureMeasurementPeriod(10);
         deployConfig.encoder.quadratureAverageDepth(2); 
 
@@ -74,12 +71,15 @@ public class Intake extends SubsystemBase {
         intakeConfig.inverted(true);
         deployConfig.inverted(true);
 
-        deployEncoderConfig.positionConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
-        deployEncoderConfig.angleConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
-        deployEncoderConfig.velocityConversionFactor(DEPLOY_ABS_ENC_VEL_FACTOR);
-        deployEncoderConfig.inverted(true);
-        deployEncoderConfig.dutyCycleZeroCentered(true);
-        deployEncoderConfig.dutyCycleOffset(DEPLOY_ABS_ENC_OFFSET);
+        deployAbsEncoderConfig.positionConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
+        deployAbsEncoderConfig.angleConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
+        deployAbsEncoderConfig.velocityConversionFactor(DEPLOY_ABS_ENC_VEL_FACTOR);
+        deployAbsEncoderConfig.inverted(true);
+        deployAbsEncoderConfig.dutyCycleZeroCentered(true);
+        deployAbsEncoderConfig.dutyCycleOffset(DEPLOY_ABS_ENC_OFFSET);
+
+        deployConfig.encoder.positionConversionFactor(DEPLOY_POS_FACTOR);
+        deployConfig.encoder.velocityConversionFactor(DEPLOY_VEL_FACTOR);
 
         // we prolly dont need ff
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
@@ -94,17 +94,15 @@ public class Intake extends SubsystemBase {
 
         deploy.configure(deployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        deployEncoder.configure(deployEncoderConfig, ResetMode.kResetSafeParameters);
+        deployEncoder.configure(deployAbsEncoderConfig, ResetMode.kResetSafeParameters);
                 
-        intake.setCANTimeout(0);
-        deploy.setCANTimeout(0);
     }
 
     public void setIntakeVoltage(Voltage volts) {
         intake.setVoltage(volts);
     }
 
-       public void setIntakeVoltage(double volts) {
+    public void setIntakeVoltage(double volts) {
         deployController.setSetpoint(volts, ControlType.kVoltage);
     }
 

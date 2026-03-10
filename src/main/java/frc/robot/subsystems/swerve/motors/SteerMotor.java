@@ -97,7 +97,6 @@ public class SteerMotor {
   }
   
   public void configure() {
-    max.setCANTimeout(10); 
     config.smartCurrentLimit(STEER_CURRENT_LIMIT);
     config.idleMode(IdleMode.kBrake);
 
@@ -124,7 +123,6 @@ public class SteerMotor {
     config.signals.absoluteEncoderVelocityPeriodMs(20);
 
     max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-    max.setCANTimeout(0);
   }
 
   public void setBrakeCoast(boolean willBrake) {

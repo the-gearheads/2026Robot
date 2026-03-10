@@ -38,11 +38,7 @@ public class Spindexer extends SubsystemBase {
         configure();
     }
 
-    public void configure()
-    {
-        mainSpinner.setCANTimeout(10);
-        feeder.setCANTimeout(10);
-
+    public void configure() {
         mainSpinnerConfig.smartCurrentLimit(SpindexerConstants.SPINNER_CURRENT_LIMIT);
         feederConfig.smartCurrentLimit(SpindexerConstants.FEEDER_CURRENT_LIMIT);
         mainSpinnerConfig.idleMode(IdleMode.kCoast);
@@ -61,9 +57,6 @@ public class Spindexer extends SubsystemBase {
                
         mainSpinner.configure(mainSpinnerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         feeder.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        mainSpinner.setCANTimeout(0);
-        feeder.setCANTimeout(0);
     }
 
     public void setVoltageMainSpinner(double voltage) {

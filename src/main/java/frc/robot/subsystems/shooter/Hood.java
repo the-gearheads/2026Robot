@@ -7,6 +7,7 @@ import static frc.robot.constants.ShooterConstants.HOOD_VEL_FACTOR;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.ShooterConstants.HOOD_CONSTRAINTS;
+import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
@@ -43,7 +44,8 @@ public class Hood extends SubsystemBase {
     TrapezoidProfile profile = new TrapezoidProfile(HOOD_CONSTRAINTS);
     Rotation2d targetAngle = new Rotation2d();
     TrapezoidProfile.State currentSetpoint;
-
+    
+    boolean isManualMode = false;
     public Hood() {
         configure();
         hoodEncoder.setPosition(0);
@@ -52,18 +54,20 @@ public class Hood extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // currentSetpoint = profile.calculate(0.02, currentSetpoint, new State(targetAngle.getRadians(), 0));
-        // Logger.recordOutput("Hood/currentSetpoint", currentSetpoint);
-        // double ff = HOOD_FEEDFORWARD.calculate(currentSetpoint.position, currentSetpoint.velocity);
-        // Logger.recordOutput("Hood/ff", ff);
-        // hoodController.setSetpoint(currentSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
+        if (!isManualMode) {
+            currentSetpoint = profile.calculate(0.02, currentSetpoint, new State(targetAngle.getRadians(), 0));
+            double ff = HOOD_FEEDFORWARD.calculate(currentSetpoint.position, currentSetpoint.velocity);
+            hoodController.setSetpoint(currentSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
+            Logger.recordOutput("Hood/ff", ff);
+            Logger.recordOutput("Hood/currentSetpoint", currentSetpoint);
+        } else {
+            currentSetpoint = new State(getAngle().getRadians(), getVelocity());
+        }
     }
 
     
 
     public void configure() {
-        hood.setCANTimeout(10);
-
         hoodConfig.encoder.quadratureMeasurementPeriod(10);
         hoodConfig.encoder.quadratureAverageDepth(2); 
         hoodConfig.smartCurrentLimit(65);
@@ -84,7 +88,6 @@ public class Hood extends SubsystemBase {
         hoodConfig.encoder.velocityConversionFactor(HOOD_VEL_FACTOR);
     
         hood.configure(hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        hood.setCANTimeout(0);
     }
 
     public void setVoltage(double volts){
