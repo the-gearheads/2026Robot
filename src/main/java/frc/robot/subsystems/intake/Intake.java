@@ -8,10 +8,10 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.encoder.SplineEncoder;
 import com.revrobotics.encoder.config.DetachedEncoderConfig;
-import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
@@ -22,6 +22,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,14 +33,18 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
-    public SparkFlex deploy = new SparkFlex(DEPLOY_ID, MotorType.kBrushless);  // vortex
-    public SplineEncoder deployEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
-    public DetachedEncoderConfig deployEncoderConfig = new DetachedEncoderConfig();
-    public SparkClosedLoopController deployController = deploy.getClosedLoopController();
-    public SparkFlexConfig deployConfig = new SparkFlexConfig();
+    SparkFlex deploy = new SparkFlex(DEPLOY_ID, MotorType.kBrushless);  // vortex
+    SplineEncoder deployEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
+    DetachedEncoderConfig deployEncoderConfig = new DetachedEncoderConfig();
+    SparkClosedLoopController deployController = deploy.getClosedLoopController();
+    SparkFlexConfig deployConfig = new SparkFlexConfig();
 
-    public SparkMax intake = new SparkMax(INTAKE_ID, MotorType.kBrushless);  // neo 2.0
-    public SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    SparkMax intake = new SparkMax(INTAKE_ID, MotorType.kBrushless);  // neo 2.0
+    RelativeEncoder intakEncoder = intake.getEncoder();
+    SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    SparkClosedLoopController intakeController = intake.getClosedLoopController();
+
+    TrapezoidProfile profile = new TrapezoidProfile(DEPLOY_CONSTRAINTS);
 
     public Intake() {
         configure();
@@ -52,8 +58,8 @@ public class Intake extends SubsystemBase {
         deployConfig.encoder.quadratureMeasurementPeriod(10);
         deployConfig.encoder.quadratureAverageDepth(2); 
 
-        intakeConfig.encoder.quadratureMeasurementPeriod(64);
-        intakeConfig.encoder.quadratureAverageDepth(16); 
+        intakeConfig.encoder.quadratureMeasurementPeriod(10);
+        intakeConfig.encoder.quadratureAverageDepth(2); 
 
         deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
         intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
@@ -63,19 +69,23 @@ public class Intake extends SubsystemBase {
         intakeConfig.inverted(true);
         deployConfig.inverted(true);
 
-        deployEncoderConfig.positionConversionFactor(DEPLOY_POS_FACTOR);
-        deployEncoderConfig.angleConversionFactor(DEPLOY_POS_FACTOR);
-        deployEncoderConfig.velocityConversionFactor(DEPLOY_VEL_FACTOR);
+        deployEncoderConfig.positionConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
+        deployEncoderConfig.angleConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
+        deployEncoderConfig.velocityConversionFactor(DEPLOY_ABS_ENC_VEL_FACTOR);
         deployEncoderConfig.inverted(true);
         deployEncoderConfig.dutyCycleZeroCentered(true);
-        deployEncoderConfig.dutyCycleOffset(DEPLOY_OFFSET);
+        deployEncoderConfig.dutyCycleOffset(DEPLOY_ABS_ENC_OFFSET);
 
-        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, DEPLOY_ENCODER_ID);
         // we prolly dont need ff
-        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);  // pid off of absolute encoder is technically bad but if it doesn't work we'll find out
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
         deployConfig.closedLoop.i(DEPLOY_PID[1]);
         deployConfig.closedLoop.d(DEPLOY_PID[2]);
+
+        intakeConfig.closedLoop.feedForward.kA(INTAKE_FEEDFORWARD.getKa());
+        intakeConfig.closedLoop.feedForward.kV(INTAKE_FEEDFORWARD.getKv());
+        intakeConfig.closedLoop.feedForward.kS(INTAKE_FEEDFORWARD.getKs());
+
+        intakeConfig.closedLoop.pid(INTAKE_PID[0]/12.0, INTAKE_PID[1]/12.0, INTAKE_PID[2]/12.0);
 
         deploy.configure(deployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -112,7 +122,12 @@ public class Intake extends SubsystemBase {
     }
 
     public void setAngle(Rotation2d angle) {
-        deployController.setSetpoint(angle.getRadians(), ControlType.kPosition);
+        Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
+        State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getRelativeDeployVelocity()), new State(angle.getRadians(), 0));
+        double ff = INTAKE_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
+        Logger.recordOutput("Intake/Deployff", ff);
+
+        deployController.setSetpoint(setpoint.position, ControlType.kPosition);
     }
 
     @AutoLogOutput
@@ -139,6 +154,14 @@ public class Intake extends SubsystemBase {
         return intake.get() * intake.getBusVoltage();
     }    
 
+    public double getIntakeVelocity() {
+        return intakEncoder.getVelocity();
+    }
+
+    public void setIntakeVelocity(double velocity) {
+        intakeController.setSetpoint(velocity, ControlType.kVelocity);
+    } 
+
     public Command shimmy() {
         return this.run(() -> {
 
@@ -150,7 +173,7 @@ public class Intake extends SubsystemBase {
                 setAngle(DEPLOY_MIN_ANGLE);
             }
 
-            setIntakeVoltage(12);
+            setIntakeVelocity(INTAKE_VELOCITY);
         }).finallyDo(this::stopIntake);
     }
 

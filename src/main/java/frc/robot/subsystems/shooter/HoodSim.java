@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_GEAR_RATIO;
 import static frc.robot.constants.ShooterConstants.HOOD_LENGTH_METERS;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_ANGLE;
@@ -19,10 +20,10 @@ public class HoodSim extends Hood {
     DCMotor hoodGearbox = DCMotor.getNeoVortex(1);
     SparkFlexSim flexSim = new SparkFlexSim(hood, hoodGearbox);
     SingleJointedArmSim armSim = new SingleJointedArmSim(
-        LinearSystemId.createSingleJointedArmSystem(hoodGearbox, 0.0109192049, HOOD_GEAR_RATIO),
+        LinearSystemId.identifyPositionSystem(HOOD_FEEDFORWARD.getKv(), HOOD_FEEDFORWARD.getKa()),
         // LinearSystemId.identifyPositionSystem(0.0069965, 0.022602),
         // LinearSystemId.identifyPositionSystem(HOOD_FEEDFORWARD.getKv(), HOOD_FEEDFORWARD.getKa()),
-        hoodGearbox, HOOD_GEAR_RATIO, HOOD_LENGTH_METERS, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE, false, 0);
+        hoodGearbox, HOOD_GEAR_RATIO, HOOD_LENGTH_METERS, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE, true, 0);
 
 
     public HoodSim() {

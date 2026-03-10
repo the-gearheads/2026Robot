@@ -31,19 +31,19 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.constants.VisionConstants;
 
 public class Camera {
-    public final String name;
-    public final String path;
+    final String name;
+    final String path;
 
-    public final Transform3d transform;
-    public final CameraIntrinsics simIntrinsics;
+    final Transform3d transform;
+    final CameraIntrinsics simIntrinsics;
+
+    final PhotonCamera camera;
+    final PhotonPoseEstimator estimator;
+
+    final double MAX_PITCHROLL = VisionConstants.MAX_PITCHROLL;
+    final double MAX_Z = VisionConstants.MAX_Z;        
+    final AprilTagFieldLayout field;
     
-    public final PhotonCamera camera;
-    public final PhotonPoseEstimator estimator;
-
-    private final double MAX_PITCHROLL = VisionConstants.MAX_PITCHROLL;
-    private final double MAX_Z = VisionConstants.MAX_Z;
-
-    private final AprilTagFieldLayout field;
     Supplier<Pose2d> robotPoseSupplier;
     
     public Camera(AprilTagFieldLayout field, String name, Transform3d transform, Supplier<Pose2d> robotPose, CameraIntrinsics intrinsics){

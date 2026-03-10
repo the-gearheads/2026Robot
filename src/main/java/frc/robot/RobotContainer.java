@@ -13,6 +13,7 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
 import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.controllers.Controllers;
@@ -21,8 +22,6 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.MiscConstants.isReal;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.RobotController.RadioLEDState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -43,16 +42,6 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    if(deathMode) {
-      Commands.repeatingSequence(
-        Commands.runOnce(()->{RobotController.setRadioLEDState(RadioLEDState.kRed);}),
-        Commands.waitSeconds(0.3),
-        Commands.runOnce(()->{RobotController.setRadioLEDState(RadioLEDState.kOrange);}),
-        Commands.waitSeconds(0.3)
-      ).schedule();
-    }
-
     sysidPicker = new SysidAutoPicker();
 
     swerve = new Swerve();
@@ -72,6 +61,8 @@ public class RobotContainer {
     }
 
     hood.setDefaultCommand(new HoodNTControl(hood));
+
+    ShooterCalculations.getTrenchAvoidanceRectanlges(swerve.getPose(), swerve.getFieldRelativeSpeeds());
 
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
@@ -108,11 +99,9 @@ public class RobotContainer {
 
     // voltage numbers are completely arbitrary ngl i just picked things
     Controllers.driverController.getABtn().whileTrue(shooter.run(()->{
-      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(-2600));
-      shooter.setKickerVelocity(Units.rotationsPerMinuteToRadiansPerSecond(2600));
+      shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(2000));
     }).finallyDo(()->{
-      shooter.setFlywheelVoltage(0);
-      shooter.setKickerVoltage(0);
+      shooter.setShooterVelocity(0);
     }));
 
     // Controllers.driverController.getLeftPaddle().whileTrue(hood.run(()->{
@@ -142,16 +131,16 @@ public class RobotContainer {
     }));
     
     Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
-      // shooter.setKickerVoltage(-6);
+      shooter.setKickerVoltage(-6);
       shooter.setFlywheelVoltage(6);
-      // spindexer.setVoltageFeeder(-6);
+      spindexer.setVoltageFeeder(-6);
     }).finallyDo(() -> {
-      // shooter.setKickerVoltage(0);
+      shooter.setKickerVoltage(0);
       shooter.setFlywheelVoltage(0);
-      // spindexer.setVoltageFeeder(0);
+      spindexer.setVoltageFeeder(0);
     }));
 
-    // Controllers.driverController.getPovUp().onTrue(hood.hoodHome(-2));
+    Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
     Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
       intake.setDeployVoltage(2);
     }).finallyDo(() ->{intake.setDeployVoltage(0);}));
@@ -166,6 +155,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return sysidPicker.get();
+    // return hood.run(()->{hood.setAngle(Rotation2d.fromDegrees(30));});
     // return intake.run(() -> {
     //   intake.setAngle(Rotation2d.fromDegrees(10));
     // });

@@ -1,6 +1,8 @@
 package frc.robot.constants;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 public class IntakeConstants {
@@ -11,10 +13,18 @@ public class IntakeConstants {
     public static final int DEPLOY_CURRENT_LIMIT = 40;
 
     public static final double[] DEPLOY_PID = {1.2, 0, 0};
+    public static final Constraints DEPLOY_CONSTRAINTS = new Constraints(
+        Units.degreesToRadians(100), // per second; max vel
+        Units.degreesToRadians(50)  //  per sec^2; max accel
+    );
 
-    public static final float DEPLOY_POS_FACTOR = (float)(2 * Math.PI);
-    public static final float DEPLOY_VEL_FACTOR = (float)((2 * Math.PI) / 60.0);  // why tf does it want a float TODO: complain to rev
-    public static final float DEPLOY_OFFSET = (float)0.476;  // this must be in rotations
+
+    public static final double[] INTAKE_PID = {0, 0, 0};
+    public static final SimpleMotorFeedforward INTAKE_FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
+
+    public static final float DEPLOY_ABS_ENC_POS_FACTOR = (float)(2 * Math.PI);
+    public static final float DEPLOY_ABS_ENC_VEL_FACTOR = (float)((2 * Math.PI) / 60.0);  // why tf does it want a float TODO: complain to rev
+    public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.476;  // this must be in rotations
 
     public static final double INTAKE_GEAR_RATIO = 1;
 
@@ -32,6 +42,8 @@ public class IntakeConstants {
     public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromRadians(0.002);
     public static final Rotation2d DEPLOY_SHIMMY_ANGLE = Rotation2d.fromDegrees(30);
     public static final double DEPLOY_SHIMMY_TOLERANCE = 2.5;
+
+    public static final double INTAKE_VELOCITY = 5250;
 
 
 }
