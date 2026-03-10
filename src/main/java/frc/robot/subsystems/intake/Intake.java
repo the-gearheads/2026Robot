@@ -54,6 +54,7 @@ public class Intake extends SubsystemBase {
     TrapezoidProfile profile = new TrapezoidProfile(DEPLOY_CONSTRAINTS);
     Rotation2d targetAngle;
     TrapezoidProfile.State profileSetpoint;
+    TrapezoidProfile.State lastSetpoint;
     
     @AutoLogOutput
     boolean isManualMode = false;
@@ -69,10 +70,12 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         if (DriverStation.isDisabled()) {
             deployRelativeEncoder.setPosition(deployEncoder.getAngle());
+            targetAngle = getAngle();
+            profileSetpoint = new State(getAngle().getRadians(), getRelativeDeployVelocity());
         }
 
         if (!isManualMode) {
-            profileSetpoint = profile.calculate(0.02, new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity()), new State(targetAngle.getRadians(), 0));
+            profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
             deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
             Logger.recordOutput("Intake/currentDeploySetpoint", profileSetpoint);
         } else {
@@ -131,7 +134,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeVoltage(double volts) {
-        deployController.setSetpoint(volts, ControlType.kVoltage);
+        intakeController.setSetpoint(volts, ControlType.kVoltage);
     }
 
     public void setDeployVoltage(double volts) {
