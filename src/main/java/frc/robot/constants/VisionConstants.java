@@ -62,7 +62,7 @@ public class VisionConstants {
 
     public static final Rectangle2d FIELD = new Rectangle2d(
         new Translation2d(0, 0),
-        new Translation2d(16.58, 8.11)  // vibed from choreo    
+        new Translation2d(FieldConstants.fieldLength, FieldConstants.fieldWidth)
     );
 
 }
