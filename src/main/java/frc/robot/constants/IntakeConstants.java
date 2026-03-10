@@ -31,10 +31,10 @@ public class IntakeConstants {
     public static final double DEPLOY_GEAR_RATIO = 60.0/1.0;  // placeholder
     public static final double DEPLOY_POS_FACTOR = (1/DEPLOY_GEAR_RATIO)*(2 * Math.PI);
     public static final double DEPLOY_VEL_FACTOR = DEPLOY_POS_FACTOR / 60.0;
-    
+
     public static final double DEPLOY_LENGTH = Units.inchesToMeters(21);  // not exact
 
-    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.kZero;
+    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(-1.5);  // it sinks into the bumper a bit to hold position
     public static final Rotation2d DEPLOY_MAX_ANGLE = Rotation2d.fromDegrees(60);
 
     public static final Rotation2d DEPLOY_MIN_SYSID_ANGLE = Rotation2d.fromDegrees(4);

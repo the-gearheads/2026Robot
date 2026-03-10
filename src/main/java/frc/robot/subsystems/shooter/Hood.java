@@ -146,9 +146,9 @@ public class Hood extends SubsystemBase {
         return run(() -> setVoltage(volts)).finallyDo(() -> setVoltage(0));
     }
 
-    public Command hoodHome (){
-        return runEnd(() -> setVoltage(-2), () -> {
-            setVoltage(0);
+    public Command hoodHome (){  // bypasses limits 
+        return runEnd(() -> hood.setVoltage(-2), () -> {
+            hood.setVoltage(0);
         }).withTimeout(2).andThen(Commands.waitSeconds(0.1)).andThen(() -> {
             this.hoodEncoder.setPosition(0);
         });

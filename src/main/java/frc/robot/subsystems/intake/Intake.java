@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.encoder.SplineEncoder;
 import com.revrobotics.encoder.config.DetachedEncoderConfig;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -25,7 +26,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -48,10 +51,31 @@ public class Intake extends SubsystemBase {
     SparkClosedLoopController intakeController = intake.getClosedLoopController();
 
     TrapezoidProfile profile = new TrapezoidProfile(DEPLOY_CONSTRAINTS);
-
+    Rotation2d targetAngle;
+    TrapezoidProfile.State profileSetpoint;
+    
+    boolean isManualMode = false;
     public Intake() {
         configure();
         deployRelativeEncoder.setPosition(deployEncoder.getAngle());
+        targetAngle = Rotation2d.fromRadians(deployEncoder.getAngle());
+        profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+    }
+
+    @Override
+    public void periodic() {
+        if (DriverStation.isDisabled()) {
+            deployRelativeEncoder.setPosition(deployEncoder.getAngle());
+        }
+
+        if (!isManualMode) {
+            profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
+            deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            Logger.recordOutput("Intake/currentDeploySetpoint", profileSetpoint);
+        } else {
+            profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+        }
+
     }
 
     public void configure() {
@@ -107,7 +131,14 @@ public class Intake extends SubsystemBase {
     }
 
     public void setDeployVoltage(double volts) {
-        deployController.setSetpoint(volts, ControlType.kVoltage);
+        isManualMode = true;
+        if (getAngle().getRadians() > DEPLOY_MAX_ANGLE.getRadians() && volts > 0) {
+            deployController.setSetpoint(0, ControlType.kVoltage);
+        } else if (getAngle().getRadians() < DEPLOY_MIN_ANGLE.getRadians() && volts < 0) {
+            deployController.setSetpoint(0, ControlType.kVoltage);
+        } else {
+            deployController.setSetpoint(volts, ControlType.kVoltage);
+        }
     }
 
     public void setDeployVoltage(Voltage volts) {
@@ -125,11 +156,12 @@ public class Intake extends SubsystemBase {
     }
 
     public void setAngle(Rotation2d angle) {
-        // Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
-        // State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getRelativeDeployVelocity()), new State(angle.getRadians(), 0));
-        // double ff = INTAKE_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
-        // Logger.recordOutput("Intake/Deployff", ff);
-
+        if (isManualMode) {
+            profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+            isManualMode = false;
+        }
+        targetAngle = angle;
+        Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
         deployController.setSetpoint(angle.getRadians(), ControlType.kPosition);
     }
 

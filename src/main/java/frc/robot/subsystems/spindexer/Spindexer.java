@@ -12,6 +12,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -51,9 +52,9 @@ public class Spindexer extends SubsystemBase {
         mainSpinnerConfig.encoder.quadratureAverageDepth(4); 
 
         feederConfig.closedLoop.pid(SpindexerConstants.FEEDER_PID[0] / 12.0, SpindexerConstants.FEEDER_PID[1] / 12.0, SpindexerConstants.FEEDER_PID[2] / 12.0);
-        feederConfig.closedLoop.feedForward.kS(SpindexerConstants.FEEDER_FEEDFORWARD.getKs());
-        feederConfig.closedLoop.feedForward.kV(SpindexerConstants.FEEDER_FEEDFORWARD.getKv());
-        feederConfig.closedLoop.feedForward.kA(SpindexerConstants.FEEDER_FEEDFORWARD.getKa());
+        // feederConfig.closedLoop.feedForward.kS(SpindexerConstants.FEEDER_FEEDFORWARD.getKs());
+        // feederConfig.closedLoop.feedForward.kV(SpindexerConstants.FEEDER_FEEDFORWARD.getKv());
+        // feederConfig.closedLoop.feedForward.kA(SpindexerConstants.FEEDER_FEEDFORWARD.getKa());
                
         mainSpinner.configure(mainSpinnerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         feeder.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -71,28 +72,19 @@ public class Spindexer extends SubsystemBase {
         setVoltageFeeder(volts.magnitude());
     }
     
-    public void setFeederSpeed(double speed) {
-        feederController.setSetpoint(speed, ControlType.kVelocity);
+    public void setFeederSpeed(double velocity) {
+        double ff = SpindexerConstants.FEEDER_FEEDFORWARD.calculate(velocity);
+        feederController.setSetpoint(velocity, ControlType.kVelocity, ClosedLoopSlot.kSlot0, ff);
     }
     
     @AutoLogOutput 
     public double getMainSpinnerVoltage() {
         return mainSpinner.getAppliedOutput() * mainSpinner.getBusVoltage();
     }
-    
-    @AutoLogOutput
-    public double getFeederVoltage() {
-        return feeder.getAppliedOutput()*feeder.getBusVoltage();
-    }
 
     @AutoLogOutput
     public double getFeederVelocity() {
         return feederEncoder.getVelocity();
-    }
-
-    @AutoLogOutput
-    public double getFeederPosition() {
-        return feederEncoder.getPosition();
     }
 
     @AutoLogOutput
@@ -105,15 +97,15 @@ public class Spindexer extends SubsystemBase {
         mainSpinner.stopMotor();
     }
 
-    public Command runSpindexer(double volts){
-    return this.run(() -> {
-        setVoltageMainSpinner(volts);
-        setVoltageFeeder(volts);
-    }).finallyDo(() -> {
-        setVoltageMainSpinner(0);
-        setVoltageFeeder(0);
-    });
-   }
+    public Command runSpindexer(double volts) {
+        return this.run(() -> {
+            setVoltageMainSpinner(volts);
+            setVoltageFeeder(volts);
+        }).finallyDo(() -> {
+            setVoltageMainSpinner(0);
+            setVoltageFeeder(0);
+        });
+    }
 
    public SysIdRoutine getFeederSysidRoutine() {
     return new SysIdRoutine(new Config(Volts.of(.5).per(Second), Volts.of(7), null, (state)->{Logger.recordOutput("Spindexer/feederSysidTestState", state.toString());}),
