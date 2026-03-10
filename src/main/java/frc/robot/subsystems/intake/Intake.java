@@ -100,8 +100,12 @@ public class Intake extends SubsystemBase {
         deploy.setCANTimeout(0);
     }
 
-    public void setIntakeVoltage(double volts) {
+    public void setIntakeVoltage(Voltage volts) {
         intake.setVoltage(volts);
+    }
+
+       public void setIntakeVoltage(double volts) {
+        deployController.setSetpoint(volts, ControlType.kVoltage);
     }
 
     public void setDeployVoltage(double volts) {
@@ -190,6 +194,13 @@ public class Intake extends SubsystemBase {
         return new SysIdRoutine(
             new Config(Volts.of(.5).per(Second), Volts.of(1.5), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
             new Mechanism(this::setDeployVoltage, null, this)
+        );
+    }
+
+    public SysIdRoutine getIntakeSysid() {
+        return new SysIdRoutine(
+            new Config(Volts.of(.5).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Intake/intakeSysidTestState", state.toString());}),
+            new Mechanism(this::setIntakeVoltage, null, this)
         );
     }
 }
