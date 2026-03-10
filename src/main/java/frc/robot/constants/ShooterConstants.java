@@ -34,11 +34,11 @@ public class ShooterConstants {
     public static final double KICKER_POS_FACTOR = (1.0/KICKER_GEAR_RATIO) * (2 * Math.PI);  // motor rotations -> hood rad
     public static final double KICKER_VEL_FACTOR = ((1.0/KICKER_GEAR_RATIO) * (2 * Math.PI)) / 60;  // motor rpm -> hood rad/sec
 
-    public static final double[] FLYWHEEL_PID = {0.0046686, 0, 0};
-    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0, 0.013468, 0.00072178);  // .088376
+    public static final double[] FLYWHEEL_PID = {0.001, 0, 0};
+    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0.088376, 0.01389, 0.00072178);
 
-    public static final double[] KICKER_PID = {0.0010106, 0, 0};
-    public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017894, 0.00038719);
+    public static final double[] KICKER_PID = {0.001, 0, 0};
+    public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017501, 0.00038719);
 
     // public static final double[] HOOD_PID = {0.14218, 0, 0};
     public static final double[] HOOD_PID = {70, 0, 10};
