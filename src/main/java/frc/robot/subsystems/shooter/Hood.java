@@ -7,7 +7,6 @@ import static frc.robot.constants.ShooterConstants.HOOD_VEL_FACTOR;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.ShooterConstants.HOOD_CONSTRAINTS;
-import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
@@ -42,14 +41,23 @@ public class Hood extends SubsystemBase {
     SparkFlexConfig hoodConfig = new SparkFlexConfig();
     RelativeEncoder hoodEncoder = hood.getEncoder();
     TrapezoidProfile profile = new TrapezoidProfile(HOOD_CONSTRAINTS);
+    Rotation2d targetAngle = new Rotation2d();
+    TrapezoidProfile.State currentSetpoint;
 
     public Hood() {
         configure();
         hoodEncoder.setPosition(0);
+        currentSetpoint = new State(getAngle().getRadians(), 0);
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+        // currentSetpoint = profile.calculate(0.02, currentSetpoint, new State(targetAngle.getRadians(), 0));
+        // Logger.recordOutput("Hood/currentSetpoint", currentSetpoint);
+        // double ff = HOOD_FEEDFORWARD.calculate(currentSetpoint.position, currentSetpoint.velocity);
+        // Logger.recordOutput("Hood/ff", ff);
+        // hoodController.setSetpoint(currentSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
+    }
 
     
 
@@ -89,10 +97,7 @@ public class Hood extends SubsystemBase {
 
     public void setAngle(Rotation2d angle) {
         Logger.recordOutput("Hood/LastGoalAngle", angle);
-        State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getVelocity()), new State(angle.getRadians(), 0));
-        double ff = HOOD_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
-        Logger.recordOutput("Hood/ff", ff);
-        hoodController.setSetpoint(setpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
+        targetAngle = angle;
     }
 
     @AutoLogOutput

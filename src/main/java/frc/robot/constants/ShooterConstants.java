@@ -35,17 +35,18 @@ public class ShooterConstants {
     public static final double KICKER_VEL_FACTOR = ((1.0/KICKER_GEAR_RATIO) * (2 * Math.PI)) / 60;  // motor rpm -> hood rad/sec
 
     public static final double[] FLYWHEEL_PID = {0.0046686, 0, 0};
-    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0.088376, 0.013468, 0.00072178);
+    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0, 0.013468, 0.00072178);  // .088376
 
     public static final double[] KICKER_PID = {0.0010106, 0, 0};
     public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017894, 0.00038719);
 
-    public static final double[] HOOD_PID = {0.14218, 0, 0};
-    // public static final double[] HOOD_PID = {70, 0, 10};
-    public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.19535, 0.14086, 0.75006, 0.019405); 
+    // public static final double[] HOOD_PID = {0.14218, 0, 0};
+    public static final double[] HOOD_PID = {70, 0, 10};
+    // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.19535, 0.14086, 0.75006, 0.019405); 
+    public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0); 
     public static final Constraints HOOD_CONSTRAINTS = new Constraints(
-        Units.degreesToRadians(100), // per second; max vel
-        Units.degreesToRadians(50)  //  per sec^2; max accel
+        Units.degreesToRadians(800), // per second; max vel
+        Units.degreesToRadians(500)  //  per sec^2; max accel
     );
     // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);  // 0.75006
 

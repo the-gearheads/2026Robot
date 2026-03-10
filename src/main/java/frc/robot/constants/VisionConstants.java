@@ -11,7 +11,7 @@ import frc.robot.subsystems.vision.CameraIntrinsics;
 
 public class VisionConstants {
     
-    public static final String[] CAMERA_NAMES = {"PEARL2", "CTHULTHU", "ALLAN", "ANNIE"};
+    public static final String[] CAMERA_NAMES = {"PEARL2", "CTHULHU", "ALLAN", "ANNIE"};
 
     public static final boolean USE_CONSTRAINED_PNP = false;
 
@@ -21,7 +21,6 @@ public class VisionConstants {
 
     public static final double MAX_PITCHROLL = Units.degreesToRadians(5);
     public static final double MAX_Z = Units.inchesToMeters(7);
-
 
     // if gyro readings are above this; assume we're midair from bump and react accordingly 
     // TODO: measure roll and pitch going over real bump to tune these numbers; make sure noise wont activate

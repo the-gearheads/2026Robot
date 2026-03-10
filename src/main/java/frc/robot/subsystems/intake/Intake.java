@@ -12,10 +12,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.encoder.SplineEncoder;
 import com.revrobotics.encoder.config.DetachedEncoderConfig;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -23,7 +25,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,6 +36,8 @@ import frc.robot.constants.IntakeConstants;
 public class Intake extends SubsystemBase {
     SparkFlex deploy = new SparkFlex(DEPLOY_ID, MotorType.kBrushless);  // vortex
     SplineEncoder deployEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
+    RelativeEncoder deployRelativeEncoder = deploy.getEncoder();
+    EncoderConfig deployRelativeEncoderConfig = new EncoderConfig();
     DetachedEncoderConfig deployEncoderConfig = new DetachedEncoderConfig();
     SparkClosedLoopController deployController = deploy.getClosedLoopController();
     SparkFlexConfig deployConfig = new SparkFlexConfig();
@@ -48,7 +51,7 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
         configure();
-        deployEncoder.setPosition(deployEncoder.getAngle());
+        deployRelativeEncoder.setPosition(deployEncoder.getAngle());
     }
 
     public void configure() {
@@ -60,6 +63,8 @@ public class Intake extends SubsystemBase {
 
         intakeConfig.encoder.quadratureMeasurementPeriod(10);
         intakeConfig.encoder.quadratureAverageDepth(2); 
+
+        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
         deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
         intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
@@ -118,12 +123,12 @@ public class Intake extends SubsystemBase {
     }
 
     public void setAngle(Rotation2d angle) {
-        Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
-        State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getRelativeDeployVelocity()), new State(angle.getRadians(), 0));
-        double ff = INTAKE_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
-        Logger.recordOutput("Intake/Deployff", ff);
+        // Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
+        // State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getRelativeDeployVelocity()), new State(angle.getRadians(), 0));
+        // double ff = INTAKE_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
+        // Logger.recordOutput("Intake/Deployff", ff);
 
-        deployController.setSetpoint(setpoint.position, ControlType.kPosition);
+        deployController.setSetpoint(angle.getRadians(), ControlType.kPosition);
     }
 
     @AutoLogOutput
@@ -183,7 +188,7 @@ public class Intake extends SubsystemBase {
 
     public SysIdRoutine getDeploySysid() {
         return new SysIdRoutine(
-            new Config(Volts.of(.5).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
+            new Config(Volts.of(.5).per(Second), Volts.of(1.5), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
             new Mechanism(this::setDeployVoltage, null, this)
         );
     }
