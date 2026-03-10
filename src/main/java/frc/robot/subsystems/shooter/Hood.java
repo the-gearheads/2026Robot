@@ -8,7 +8,9 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.constants.ShooterConstants.HOOD_CONSTRAINTS;
 import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
+import static frc.robot.constants.ShooterConstants.HOOD_MAX_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
+import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
 
@@ -31,6 +33,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -42,20 +45,32 @@ public class Hood extends SubsystemBase {
     SparkFlexConfig hoodConfig = new SparkFlexConfig();
     RelativeEncoder hoodEncoder = hood.getEncoder();
     TrapezoidProfile profile = new TrapezoidProfile(HOOD_CONSTRAINTS);
-
+    Rotation2d targetAngle = new Rotation2d();
+    TrapezoidProfile.State profileSetpoint;
+    
+    boolean isManualMode = false;
     public Hood() {
         configure();
         hoodEncoder.setPosition(0);
+        profileSetpoint = new State(getAngle().getRadians(), 0);
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+        if (!isManualMode) {
+            profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
+            double ff = HOOD_FEEDFORWARD.calculate(profileSetpoint.position, profileSetpoint.velocity);
+            hoodController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
+            Logger.recordOutput("Hood/ff", ff);
+            Logger.recordOutput("Hood/currentSetpoint", profileSetpoint);
+        } else {
+            profileSetpoint = new State(getAngle().getRadians(), getVelocity());
+        }
+    }
 
     
 
     public void configure() {
-        hood.setCANTimeout(10);
-
         hoodConfig.encoder.quadratureMeasurementPeriod(10);
         hoodConfig.encoder.quadratureAverageDepth(2); 
         hoodConfig.smartCurrentLimit(65);
@@ -76,11 +91,17 @@ public class Hood extends SubsystemBase {
         hoodConfig.encoder.velocityConversionFactor(HOOD_VEL_FACTOR);
     
         hood.configure(hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        hood.setCANTimeout(0);
     }
 
     public void setVoltage(double volts){
-        hoodController.setSetpoint(volts, ControlType.kVoltage, ClosedLoopSlot.kSlot0);
+        isManualMode = true;
+        if (getAngle().getRadians() > HOOD_MAX_ANGLE && volts > 0) {
+            hoodController.setSetpoint(0, ControlType.kVoltage);
+        } else if (getAngle().getRadians() < HOOD_MIN_ANGLE && volts < 0) {
+            hoodController.setSetpoint(0, ControlType.kVoltage);
+        } else {
+            hoodController.setSetpoint(volts, ControlType.kVoltage);
+        }
     }                                                                       
     
     public void setVoltage(Voltage volts){
@@ -88,11 +109,12 @@ public class Hood extends SubsystemBase {
     }
 
     public void setAngle(Rotation2d angle) {
+        if (isManualMode) {
+            profileSetpoint = new State(getAngle().getRadians(), getVelocity());
+            isManualMode = false;
+        }
+        targetAngle = angle;
         Logger.recordOutput("Hood/LastGoalAngle", angle);
-        State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getVelocity()), new State(angle.getRadians(), 0));
-        double ff = HOOD_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
-        Logger.recordOutput("Hood/ff", ff);
-        hoodController.setSetpoint(setpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
     }
 
     @AutoLogOutput
@@ -124,8 +146,12 @@ public class Hood extends SubsystemBase {
         return run(() -> setVoltage(volts)).finallyDo(() -> setVoltage(0));
     }
 
-    public Command hoodHome (){
-        return runEnd(() -> setVoltage(-2), ()->{hoodEncoder.setPosition(0);}).withTimeout(2);
+    public Command hoodHome (){  // bypasses limits 
+        return runEnd(() -> hood.setVoltage(-2), () -> {
+            hood.setVoltage(0);
+        }).withTimeout(2).andThen(Commands.waitSeconds(0.1)).andThen(() -> {
+            this.hoodEncoder.setPosition(0);
+        });
     }
 
     public SysIdRoutine getSysIdRoutine() {

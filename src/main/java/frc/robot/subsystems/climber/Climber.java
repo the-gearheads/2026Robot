@@ -23,17 +23,12 @@ public class Climber extends SubsystemBase {
     }
     
     public void configure(){
-        climber.setCANTimeout(10);
-
         climbConfig.smartCurrentLimit(60);
         climbConfig.idleMode(IdleMode.kBrake);
         climber.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         climbConfig.encoder.quadratureMeasurementPeriod(10);
         climbConfig.encoder.quadratureAverageDepth(2); 
-
-        climber.setCANTimeout(0);
-
     }
 
 

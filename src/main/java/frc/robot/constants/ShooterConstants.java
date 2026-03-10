@@ -40,18 +40,19 @@ public class ShooterConstants {
     public static final double[] KICKER_PID = {0.001, 0, 0};
     public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017501, 0.00038719);
 
-    public static final double[] HOOD_PID = {0.14218, 0, 0};
-    // public static final double[] HOOD_PID = {70, 0, 10};
+    // public static final double[] HOOD_PID = {0.14218, 0, 0};
+    public static final double[] HOOD_PID = {70, 0, 10};
     public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.19535, 0.14086, 0.75006, 0.019405); 
+    // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0); 
     public static final Constraints HOOD_CONSTRAINTS = new Constraints(
-        Units.degreesToRadians(100), // per second; max vel
-        Units.degreesToRadians(50)  //  per sec^2; max accel
+        Units.degreesToRadians(800), // per second; max vel
+        Units.degreesToRadians(500)  //  per sec^2; max accel
     );
     // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);  // 0.75006
 
     public static final double HOOD_LENGTH_METERS = Units.inchesToMeters(8.07); // placeholder; from pivot point to out edge, for sim
     public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);  // hood 0 is 7.5 deg up
-    public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(50);
+    public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(47);
 
     public static final double HOOD_MIN_SYSID_ANGLE = Units.degreesToRadians(5);  // more conservative so sysid doesn't break anything
     public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(45);

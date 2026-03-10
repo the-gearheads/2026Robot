@@ -4,6 +4,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -11,7 +12,7 @@ import frc.robot.subsystems.vision.CameraIntrinsics;
 
 public class VisionConstants {
     
-    public static final String[] CAMERA_NAMES = {"PEARL2", "CTHULTHU", "ALLAN", "ANNIE"};
+    public static final String[] CAMERA_NAMES = {"PEARL2", "CTHULHU", "ALLAN", "ANNIE"};
 
     public static final boolean USE_CONSTRAINED_PNP = false;
 
@@ -22,7 +23,6 @@ public class VisionConstants {
     public static final double MAX_PITCHROLL = Units.degreesToRadians(5);
     public static final double MAX_Z = Units.inchesToMeters(7);
 
-
     // if gyro readings are above this; assume we're midair from bump and react accordingly 
     // TODO: measure roll and pitch going over real bump to tune these numbers; make sure noise wont activate
     public static final Rotation2d BUMP_ROLL_THRESHOLD = Rotation2d.fromDegrees(3);
@@ -31,10 +31,10 @@ public class VisionConstants {
 
     public static final PoseStrategy[] INITIAL_CAMERA_STRATEGIES = {PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR};
     public static final Transform3d[] CAMERA_TRANSFORMS = {
-        new Transform3d(),
-        new Transform3d(),
-        new Transform3d(),
-        new Transform3d()
+        new Transform3d(Units.inchesToMeters(-13.934), Units.inchesToMeters(11.52), Units.inchesToMeters(9.0), new Rotation3d(0, 23*Math.PI/12 , Math.PI)), //pearl2? back?
+        new Transform3d(Units.inchesToMeters(-13.958), Units.inchesToMeters(-11.576), Units.inchesToMeters(9.25), new Rotation3d(0, 23*Math.PI/12 , 13*Math.PI/9)), //cthulu? right side?
+        new Transform3d(Units.inchesToMeters(14.19), Units.inchesToMeters(-11.536), Units.inchesToMeters(9.0), new Rotation3d(0, 17*Math.PI/9,0)), //allan? //front?
+        new Transform3d(Units.inchesToMeters(13.887), Units.inchesToMeters(11.6), Units.inchesToMeters(9.25), new Rotation3d(0, 35*Math.PI/18, 4*Math.PI/9)) //annie? left side?
     };
 
     // maybe intrinsics in here sometime
@@ -62,7 +62,7 @@ public class VisionConstants {
 
     public static final Rectangle2d FIELD = new Rectangle2d(
         new Translation2d(0, 0),
-        new Translation2d(16.58, 8.11)  // vibed from choreo    
+        new Translation2d(FieldConstants.fieldLength, FieldConstants.fieldWidth)
     );
 
 }

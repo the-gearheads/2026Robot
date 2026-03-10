@@ -50,10 +50,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void configure() {
-    mainFly.setCANTimeout(10);
-    followerFly.setCANTimeout(10);
-    kicker.setCANTimeout(10);
-
     mainFlyConfig.smartCurrentLimit(80);
     mainFlyConfig.inverted(true);
     mainFlyConfig.idleMode(IdleMode.kCoast);
@@ -94,9 +90,6 @@ public class Shooter extends SubsystemBase {
     kickerConfig.encoder.positionConversionFactor(KICKER_POS_FACTOR);
     kickerConfig.encoder.velocityConversionFactor(KICKER_VEL_FACTOR);
 
-    kicker.setCANTimeout(0);
-    followerFly.setCANTimeout(0);
-    mainFly.setCANTimeout(0);
 
     mainFly.configure(mainFlyConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

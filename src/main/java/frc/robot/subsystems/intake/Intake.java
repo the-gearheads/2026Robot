@@ -12,10 +12,13 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.encoder.SplineEncoder;
 import com.revrobotics.encoder.config.DetachedEncoderConfig;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -25,6 +28,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -35,7 +39,9 @@ import frc.robot.constants.IntakeConstants;
 public class Intake extends SubsystemBase {
     SparkFlex deploy = new SparkFlex(DEPLOY_ID, MotorType.kBrushless);  // vortex
     SplineEncoder deployEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
-    DetachedEncoderConfig deployEncoderConfig = new DetachedEncoderConfig();
+    RelativeEncoder deployRelativeEncoder = deploy.getEncoder();
+    EncoderConfig deployRelativeEncoderConfig = new EncoderConfig();
+    DetachedEncoderConfig deployAbsEncoderConfig = new DetachedEncoderConfig();
     SparkClosedLoopController deployController = deploy.getClosedLoopController();
     SparkFlexConfig deployConfig = new SparkFlexConfig();
 
@@ -45,21 +51,41 @@ public class Intake extends SubsystemBase {
     SparkClosedLoopController intakeController = intake.getClosedLoopController();
 
     TrapezoidProfile profile = new TrapezoidProfile(DEPLOY_CONSTRAINTS);
-
+    Rotation2d targetAngle;
+    TrapezoidProfile.State profileSetpoint;
+    
+    boolean isManualMode = false;
     public Intake() {
         configure();
-        deployEncoder.setPosition(deployEncoder.getAngle());
+        deployRelativeEncoder.setPosition(deployEncoder.getAngle());
+        targetAngle = Rotation2d.fromRadians(deployEncoder.getAngle());
+        profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+    }
+
+    @Override
+    public void periodic() {
+        if (DriverStation.isDisabled()) {
+            deployRelativeEncoder.setPosition(deployEncoder.getAngle());
+        }
+
+        if (!isManualMode) {
+            profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
+            deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            Logger.recordOutput("Intake/currentDeploySetpoint", profileSetpoint);
+        } else {
+            profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+        }
+
     }
 
     public void configure() {
-        intake.setCANTimeout(10);
-        deploy.setCANTimeout(10);
-
         deployConfig.encoder.quadratureMeasurementPeriod(10);
         deployConfig.encoder.quadratureAverageDepth(2); 
 
         intakeConfig.encoder.quadratureMeasurementPeriod(10);
         intakeConfig.encoder.quadratureAverageDepth(2); 
+
+        deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
         deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
         intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
@@ -69,12 +95,15 @@ public class Intake extends SubsystemBase {
         intakeConfig.inverted(true);
         deployConfig.inverted(true);
 
-        deployEncoderConfig.positionConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
-        deployEncoderConfig.angleConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
-        deployEncoderConfig.velocityConversionFactor(DEPLOY_ABS_ENC_VEL_FACTOR);
-        deployEncoderConfig.inverted(true);
-        deployEncoderConfig.dutyCycleZeroCentered(true);
-        deployEncoderConfig.dutyCycleOffset(DEPLOY_ABS_ENC_OFFSET);
+        deployAbsEncoderConfig.positionConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
+        deployAbsEncoderConfig.angleConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
+        deployAbsEncoderConfig.velocityConversionFactor(DEPLOY_ABS_ENC_VEL_FACTOR);
+        deployAbsEncoderConfig.inverted(true);
+        deployAbsEncoderConfig.dutyCycleZeroCentered(true);
+        deployAbsEncoderConfig.dutyCycleOffset(DEPLOY_ABS_ENC_OFFSET);
+
+        deployConfig.encoder.positionConversionFactor(DEPLOY_POS_FACTOR);
+        deployConfig.encoder.velocityConversionFactor(DEPLOY_VEL_FACTOR);
 
         // we prolly dont need ff
         deployConfig.closedLoop.p(DEPLOY_PID[0]);
@@ -89,22 +118,27 @@ public class Intake extends SubsystemBase {
 
         deploy.configure(deployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        deployEncoder.configure(deployEncoderConfig, ResetMode.kResetSafeParameters);
+        deployEncoder.configure(deployAbsEncoderConfig, ResetMode.kResetSafeParameters);
                 
-        intake.setCANTimeout(0);
-        deploy.setCANTimeout(0);
     }
 
     public void setIntakeVoltage(Voltage volts) {
         intake.setVoltage(volts);
     }
 
-       public void setIntakeVoltage(double volts) {
+    public void setIntakeVoltage(double volts) {
         deployController.setSetpoint(volts, ControlType.kVoltage);
     }
 
     public void setDeployVoltage(double volts) {
-        deployController.setSetpoint(volts, ControlType.kVoltage);
+        isManualMode = true;
+        if (getAngle().getRadians() > DEPLOY_MAX_ANGLE.getRadians() && volts > 0) {
+            deployController.setSetpoint(0, ControlType.kVoltage);
+        } else if (getAngle().getRadians() < DEPLOY_MIN_ANGLE.getRadians() && volts < 0) {
+            deployController.setSetpoint(0, ControlType.kVoltage);
+        } else {
+            deployController.setSetpoint(volts, ControlType.kVoltage);
+        }
     }
 
     public void setDeployVoltage(Voltage volts) {
@@ -122,12 +156,13 @@ public class Intake extends SubsystemBase {
     }
 
     public void setAngle(Rotation2d angle) {
+        if (isManualMode) {
+            profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+            isManualMode = false;
+        }
+        targetAngle = angle;
         Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
-        State setpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getRelativeDeployVelocity()), new State(angle.getRadians(), 0));
-        double ff = INTAKE_FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
-        Logger.recordOutput("Intake/Deployff", ff);
-
-        deployController.setSetpoint(setpoint.position, ControlType.kPosition);
+        deployController.setSetpoint(angle.getRadians(), ControlType.kPosition);
     }
 
     @AutoLogOutput
@@ -187,7 +222,7 @@ public class Intake extends SubsystemBase {
 
     public SysIdRoutine getDeploySysid() {
         return new SysIdRoutine(
-            new Config(Volts.of(.5).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
+            new Config(Volts.of(.5).per(Second), Volts.of(1.5), null, (state)->{Logger.recordOutput("Intake/deploySysidTestState", state.toString());}),
             new Mechanism(this::setDeployVoltage, null, this)
         );
     }
