@@ -58,7 +58,7 @@ public class Hood extends SubsystemBase {
     @Override
     public void periodic() {
         if (!isManualMode) {
-            profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
+            profileSetpoint = profile.calculate(0.02, new State(getAngle().getRadians(), getVelocity()), new State(targetAngle.getRadians(), 0));
             double ff = HOOD_FEEDFORWARD.calculate(profileSetpoint.position, profileSetpoint.velocity);
             hoodController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
             Logger.recordOutput("Hood/ff", ff);

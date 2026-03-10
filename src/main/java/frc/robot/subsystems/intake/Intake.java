@@ -24,6 +24,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -54,12 +55,14 @@ public class Intake extends SubsystemBase {
     Rotation2d targetAngle;
     TrapezoidProfile.State profileSetpoint;
     
+    @AutoLogOutput
     boolean isManualMode = false;
     public Intake() {
         configure();
         deployRelativeEncoder.setPosition(deployEncoder.getAngle());
-        targetAngle = Rotation2d.fromRadians(deployEncoder.getAngle());
-        profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+
+        targetAngle = getAngle();
+        profileSetpoint = new State(getAngle().getRadians(), getRelativeDeployVelocity());
     }
 
     @Override
@@ -69,11 +72,12 @@ public class Intake extends SubsystemBase {
         }
 
         if (!isManualMode) {
-            profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
+            profileSetpoint = profile.calculate(0.02, new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity()), new State(targetAngle.getRadians(), 0));
             deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
             Logger.recordOutput("Intake/currentDeploySetpoint", profileSetpoint);
         } else {
             profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+            targetAngle = getRelativeDeployAngle();
         }
 
     }
@@ -146,7 +150,7 @@ public class Intake extends SubsystemBase {
     }
 
     @AutoLogOutput
-    public double getDeploySetpoint() {
+    public double getDeployControllerSetpoint() {
         return deployController.getSetpoint();
     }
 
@@ -196,6 +200,11 @@ public class Intake extends SubsystemBase {
     public void setIntakeVelocity(double velocity) {
         intakeController.setSetpoint(velocity, ControlType.kVelocity);
     } 
+
+    public boolean atAngle(Rotation2d angle) {
+        return MathUtil.isNear(angle.getRadians(), getRelativeDeployAngle().getRadians(), DEPLOY_ANGLE_TOLERANCE.getRadians());
+    }
+
 
     public Command shimmy() {
         return this.run(() -> {
