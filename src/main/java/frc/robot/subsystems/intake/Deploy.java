@@ -22,6 +22,7 @@ import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -47,13 +48,13 @@ public class Deploy extends SubsystemBase {
   TrapezoidProfile profile = new TrapezoidProfile(DEPLOY_CONSTRAINTS);
   Rotation2d targetAngle;
   TrapezoidProfile.State profileSetpoint;
-  boolean isManualMode = false;
+  @AutoLogOutput
+  boolean voltageMode = false;
 
   public Deploy() {
     deployRelativeEncoder.setPosition(deployEncoder.getAngle());
     targetAngle = Rotation2d.fromRadians(deployEncoder.getAngle());
     profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
-
   }
 
   void configure() {
@@ -88,18 +89,18 @@ public class Deploy extends SubsystemBase {
       deployRelativeEncoder.setPosition(deployEncoder.getAngle());
     }
 
-    if (!isManualMode) {
+    if(voltageMode) {
+      profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+      voltageMode = false; // voltageMode should be continuously set to set a voltage, so we default to maintaining pid when no command is being called
+    } else {
       profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
       deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
       Logger.recordOutput("Intake/currentDeploySetpoint", profileSetpoint);
-    } else {
-      profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
     }
-
   }
 
-  public void setDeployVoltage(double volts) {
-    isManualMode = true;
+  void setVoltage(double volts) {
+    voltageMode = true;
     if (getAngle().getRadians() > DEPLOY_MAX_ANGLE.getRadians() && volts > 0) {
       deployController.setSetpoint(0, ControlType.kVoltage);
     } else if (getAngle().getRadians() < DEPLOY_MIN_ANGLE.getRadians() && volts < 0) {
@@ -107,6 +108,10 @@ public class Deploy extends SubsystemBase {
     } else {
       deployController.setSetpoint(volts, ControlType.kVoltage);
     }
+  }
+  
+  void setVoltage(Voltage volts) {
+    setVoltage(volts.magnitude());
   }
 
   @AutoLogOutput
@@ -125,10 +130,10 @@ public class Deploy extends SubsystemBase {
   }
 
   public void setAngle(Rotation2d angle) {
-    if (isManualMode) {
+    if (voltageMode) {
       profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
     }
-    isManualMode = false;
+    voltageMode = false;
     targetAngle = angle;
     Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
     deployController.setSetpoint(angle.getRadians(), ControlType.kPosition);
@@ -136,17 +141,39 @@ public class Deploy extends SubsystemBase {
 
   public Command shimmy(Intake intake) {
     return Commands.run(() -> {
-
-      if (Math.abs(getAngle().getRadians() - DEPLOY_MIN_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
+      if(MathUtil.isNear(getAngle().getRadians(), DEPLOY_MIN_ANGLE.getRadians(), DEPLOY_SHIMMY_TOLERANCE)) {
         setAngle(DEPLOY_SHIMMY_ANGLE);
       }
 
-      if (Math.abs(getAngle().getRadians() - DEPLOY_SHIMMY_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
+      if (MathUtil.isNear(getAngle().getRadians(), DEPLOY_SHIMMY_ANGLE.getRadians(), DEPLOY_SHIMMY_TOLERANCE)) {
         setAngle(DEPLOY_MIN_ANGLE);
       }
 
       intake.setIntakeVelocity(INTAKE_VELOCITY);
     }, this, intake);
+  }
+
+
+  @AutoLogOutput
+  public boolean isAtGoal() {
+    return deployController.isAtSetpoint() && MathUtil.isNear(profileSetpoint.position, targetAngle.getRadians(), 1e-3);
+  }
+
+  public Command setAngleCommand(Rotation2d angle) {
+    return this.runOnce(()->{
+      setAngle(angle);
+    });
+  }
+
+  public Command setVoltageCommand(double volts) {
+    return this.run(()->{
+      voltageMode = true;
+      setVoltage(volts);
+    });
+  }
+
+  public Command waitUntilAtGoal() {
+    return this.idle().until(this::isAtGoal);
   }
 
   public boolean getForwardSysidLimit() {
@@ -157,9 +184,6 @@ public class Deploy extends SubsystemBase {
     return getAngle().getRadians() < DEPLOY_MIN_SYSID_ANGLE.getRadians();
   }
 
-  public void setDeployVoltage(Voltage volts) {
-    deploy.setVoltage(volts);
-  }
 
   @AutoLogOutput
   public double getDeploySetpoint() {
@@ -176,7 +200,7 @@ public class Deploy extends SubsystemBase {
         new Config(Volts.of(.5).per(Second), Volts.of(1.5), null, (state) -> {
           Logger.recordOutput("Intake/deploySysidTestState", state.toString());
         }),
-        new Mechanism(this::setDeployVoltage, null, this));
+        new Mechanism(this::setVoltage, null, this));
   }
 
 }

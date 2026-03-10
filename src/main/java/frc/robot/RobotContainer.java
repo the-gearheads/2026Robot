@@ -17,6 +17,7 @@ import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
+import frc.robot.commands.NTControl.DeployNTControl;
 import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.MiscConstants.isReal;
@@ -65,7 +66,7 @@ public class RobotContainer {
     }
 
     // hood.setDefaultCommand(new HoodNTControl(hood));
-    // intake.setDefaultCommand(new DeployNTControl(intake));
+    deploy.setDefaultCommand(new DeployNTControl(deploy));
 
 
     ShooterCalculations.getTrenchAvoidanceRectanlges(swerve.getPose(), swerve.getFieldRelativeSpeeds());
@@ -149,12 +150,8 @@ public class RobotContainer {
     }));
 
     Controllers.driverController.getPovUp().onTrue(hood.hoodHome());
-    Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
-      deploy.setDeployVoltage(2);
-    }).finallyDo(() ->{deploy.setDeployVoltage(0);}));
-    Controllers.driverController.getBBtn().whileTrue(Commands.run(() -> {
-      deploy.setDeployVoltage(-2);
-    }).finallyDo(() ->{deploy.setDeployVoltage(0);}));
+    Controllers.driverController.getYBtn().whileTrue(deploy.setVoltageCommand(2));
+    Controllers.driverController.getBBtn().whileTrue(deploy.setVoltageCommand(-2));
 
     // Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
     //   spindexer.setVoltageFeeder(12);
