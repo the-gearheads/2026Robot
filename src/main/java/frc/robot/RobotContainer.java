@@ -19,8 +19,10 @@ import frc.robot.controllers.Controllers;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
+import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,6 +62,8 @@ public class RobotContainer {
       shooter = new Shooter();
       intake = new Intake();
     }
+
+    swerve.setPose(new Pose2d(2, 4, Rotation2d.kZero));
 
     hood.setDefaultCommand(new HoodNTControl(hood));
     // intake.setDefaultCommand(new DeployNTControl(intake));
@@ -106,6 +110,10 @@ public class RobotContainer {
     }));
 
     Controllers.driverController.getLeftPaddle().whileTrue(intake.shimmy());
+    Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
+      intake.stopIntake();
+      intake.setAngle(DEPLOY_MIN_ANGLE);
+    })) ;
 
     // Controllers.driverController.getLeftPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(30)));
     // Controllers.driverController.getRightPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(5)));
@@ -162,7 +170,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // return sysidPicker.get();
     // return Commands.run(()->{hood.setAngle(Rotation2d.fromDegrees(20));});
-    return intake.shimmy();
+    // return intake.shimmy();
+    return Swerve.wheelRadiusCharacterization(swerve);
   }
 
   // private void configureFuelSim() {

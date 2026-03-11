@@ -14,8 +14,8 @@ public class IntakeConstants {
 
     public static final double[] DEPLOY_PID = {0.5, 0, 0};
     public static final Constraints DEPLOY_CONSTRAINTS = new Constraints(
-        Units.degreesToRadians(100), // per second; max vel
-        Units.degreesToRadians(50)  //  per sec^2; max accel
+        Units.degreesToRadians(750), // per second; max vel
+        Units.degreesToRadians(1500)  //  per sec^2; max accel
     );
 
 
@@ -43,7 +43,7 @@ public class IntakeConstants {
     public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromDegrees(0);
     public static final Rotation2d DEPLOY_SHIMMY_ANGLE = Rotation2d.fromDegrees(60);
     public static final Rotation2d DEPLOY_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5);
-    public static final Rotation2d DEPLOY_SHIMMY_TOLERANCE = Rotation2d.fromDegrees(5);
+    public static final Rotation2d DEPLOY_SHIMMY_TOLERANCE = Rotation2d.fromDegrees(8);
 
     public static final double INTAKE_VELOCITY = 5250;
 

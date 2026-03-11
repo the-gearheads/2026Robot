@@ -28,7 +28,7 @@ public final class SwerveConstants {
     public static final double[] WHEEL_OFFSETS = {270, 0, 0, 270};
     public static final boolean[] IS_INVERTED = {true, false, true, true};
 
-    public static final double WHEEL_RADIUS = 1.4609 / 100.0 * 2.54;  // derived from wheel radius characterizaiton
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(1.594130920);  // derived from wheel radius characterizaiton
     public static final double WHEEL_DIAMETER = WHEEL_RADIUS * 2.0;
     public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
 
