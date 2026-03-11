@@ -1,0 +1,145 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.7,
+        "y": 4.03
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.86210957463799,
+        "y": 5.443947375425894
+      },
+      "isLocked": false,
+      "linkedName": "Center Starting Forward Driver Station"
+    },
+    {
+      "anchor": {
+        "x": 2.95852168068569,
+        "y": 6.879507293441227
+      },
+      "prevControl": {
+        "x": 2.7892362917610147,
+        "y": 6.347826375904226
+      },
+      "nextControl": {
+        "x": 3.080437473381602,
+        "y": 7.262412758198467
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.644624680579216,
+        "y": 7.473562273743612
+      },
+      "prevControl": {
+        "x": 3.211508957211489,
+        "y": 7.4589131865387195
+      },
+      "nextControl": {
+        "x": 5.952082556963373,
+        "y": 7.486926905877342
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.59921349286627,
+        "y": 6.749712787478705
+      },
+      "prevControl": {
+        "x": 8.569709282098932,
+        "y": 7.86629810193662
+      },
+      "nextControl": {
+        "x": 8.632712614459116,
+        "y": 5.481940281622658
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.59921349286627,
+        "y": 1.5218655504684842
+      },
+      "prevControl": {
+        "x": 8.5416113447615,
+        "y": 3.3880117387137987
+      },
+      "nextControl": {
+        "x": 8.606926544420025,
+        "y": 1.2719845611240996
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.731418218496245,
+        "y": 1.2656031063671207
+      },
+      "prevControl": {
+        "x": 8.246160818581423,
+        "y": 1.1823221890971047
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "HP Balls Endpoint"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 3.011089555369118,
+      "maxWaypointRelativePos": 5.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Deploy Intake",
+      "waypointRelativePos": 2.4,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Start Intake Chomp",
+      "waypointRelativePos": 2.7529886744966463,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

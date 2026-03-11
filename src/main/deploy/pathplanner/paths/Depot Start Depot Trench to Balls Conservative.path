@@ -3,39 +3,55 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7,
-        "y": 4.03
+        "x": 3.5040204429301536,
+        "y": 7.352463532793868
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7,
-        "y": 5.03
+        "x": 4.504020442930154,
+        "y": 7.352463532793868
       },
       "isLocked": false,
-      "linkedName": "Center Starting Forward Depot"
+      "linkedName": "Depot Starting Forward Driver Station"
     },
     {
       "anchor": {
-        "x": 0.6,
-        "y": 5.95
+        "x": 7.731418218496245,
+        "y": 6.36575682761925
       },
       "prevControl": {
-        "x": 3.1613662681671197,
-        "y": 5.95
+        "x": 7.723617903636395,
+        "y": 7.986138672717916
+      },
+      "nextControl": {
+        "x": 7.7399389009919854,
+        "y": 4.5957309412265746
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.731418218496245,
+        "y": 1.2656031063671207
+      },
+      "prevControl": {
+        "x": 7.778193209646508,
+        "y": 2.3313887484028952
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot Intaking"
+      "linkedName": "HP Balls Endpoint"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8538624415887849,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.9998951342281877,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 3.0,
+        "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -48,13 +64,13 @@
   "eventMarkers": [
     {
       "name": "Deploy Intake",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.5000262164429529,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "Start Intake Chomp",
-      "waypointRelativePos": 0.6028950058411213,
+      "waypointRelativePos": 0.7488726929530222,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -69,13 +85,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
