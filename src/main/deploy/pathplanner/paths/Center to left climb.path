@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5517140480324074,
-        "y": 4.045432074652778
+        "x": 2.706376604850214,
+        "y": 4.028530670470756
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5517140480324074,
-        "y": 4.045432074652778
+        "x": 2.4585696296795554,
+        "y": 4.061571600493511
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.595619212962963,
-        "y": 5.0858838975694445
+        "x": 1.3995720399429386,
+        "y": 4.274365192582025
       },
       "prevControl": {
-        "x": 5.595619212962963,
-        "y": 5.0858838975694445
+        "x": 2.124136947218259,
+        "y": 4.157917261055635
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "shimmy",
+      "waypointRelativePos": 0.15,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -41,8 +48,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
