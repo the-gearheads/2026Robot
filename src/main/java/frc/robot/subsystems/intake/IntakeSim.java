@@ -20,7 +20,7 @@ public class IntakeSim extends Intake {
     DCMotor deployGearbox = DCMotor.getNeoVortex(1);
     SparkMaxSim intakeFlexSim = new SparkMaxSim(intake, intakeGearbox);
     SparkFlexSim deployFlexSim = new SparkFlexSim(deploy, deployGearbox);
-    SplineEncoderSim deployEncoderSim = new SplineEncoderSim(deployEncoder);
+    SplineEncoderSim deployEncoderSim = new SplineEncoderSim(deploySplineEncoder);
     
     SingleJointedArmSim deploySim = new SingleJointedArmSim(
         LinearSystemId.createSingleJointedArmSystem(deployGearbox, 0.346396007, 60.0), 
