@@ -12,7 +12,7 @@
         "y": 6.680178507158057
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Balls end"
     },
     {
       "anchor": {
@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 7.776478256568222,
-        "y": 3.316954058674407
+        "y": 3.3169540586744075
       },
       "nextControl": {
         "x": 6.360088888888892,
@@ -41,16 +41,30 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right Trench Safe Zone"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "SLOW TF DOWN",
+      "minWaypointRelativePos": 1.0797720797720796,
+      "maxWaypointRelativePos": 1.9952516619183285,
+      "constraints": {
+        "maxVelocity": 1.75,
+        "maxAcceleration": 1.75,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "shimmy",
-      "waypointRelativePos": 0.6,
+      "name": "intakeUp",
+      "waypointRelativePos": 1.1291547958214556,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -65,7 +79,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
