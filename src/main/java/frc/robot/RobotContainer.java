@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSim;
 import frc.robot.subsystems.shooter.Hood;
@@ -35,6 +37,7 @@ public class RobotContainer {
   private final Hood hood;
   private final Shooter shooter;
   private final Intake intake;
+  private final Climber climber;
 
   public static final boolean deathMode = true;
 
@@ -53,12 +56,14 @@ public class RobotContainer {
       hood = new HoodSim();
       shooter = new ShooterSim();
       intake = new IntakeSim();
+      climber = new ClimberSim();
       // configureFuelSim();
     } else {
       spindexer = new Spindexer();
       hood = new Hood();
       shooter = new Shooter();
       intake = new Intake();
+      climber = new Climber();
     }
 
     hood.setDefaultCommand(new HoodNTControl(hood));
@@ -147,16 +152,22 @@ public class RobotContainer {
     // }));
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
-    Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
-      intake.setDeployVoltage(2);
-    }).finallyDo(() ->{intake.setDeployVoltage(0);}));
-    Controllers.driverController.getBBtn().whileTrue(Commands.run(() -> {
-      intake.setDeployVoltage(-2);
-    }).finallyDo(() ->{intake.setDeployVoltage(0);}));
+   // Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
+    //  intake.setDeployVoltage(2);
+    //}).finallyDo(() ->{intake.setDeployVoltage(0);}));
+    //Controllers.driverController.getBBtn().whileTrue(Commands.run(() -> {
+    //   intake.setDeployVoltage(-2);
+    // }).finallyDo(() ->{intake.setDeployVoltage(0);}));
 
-    // Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
-    //   spindexer.setVoltageFeeder(12);
-    // }));
+     Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
+       spindexer.setVoltageFeeder(12);
+     }));
+    Controllers.driverController.getYBtn().whileTrue(Commands.run(()-> {
+      climber.climberUp();
+    }));
+    Controllers.driverController.getYBtn().whileTrue(Commands.run(()-> {
+      climber.climberDown();
+    }));
   }
 
   public Command getAutonomousCommand() {
