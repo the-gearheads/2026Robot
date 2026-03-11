@@ -80,7 +80,7 @@ public class Intake extends SubsystemBase {
             Logger.recordOutput("Intake/currentDeploySetpoint", profileSetpoint);
         } else {
             profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
-            targetAngle = getRelativeDeployAngle();
+            // targetAngle = getRelativeDeployAngle();
         }
 
     }
@@ -93,6 +93,7 @@ public class Intake extends SubsystemBase {
         intakeConfig.encoder.quadratureAverageDepth(2); 
 
         deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        deployConfig.closedLoop.pid(DEPLOY_PID[0], DEPLOY_PID[1], DEPLOY_PID[2]);
 
         deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
         intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
@@ -208,20 +209,19 @@ public class Intake extends SubsystemBase {
         return MathUtil.isNear(angle.getRadians(), getRelativeDeployAngle().getRadians(), DEPLOY_ANGLE_TOLERANCE.getRadians());
     }
 
+    public void goToShimmyAngle() {
+        if (MathUtil.isNear(DEPLOY_SHIMMY_ANGLE.getRadians(), getAngle().getRadians(), DEPLOY_SHIMMY_TOLERANCE.getRadians())) {
+            setAngle(DEPLOY_MIN_ANGLE);
+        } else if (MathUtil.isNear(DEPLOY_MIN_ANGLE.getRadians(), getAngle().getRadians(), DEPLOY_SHIMMY_TOLERANCE.getRadians())){
+            setAngle(DEPLOY_SHIMMY_ANGLE);
+        }
+    }
 
     public Command shimmy() {
-        return this.run(() -> {
-
-            if (Math.abs(getAngle().getRadians() - DEPLOY_MIN_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
-                setAngle(DEPLOY_SHIMMY_ANGLE);
-            }
-
-            if (Math.abs(getAngle().getRadians() - DEPLOY_SHIMMY_ANGLE.getRadians()) < DEPLOY_SHIMMY_TOLERANCE) {
-                setAngle(DEPLOY_MIN_ANGLE);
-            }
-
-            setIntakeVelocity(INTAKE_VELOCITY);
-        }).finallyDo(this::stopIntake);
+        return this.runOnce(()->{setAngle(DEPLOY_SHIMMY_ANGLE);}).andThen(this.run(()->{
+            this.setIntakeVoltage(12);
+            this.goToShimmyAngle();
+        }));
     }
 
     public boolean getForwardSysidLimit() {

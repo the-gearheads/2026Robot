@@ -10,9 +10,9 @@ public class IntakeConstants {
     public static final int INTAKE_ID = 31;
     public static final int DEPLOY_ENCODER_ID = 34;
     public static final int INTAKE_CURRENT_LIMIT = 60;
-    public static final int DEPLOY_CURRENT_LIMIT = 40;
+    public static final int DEPLOY_CURRENT_LIMIT = 60;
 
-    public static final double[] DEPLOY_PID = {1.2, 0, 0};
+    public static final double[] DEPLOY_PID = {0.5, 0, 0};
     public static final Constraints DEPLOY_CONSTRAINTS = new Constraints(
         Units.degreesToRadians(100), // per second; max vel
         Units.degreesToRadians(50)  //  per sec^2; max accel
@@ -43,7 +43,7 @@ public class IntakeConstants {
     public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromDegrees(0);
     public static final Rotation2d DEPLOY_SHIMMY_ANGLE = Rotation2d.fromDegrees(60);
     public static final Rotation2d DEPLOY_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5);
-    public static final double DEPLOY_SHIMMY_TOLERANCE = 2.5;
+    public static final Rotation2d DEPLOY_SHIMMY_TOLERANCE = Rotation2d.fromDegrees(5);
 
     public static final double INTAKE_VELOCITY = 5250;
 

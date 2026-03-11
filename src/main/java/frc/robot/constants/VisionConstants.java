@@ -14,6 +14,7 @@ public class VisionConstants {
     
     public static final String[] CAMERA_NAMES = {"PEARL2", "CTHULHU", "ALLAN", "ANNIE"};
 
+    public static final boolean ENABLED = false;
     public static final boolean USE_CONSTRAINED_PNP = false;
 
     public static final double XY_STDDEV_COEF = 0.16;

@@ -8,6 +8,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.FieldConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.vision.Camera.VisionObservation;
 
@@ -34,7 +35,9 @@ public class Vision extends SubsystemBase {
     }
 
     private void addVisionMeasurement(SwerveDrivePoseEstimator poseEstimator, Camera cam, VisionObservation observation) {
-        poseEstimator.addVisionMeasurement(observation.poseResult().estimatedPose.toPose2d(), observation.poseResult().timestampSeconds, observation.stddevs());
+        if (VisionConstants.ENABLED) {
+            poseEstimator.addVisionMeasurement(observation.poseResult().estimatedPose.toPose2d(), observation.poseResult().timestampSeconds, observation.stddevs());
+        }
     } 
 
     public boolean feedPoseEstimator(SwerveDrivePoseEstimator poseEstimator) {
