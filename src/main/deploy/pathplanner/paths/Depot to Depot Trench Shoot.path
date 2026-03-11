@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.810416377314815,
-        "y": 6.409510778356482
+        "x": 2.0965320884795573,
+        "y": 6.124259675787905
       },
       "isLocked": false,
       "linkedName": "Depot Intaking"
@@ -20,15 +20,20 @@
         "y": 7.357855555555556
       },
       "prevControl": {
-        "x": 2.045534635416667,
-        "y": 6.612979181134261
+        "x": 2.103768832517036,
+        "y": 7.064277709752981
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Left Trench Safe Zone"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [

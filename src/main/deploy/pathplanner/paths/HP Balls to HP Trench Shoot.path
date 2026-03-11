@@ -3,38 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5815819979770023,
-        "y": 3.9947310210817717
+        "x": 7.731418218496245,
+        "y": 1.2656031063671207
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3337750228063436,
-        "y": 4.027771951104526
+        "x": 7.10459240577087,
+        "y": 0.6152299164182284
       },
       "isLocked": false,
-      "linkedName": "Center"
+      "linkedName": "HP Balls Endpoint"
     },
     {
       "anchor": {
-        "x": 1.3995720399429386,
-        "y": 4.274365192582025
+        "x": 4.4112,
+        "y": 0.6536777777777774
       },
       "prevControl": {
-        "x": 2.124136947218259,
-        "y": 4.157917261055635
+        "x": 4.907715342844974,
+        "y": 0.49179674190800593
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right Trench Safe Zone"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "fireShooter",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
       "name": "shimmy",
-      "waypointRelativePos": 0.15,
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -48,14 +59,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 180.0
+    "velocity": 0,
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

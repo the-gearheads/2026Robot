@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.706376604850214,
-        "y": 4.028530670470756
+        "x": 3.6370247950383305,
+        "y": 4.038910176213799
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.706376604850214,
-        "y": 5.028530670470756
+        "x": 3.6370247950383305,
+        "y": 5.038910176213799
       },
       "isLocked": false,
       "linkedName": "Center Starting Forward Depot"
