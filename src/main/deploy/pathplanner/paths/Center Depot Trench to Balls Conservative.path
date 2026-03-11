@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7,
-        "y": 4.03
+        "x": 3.56,
+        "y": 4.024728492333901
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7,
-        "y": 6.46348416822889
+        "x": 3.2816656462947194,
+        "y": 6.478334886073254
       },
       "isLocked": false,
       "linkedName": "Center Starting Forward Driver Station"
     },
     {
       "anchor": {
-        "x": 3.09736211669506,
-        "y": 7.150885194846678
+        "x": 3.4458346864352642,
+        "y": 7.204402084220614
       },
       "prevControl": {
-        "x": 2.8656112249787054,
-        "y": 6.889078471039182
+        "x": 3.21408379471891,
+        "y": 6.942595360413118
       },
       "nextControl": {
-        "x": 3.323855372060958,
-        "y": 7.406752418108179
+        "x": 3.6723279418011625,
+        "y": 7.460269307482115
       },
       "isLocked": false,
       "linkedName": null
@@ -116,7 +116,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 180.0
   },
   "reversed": false,

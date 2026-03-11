@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5040204429301536,
-        "y": 7.352463532793868
+        "x": 3.554094042802385,
+        "y": 7.284122990310903
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.504020442930154,
-        "y": 7.352463532793868
+        "x": 4.554094042802385,
+        "y": 7.284122990310903
       },
       "isLocked": false,
       "linkedName": "Depot Starting Forward Driver Station"
@@ -84,7 +84,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 180.0
   },
   "reversed": false,
