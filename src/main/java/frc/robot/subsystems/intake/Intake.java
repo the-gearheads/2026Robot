@@ -170,7 +170,6 @@ public class Intake extends SubsystemBase {
         }
         targetAngle = angle;
         Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
-        deployController.setSetpoint(angle.getRadians(), ControlType.kPosition);
     }
 
     @AutoLogOutput
