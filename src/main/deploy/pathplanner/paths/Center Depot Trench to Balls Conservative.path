@@ -1,0 +1,129 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.7,
+        "y": 4.03
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.7,
+        "y": 6.46348416822889
+      },
+      "isLocked": false,
+      "linkedName": "Center Starting Forward Driver Station"
+    },
+    {
+      "anchor": {
+        "x": 3.09736211669506,
+        "y": 7.150885194846678
+      },
+      "prevControl": {
+        "x": 2.8656112249787054,
+        "y": 6.889078471039182
+      },
+      "nextControl": {
+        "x": 3.323855372060958,
+        "y": 7.406752418108179
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.723645256601364,
+        "y": 7.451210072402045
+      },
+      "prevControl": {
+        "x": 3.7931454210707845,
+        "y": 7.486148943059503
+      },
+      "nextControl": {
+        "x": 5.611138535455707,
+        "y": 7.417886033326235
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.731418218496245,
+        "y": 6.557280871064621
+      },
+      "prevControl": {
+        "x": 7.731418218496245,
+        "y": 7.246120542660693
+      },
+      "nextControl": {
+        "x": 7.731418218496245,
+        "y": 5.418328882112172
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.731418218496245,
+        "y": 1.2656031063671207
+      },
+      "prevControl": {
+        "x": 7.736429868993813,
+        "y": 3.384890241774947
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "HP Balls Endpoint"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 3.0076537093496016,
+      "maxWaypointRelativePos": 4.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Deploy Intake",
+      "waypointRelativePos": 2.45,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Start Intake Chomp",
+      "waypointRelativePos": 2.799968540268456,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

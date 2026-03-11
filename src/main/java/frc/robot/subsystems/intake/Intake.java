@@ -178,8 +178,13 @@ public class Intake extends SubsystemBase {
     }
 
     @AutoLogOutput
-    public Rotation2d getRelativeDeployAngle() {
+    public Rotation2d getSplineEncoderRelativeDeployAngle() {
         return Rotation2d.fromRadians(deployEncoder.getPosition());
+    }
+
+    @AutoLogOutput
+    public double getIntegratedRelativeDeployAngle() {
+        return deployRelativeEncoder.getPosition();
     }
 
     @AutoLogOutput
