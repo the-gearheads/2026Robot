@@ -58,8 +58,8 @@ public class ShooterCalculations {
     static InterpolatingDoubleTreeMap createRPMFunction() {
         InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
         
-        for(int i=0; i<ShooterConstants.SHOOT_RPMS.length; i++) {
-            map.put(ShooterConstants.SHOOT_DISTANCES[i], ShooterConstants.SHOOT_RPMS[i]);
+        for(int i=0; i<ShooterConstants.SHOOT_SPEEDS.length; i++) {
+            map.put(ShooterConstants.SHOOT_DISTANCES[i], ShooterConstants.SHOOT_SPEEDS[i]);
         }
 
         return map;

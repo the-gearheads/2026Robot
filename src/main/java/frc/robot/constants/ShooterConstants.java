@@ -61,9 +61,9 @@ public class ShooterConstants {
 
     public static final double FLYWHEEL_RADIUS = Units.inchesToMeters(3);  // i mean its not, but it is, but its not
 
-    public static final double[] SHOOT_DISTANCES = {1, 2, 3};  // in meters
-    public static final double[] SHOOT_ANGLES = {1, 2, 3};  // in Radians
-    public static final double[] SHOOT_RPMS = {1, 2, 3};  // in Radians/Sec
+    public static final double[] SHOOT_DISTANCES = {1.248, 1.666, 2.070, 2.382, 2.710, 3.157, 4.226, 4.637, 5.430, 4.943, 3.632};  // in meters
+    public static final double[] SHOOT_ANGLES = {0.049, 0.1, 0.145, 0.154, 0.206, 0.224, 0.347, 0.381, 0.436, 0.383, 0.258};  // in Radians
+    public static final double[] SHOOT_SPEEDS = {215.141, 218.428, 226.646, 238.589, 245.985, 247.574, 272.172, 278.637, 312.439, 299.838, 262.420};  // in Radians/Sec
 
     public static final double MAX_KICKER_SPEED = KICKER_FEEDFORWARD.maxAchievableVelocity(12, 0);
     public static final double MAX_EFFECTIVE_FLYWHEEL_SPEED = (MAX_KICKER_SPEED * EFFECTIVE_KICKER_DIAMETER) / (EFFECTIVE_FLYWHEEL_DIAMETER * KICKER_SURFACE_SPEED_RATIO);  // in order to maintain the surface speed ratio, the flywheel can't go faster than this speed or the kicker will be commanded to go faster than its max speed

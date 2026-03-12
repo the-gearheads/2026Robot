@@ -28,7 +28,6 @@ import frc.robot.controllers.Controllers;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_RPM;
-import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -37,6 +36,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
