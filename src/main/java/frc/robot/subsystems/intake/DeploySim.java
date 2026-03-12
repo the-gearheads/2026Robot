@@ -8,6 +8,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.util.SplineEncoderSim;
 
 public class DeploySim extends Deploy {
   DCMotor deployGearbox = DCMotor.getNEO(1);
@@ -20,6 +21,8 @@ public class DeploySim extends Deploy {
       // HOOD_FEEDFORWARD.getKa()),
       deployGearbox, 60.0, DEPLOY_LENGTH, DEPLOY_MIN_ANGLE.getRadians(), DEPLOY_MAX_ANGLE.getRadians(), false, 0);
 
+    SplineEncoderSim deployEncoderSim = new SplineEncoderSim(deploySplineEncoder);
+
   @Override
   public void simulationPeriodic() {
     deploySim.setInputVoltage(deployFlexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
@@ -27,6 +30,10 @@ public class DeploySim extends Deploy {
     
     // velocity should be in post conversion units,so radians/sec of the Hood
     deployFlexSim.iterate(deploySim.getVelocityRadPerSec(), RoboRioSim.getVInVoltage(), 0.02);
+    deployEncoderSim.setPosition(deployFlexSim.getPosition());
+    deployEncoderSim.setAngle(deployFlexSim.getPosition());
+    deployEncoderSim.setVelocity(deployFlexSim.getVelocity());
+
   }
 
 }

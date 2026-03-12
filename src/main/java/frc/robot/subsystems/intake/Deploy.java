@@ -38,7 +38,7 @@ import frc.robot.constants.IntakeConstants;
 
 public class Deploy extends SubsystemBase {
   SparkFlex deploy = new SparkFlex(DEPLOY_ID, MotorType.kBrushless); // vortex
-  SplineEncoder deployEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
+  SplineEncoder deploySplineEncoder = new SplineEncoder(DEPLOY_ENCODER_ID);
   RelativeEncoder deployRelativeEncoder = deploy.getEncoder();
   EncoderConfig deployRelativeEncoderConfig = new EncoderConfig();
   DetachedEncoderConfig deployAbsEncoderConfig = new DetachedEncoderConfig();
@@ -52,9 +52,10 @@ public class Deploy extends SubsystemBase {
   boolean voltageMode = false;
 
   public Deploy() {
-    deployRelativeEncoder.setPosition(deployEncoder.getAngle());
-    targetAngle = Rotation2d.fromRadians(deployEncoder.getAngle());
-    profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+    configure();
+    deployRelativeEncoder.setPosition(deploySplineEncoder.getAngle());
+    targetAngle = getAngle();
+    profileSetpoint = new State(getIntegratedRelativeDeployAngle().getRadians(), getIntegratedRelativeDeployVelocity());
   }
 
   void configure() {
@@ -80,17 +81,20 @@ public class Deploy extends SubsystemBase {
     deployConfig.closedLoop.i(DEPLOY_PID[1]);
     deployConfig.closedLoop.d(DEPLOY_PID[2]);
     deploy.configure(deployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    deployEncoder.configure(deployAbsEncoderConfig, ResetMode.kResetSafeParameters);
+    deploySplineEncoder.configure(deployAbsEncoderConfig, ResetMode.kResetSafeParameters);
   }
 
   @Override
   public void periodic() {
     if (DriverStation.isDisabled()) {
-      deployRelativeEncoder.setPosition(deployEncoder.getAngle());
+      deployRelativeEncoder.setPosition(deploySplineEncoder.getAngle());
+      profileSetpoint = new State(getIntegratedRelativeDeployAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+      targetAngle = getAngle();
     }
 
     if(voltageMode) {
-      profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+      profileSetpoint = new State(getIntegratedRelativeDeployAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+      targetAngle = getAngle();
       voltageMode = false; // voltageMode should be continuously set to set a voltage, so we default to maintaining pid when no command is being called
     } else {
       profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
@@ -116,42 +120,56 @@ public class Deploy extends SubsystemBase {
 
   @AutoLogOutput
   public Rotation2d getAngle() {
-    return Rotation2d.fromRadians(deployEncoder.getAngle());
+    return Rotation2d.fromRadians(deploySplineEncoder.getAngle());
   }
 
-  @AutoLogOutput
-  public Rotation2d getRelativeDeployAngle() {
-    return Rotation2d.fromRadians(deployEncoder.getPosition());
-  }
+    @AutoLogOutput
+    public Rotation2d getSplineEncoderRelativeDeployAngle() {
+        return Rotation2d.fromRadians(deploySplineEncoder.getPosition());
+    }
 
-  @AutoLogOutput
-  public double getRelativeDeployVelocity() {
-    return deployEncoder.getVelocity();
-  }
+    @AutoLogOutput
+    public Rotation2d getIntegratedRelativeDeployAngle() {
+        return Rotation2d.fromRadians(deployRelativeEncoder.getPosition());
+    }
+
+    @AutoLogOutput
+    public double getIntegratedRelativeDeployVelocity() {
+        return deployRelativeEncoder.getVelocity();
+    }
+
+    @AutoLogOutput
+    public double getSpineRelativeDeployVelocity() {
+        return deploySplineEncoder.getVelocity();
+    }
 
   public void setAngle(Rotation2d angle) {
     if (voltageMode) {
-      profileSetpoint = new State(getRelativeDeployAngle().getRadians(), getRelativeDeployVelocity());
+      profileSetpoint = new State(getIntegratedRelativeDeployAngle().getRadians(), getIntegratedRelativeDeployVelocity());
     }
     voltageMode = false;
     targetAngle = angle;
     Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
-    deployController.setSetpoint(angle.getRadians(), ControlType.kPosition);
   }
 
-  public Command shimmy(Intake intake) {
-    return Commands.run(() -> {
-      if(MathUtil.isNear(getAngle().getRadians(), DEPLOY_MIN_ANGLE.getRadians(), DEPLOY_SHIMMY_TOLERANCE)) {
-        setAngle(DEPLOY_SHIMMY_ANGLE);
-      }
+    public boolean atAngle(Rotation2d angle) {
+        return MathUtil.isNear(angle.getRadians(), getIntegratedRelativeDeployAngle().getRadians(), DEPLOY_ANGLE_TOLERANCE.getRadians());
+    }
 
-      if (MathUtil.isNear(getAngle().getRadians(), DEPLOY_SHIMMY_ANGLE.getRadians(), DEPLOY_SHIMMY_TOLERANCE)) {
-        setAngle(DEPLOY_MIN_ANGLE);
-      }
+    public void goToShimmyAngle() {
+        if (MathUtil.isNear(DEPLOY_SHIMMY_ANGLE.getRadians(), getAngle().getRadians(), DEPLOY_SHIMMY_TOLERANCE.getRadians())) {
+            setAngle(DEPLOY_MIN_ANGLE);
+        } else if (MathUtil.isNear(DEPLOY_MIN_ANGLE.getRadians(), getAngle().getRadians(), DEPLOY_SHIMMY_TOLERANCE.getRadians())){
+            setAngle(DEPLOY_SHIMMY_ANGLE);
+        }
+    }
 
-      intake.setIntakeVelocity(INTAKE_VELOCITY);
-    }, this, intake);
-  }
+    public Command shimmy(Intake intake) {
+        return this.runOnce(()->{setAngle(DEPLOY_SHIMMY_ANGLE);}).andThen(Commands.run(()->{
+            intake.setIntakeVoltage(12);
+            this.goToShimmyAngle();
+        }, this, intake));
+    }
 
 
   @AutoLogOutput
