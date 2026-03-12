@@ -181,7 +181,7 @@ public class RobotContainer {
     //   shooter.setFlywheelVoltage(0);
     //   spindexer.setVoltageFeeder(0);
     // }));
-    Controllers.driverController.getPovUp().onTrue(hood.hoodHome());
+    // Controllers.driverController.getPovUp().onTrue(hood.hoodHome());
     // Controllers.driverController.getYBtn().whileTrue(deploy.setVoltageCommand(2));
     // Controllers.driverController.getBBtn().whileTrue(deploy.setVoltageCommand(-2));
 
@@ -210,8 +210,13 @@ public class RobotContainer {
      Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
        spindexer.setVoltageFeeder(12);
      }));
-    Controllers.driverController.getYBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
-    Controllers.driverController.getBBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
+    // Controllers.driverController.getYBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
+    // Controllers.driverController.getBBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
+    Controllers.driverController.getYBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()+Units.rotationsPerMinuteToRadiansPerSecond(25));}));
+    Controllers.driverController.getBBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()-Units.rotationsPerMinuteToRadiansPerSecond(25));}));
+    Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()+Units.degreesToRadians(0.5)));}));
+    Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()-Units.degreesToRadians(0.5)));}));
+
     // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
     // Controllers.driverController.getBBtn().onTrue(climber.climberDown());
   }
