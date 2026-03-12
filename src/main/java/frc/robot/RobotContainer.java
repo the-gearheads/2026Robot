@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberSim;
+import frc.robot.subsystems.intake.Deploy;
+import frc.robot.subsystems.intake.DeploySim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSim;
 import frc.robot.subsystems.shooter.Hood;
@@ -18,6 +20,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.commands.Teleop;
 import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.commands.NTControl.ShooterNTControl;
+import frc.robot.commands.NTControl.DeployNTControl;
 import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
@@ -45,6 +48,7 @@ public class RobotContainer {
   private final Intake intake;
   private final Climber climber;
   private final SendableChooser<Command> autoChooser;
+  private final Deploy deploy;
 
   public static final boolean deathMode = true;
 
@@ -64,6 +68,7 @@ public class RobotContainer {
       shooter = new ShooterSim();
       intake = new IntakeSim();
       climber = new ClimberSim();
+      deploy = new DeploySim();
       // configureFuelSim();
     } else {
       spindexer = new Spindexer();
@@ -71,17 +76,18 @@ public class RobotContainer {
       shooter = new Shooter();
       intake = new Intake();
       climber = new Climber();
+      deploy = new Deploy();
     }
 
     swerve.setPose(new Pose2d(2, 4, Rotation2d.kZero));
 
     hood.setDefaultCommand(new HoodNTControl(hood));
     shooter.setDefaultCommand(new ShooterNTControl(shooter));
-    // intake.setDefaultCommand(new DeployNTControl(intake));
+    deploy.setDefaultCommand(new DeployNTControl(deploy));
 
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
-    sysidPicker.addSysidRoutines("Intake Deploy", intake.getDeploySysid(), intake::getForwardSysidLimit, intake::getBackwardSysidLimit);
+    sysidPicker.addSysidRoutines("Intake Deploy", deploy.getDeploySysid(), deploy::getForwardSysidLimit, deploy::getBackwardSysidLimit);
     // // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
     // sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
     // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
@@ -127,11 +133,11 @@ public class RobotContainer {
       shooter.setKickerVoltage(0);
     }));
 
-    Controllers.driverController.getLeftPaddle().whileTrue(intake.shimmy());
+    Controllers.driverController.getLeftPaddle().whileTrue(deploy.shimmy(intake));
+    deploy.setDefaultCommand(deploy.setAngleCommand(DEPLOY_MIN_ANGLE));
     Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
       intake.stopIntake();
-      intake.setAngle(DEPLOY_MIN_ANGLE);
-    })) ;
+    }));
 
     // Controllers.driverController.getLeftPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(30)));
     // Controllers.driverController.getRightPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(5)));
@@ -146,9 +152,10 @@ public class RobotContainer {
     Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
 
-    Controllers.driverController.getPovRight().onTrue(Commands.run(()->{intake.setAngle(Rotation2d.fromDegrees(30));}).until(()->{return intake.atAngle(Rotation2d.fromDegrees(30));}));
-    Controllers.driverController.getPovDown().onTrue(Commands.run(()->{intake.setAngle(Rotation2d.fromDegrees(0));}).until(()->{return intake.atAngle(Rotation2d.fromDegrees(0));}));
-    Controllers.driverController.getPovUp().onTrue(Commands.run(()->{intake.setAngle(DEPLOY_MAX_ANGLE);}).until(()->{return intake.atAngle(DEPLOY_MAX_ANGLE);}));
+    // todo fix after merge
+    // Controllers.driverController.getPovRight().onTrue(Commands.run(()->{intake.setAngle(Rotation2d.fromDegrees(30));}).until(()->{return intake.atAngle(Rotation2d.fromDegrees(30));}));
+    // Controllers.driverController.getPovDown().onTrue(Commands.run(()->{intake.setAngle(Rotation2d.fromDegrees(0));}).until(()->{return intake.atAngle(Rotation2d.fromDegrees(0));}));
+    // Controllers.driverController.getPovUp().onTrue(Commands.run(()->{intake.setAngle(DEPLOY_MAX_ANGLE);}).until(()->{return intake.atAngle(DEPLOY_MAX_ANGLE);}));
         
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageMainSpinner(-12);
@@ -171,6 +178,10 @@ public class RobotContainer {
     //   shooter.setFlywheelVoltage(0);
     //   spindexer.setVoltageFeeder(0);
     // }));
+    Controllers.driverController.getPovUp().onTrue(hood.hoodHome());
+    Controllers.driverController.getYBtn().whileTrue(deploy.setVoltageCommand(2));
+    Controllers.driverController.getBBtn().whileTrue(deploy.setVoltageCommand(-2));
+
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
    // Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
