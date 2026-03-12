@@ -10,21 +10,26 @@ import frc.robot.constants.ClimberConstants;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 
 public class Climber extends SubsystemBase {
-    SparkFlex climber = new SparkFlex(60,MotorType.kBrushless);
+    SparkFlex climber = new SparkFlex(50,MotorType.kBrushless);
     RelativeEncoder climbEncoder = climber.getEncoder();
     SparkFlexConfig climbConfig = new SparkFlexConfig();
 
     public Climber() {
         configure();
+        climbEncoder.setPosition(0);
     }
     
     public void configure(){
         climbConfig.smartCurrentLimit(60);
         climbConfig.idleMode(IdleMode.kBrake);
+        climbConfig.inverted(false);
         climber.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         climbConfig.encoder.quadratureMeasurementPeriod(10);
@@ -36,8 +41,14 @@ public class Climber extends SubsystemBase {
         climber.setVoltage(voltage);
     }
 
+    @AutoLogOutput
     public double getClimbPosition() {
         return climbEncoder.getPosition();
+    }
+
+    @AutoLogOutput
+    public double getClimberVoltage() {
+        return climber.getAppliedOutput() * climber.getBusVoltage();
     }
 
     public Command climberUp() {

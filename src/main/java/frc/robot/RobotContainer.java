@@ -17,6 +17,7 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.commands.Teleop;
 import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.commands.NTControl.ShooterNTControl;
@@ -78,7 +79,7 @@ public class RobotContainer {
       deploy = new Deploy();
     }
 
-    swerve.setPose(new Pose2d(2, 4, Rotation2d.kZero));
+    swerve.setPose(AllianceFlipUtil.apply(new Pose2d(3.560, 4.025, Rotation2d.k180deg)));
 
     hood.setDefaultCommand(new HoodNTControl(hood));
     shooter.setDefaultCommand(new ShooterNTControl(shooter));
@@ -178,8 +179,8 @@ public class RobotContainer {
     //   spindexer.setVoltageFeeder(0);
     // }));
     Controllers.driverController.getPovUp().onTrue(hood.hoodHome());
-    Controllers.driverController.getYBtn().whileTrue(deploy.setVoltageCommand(2));
-    Controllers.driverController.getBBtn().whileTrue(deploy.setVoltageCommand(-2));
+    // Controllers.driverController.getYBtn().whileTrue(deploy.setVoltageCommand(2));
+    // Controllers.driverController.getBBtn().whileTrue(deploy.setVoltageCommand(-2));
 
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
@@ -193,12 +194,10 @@ public class RobotContainer {
      Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
        spindexer.setVoltageFeeder(12);
      }));
-    Controllers.driverController.getYBtn().whileTrue(Commands.run(()-> {
-      climber.climberUp();
-    }));
-    Controllers.driverController.getYBtn().whileTrue(Commands.run(()-> {
-      climber.climberDown();
-    }));
+    Controllers.driverController.getYBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
+    Controllers.driverController.getBBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
+    // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
+    // Controllers.driverController.getBBtn().onTrue(climber.climberDown());
   }
 
   public Command getAutonomousCommand() {

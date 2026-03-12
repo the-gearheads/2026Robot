@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.56,
-        "y": 4.024728492333901
+        "y": 4.025
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.2903030504684843,
-        "y": 5.532480768206986
+        "y": 5.532752275873085
       },
       "isLocked": false,
       "linkedName": "Center Starting Forward Driver Station"
@@ -73,7 +73,7 @@
       },
       "nextControl": {
         "x": 8.606926544420025,
-        "y": 1.2719845611240996
+        "y": 1.2719845611240983
       },
       "isLocked": false,
       "linkedName": null

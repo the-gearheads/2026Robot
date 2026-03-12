@@ -6,6 +6,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controllers.Controllers;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.util.ShooterCalculations;
 
 public class Teleop extends Command {
     Swerve swerve;
@@ -34,8 +35,12 @@ public class Teleop extends Command {
         xSpeed *= SwerveConstants.MAX_ROBOT_TRANS_SPEED;
         ySpeed *= SwerveConstants.MAX_ROBOT_TRANS_SPEED;
         rotSpeed *= SwerveConstants.MAX_ROBOT_TRANS_SPEED;
-        
-        swerve.drive(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), swerve.getRotation()));
+
+        if (Controllers.driverController.getRightPaddle().getAsBoolean()) {
+            swerve.drive(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), swerve.getRotation()), ShooterCalculations.getRobotYaw(swerve.getPose().getTranslation()));
+        } else {
+            swerve.drive(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), swerve.getRotation()));
+        }
     }
 
     @Override

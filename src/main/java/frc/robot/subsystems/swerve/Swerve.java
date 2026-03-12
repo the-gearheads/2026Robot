@@ -292,7 +292,9 @@ public class Swerve extends SubsystemBase {
   long odomTwistTime = 0;
 
   public void periodic() {
+    Logger.recordOutput("ShooterCalculations/HubDistance", ShooterCalculations.getHubDistance(getPose()));
     // gyro.log();
+
     for (SwerveModule module : modules) {
       module.periodic();
     }
