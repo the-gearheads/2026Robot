@@ -1,0 +1,50 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SLOWEST HP Side HP Trench to Balls Conservative"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SLOWEST Depot Balls to Depot Trench Shoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "shimmy"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "fireShooter"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
