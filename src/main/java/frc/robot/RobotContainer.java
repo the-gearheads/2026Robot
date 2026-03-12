@@ -17,15 +17,13 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
 import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.commands.NTControl.DeployNTControl;
 import frc.robot.controllers.Controllers;
 
+import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
-
-import com.pathplanner.lib.auto.AutoBuilder;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -132,11 +130,11 @@ public class RobotContainer {
       shooter.setKickerVoltage(0);
     }));
 
-    Controllers.driverController.getLeftPaddle().whileTrue(intake.shimmy());
+    Controllers.driverController.getLeftPaddle().whileTrue(deploy.shimmy(intake));
+    deploy.setDefaultCommand(deploy.setAngleCommand(DEPLOY_MIN_ANGLE));
     Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
       intake.stopIntake();
-      intake.setAngle(DEPLOY_MIN_ANGLE);
-    })) ;
+    }));
 
     // Controllers.driverController.getLeftPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(30)));
     // Controllers.driverController.getRightPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(5)));
