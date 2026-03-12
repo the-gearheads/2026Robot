@@ -50,6 +50,7 @@ public class Hood extends SubsystemBase {
     TrapezoidProfile.State profileSetpoint;
     TrapezoidProfile.State lastSetpoint;
     
+    @AutoLogOutput
     boolean isManualMode = false;
     public Hood() {
         configure();

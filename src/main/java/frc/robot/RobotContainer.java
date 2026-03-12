@@ -20,9 +20,9 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
-import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.commands.NTControl.ShooterNTControl;
 import frc.robot.commands.NTControl.DeployNTControl;
+import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
@@ -34,7 +34,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -129,12 +128,12 @@ public class RobotContainer {
 
 
     // voltage numbers are completely arbitrary ngl i just picked things
-    Controllers.driverController.getABtn().whileTrue(shooter.run(()->{
-      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(2500));
-    }).finallyDo(()->{
-      shooter.setFlywheelVoltage(0);
-      shooter.setKickerVoltage(0);
-    }));
+    // Controllers.driverController.getABtn().whileTrue(shooter.run(()->{
+    //   shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(2500));
+    // }).finallyDo(()->{
+    //   shooter.setFlywheelVoltage(0);
+    //   shooter.setKickerVoltage(0);
+    // }));
 
     Controllers.driverController.getLeftPaddle().whileTrue(deploy.shimmy(intake));
     deploy.setDefaultCommand(deploy.setAngleCommand(DEPLOY_MIN_ANGLE));
@@ -151,8 +150,8 @@ public class RobotContainer {
     //       Rotation2d.kZero.getMeasure(), Inches.of(22));
     // }, shooter));
 
-    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
-    Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
+    // Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
+    // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
 
     // todo fix after merge
@@ -212,10 +211,10 @@ public class RobotContainer {
      }));
     // Controllers.driverController.getYBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
     // Controllers.driverController.getBBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
-    Controllers.driverController.getYBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()+Units.rotationsPerMinuteToRadiansPerSecond(25));}));
-    Controllers.driverController.getBBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()-Units.rotationsPerMinuteToRadiansPerSecond(25));}));
-    Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()+Units.degreesToRadians(0.5)));}));
-    Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()-Units.degreesToRadians(0.5)));}));
+    // Controllers.driverController.getYBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()+Units.rotationsPerMinuteToRadiansPerSecond(25));}));
+    // Controllers.driverController.getBBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()-Units.rotationsPerMinuteToRadiansPerSecond(25));}));
+    // Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()+Units.degreesToRadians(0.5)));}));
+    // Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()-Units.degreesToRadians(0.5)));}));
 
     // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
     // Controllers.driverController.getBBtn().onTrue(climber.climberDown());

@@ -39,12 +39,12 @@ public class ShooterConstants {
     public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017501, 0.00038719);
 
     // public static final double[] HOOD_PID = {0.14218, 0, 0};
-    public static final double[] HOOD_PID = {10, 0, 0.5};
+    public static final double[] HOOD_PID = {20, 0, 0.5};
     public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.19535, 0.14086, 0.75006, 0.019405); 
     // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0); 
     public static final Constraints HOOD_CONSTRAINTS = new Constraints(
-        Units.degreesToRadians(1500), // per second; max vel
-        Units.degreesToRadians(1000)  //  per sec^2; max accel
+        Units.degreesToRadians(500), // per second; max vel
+        Units.degreesToRadians(500)  //  per sec^2; max accel
     );
 
     // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);  // 0.75006
@@ -68,6 +68,6 @@ public class ShooterConstants {
     public static final double MAX_KICKER_SPEED = KICKER_FEEDFORWARD.maxAchievableVelocity(12, 0);
     public static final double MAX_EFFECTIVE_FLYWHEEL_SPEED = (MAX_KICKER_SPEED * EFFECTIVE_KICKER_DIAMETER) / (EFFECTIVE_FLYWHEEL_DIAMETER * KICKER_SURFACE_SPEED_RATIO);  // in order to maintain the surface speed ratio, the flywheel can't go faster than this speed or the kicker will be commanded to go faster than its max speed
 
-    public static final Translation3d CENTER_BOT_TOSHOOT = new Translation3d(Units.inchesToMeters(-7.5572), Units.inchesToMeters(9.2307), Units.inchesToMeters(20.5469));
+    public static final Translation3d CENTER_BOT_TOSHOOT = new Translation3d(Units.inchesToMeters(-7.5572), Units.inchesToMeters(-9.2307), Units.inchesToMeters(20.5469));
 
 }

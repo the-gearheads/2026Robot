@@ -71,10 +71,10 @@ public class ShooterCalculations {
         return hubPosition.getDistance(getShooterPosition(robotPose).getTranslation());
     } 
 
-    public static Rotation2d getRobotYaw(Translation2d robotPose){
+    public static Rotation2d getRobotYaw(Pose2d robotPose){
         Translation2d targetAngle = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
 
-        Rotation2d angle = targetAngle.minus(robotPose).getAngle();
+        Rotation2d angle = targetAngle.minus(getShooterPosition(robotPose).getTranslation()).getAngle();
         return angle;
     }
     

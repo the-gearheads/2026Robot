@@ -41,7 +41,7 @@ public class HubTracker {
             }
         }
 
-        Alliance initialAlliance = cx.charAt(0) == 'R' ? Alliance.Red : Alliance.Blue;
+        Alliance initialAlliance = currentGameData.charAt(0) == 'R' ? Alliance.Red : Alliance.Blue;
 
         if (currentTime >= 130 || currentTime < 30) {
             return DriverStation.getAlliance().orElse(Alliance.Blue);
