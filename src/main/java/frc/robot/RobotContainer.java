@@ -191,7 +191,7 @@ public class RobotContainer {
       ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
       ShooterCalculations.HoodAngles.add(hood.getAngle());
       double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
-      double[] ShooterSpeedsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
+      double[] ShooterSpeedsArray = ShooterCalculations.ShooterSpeeds.stream().mapToDouble(Double::doubleValue).toArray();
       double[] HoodAnglesArray = ShooterCalculations.HoodAngles.stream()
                         .mapToDouble(r -> r.getRadians())
                         .toArray();
