@@ -27,7 +27,7 @@ import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
-import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_RPM;
+import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_VELOCITY;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -128,7 +128,7 @@ public class RobotContainer {
     swerve.stop();
     }));
     NamedCommands.registerCommand("FireFromDepotTrench", Commands.run(() -> {
-    shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(DEPOT_TRENCH_SHOOT_RPM));
+    shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(DEPOT_TRENCH_SHOOT_VELOCITY));
     hood.setAngle(DEPLOY_MIN_ANGLE);
     }));
     NamedCommands.registerCommand("Shimmy", Commands.run(() -> {
@@ -210,7 +210,7 @@ public class RobotContainer {
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
     Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
-      ShooterCalculations.HubDists.add(ShooterCalculations.getHubDistance(swerve.getPose()));
+      //ShooterCalculations.HubDists.add(ShooterCalculations.getHubDistance(swerve.getPose()));
       ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
       ShooterCalculations.HoodAngles.add(hood.getAngle());
       double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
@@ -241,6 +241,9 @@ public class RobotContainer {
 
     // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
     // Controllers.driverController.getBBtn().onTrue(climber.climberDown());
+
+    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.setAngleTreeMapCommand(swerve));
+    Controllers.driverController.getRightTriggerBtn().whileTrue(shooter.setVelocityTreeMapCommand(swerve));
   }
 
   public Command getAutonomousCommand() {

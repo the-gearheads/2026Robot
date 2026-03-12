@@ -38,13 +38,13 @@ public class ShooterCalculations {
     // it gives us a new 'fake' location for the hub, so we aim and shoot as if we were aiming towards that
     // and if shoot towards that new one while moving, it will go in the real hub 
     
-    static InterpolatingDoubleTreeMap shooterAngleFunction = createAngleMap();
-    static InterpolatingDoubleTreeMap shooterRPMFunction = createRPMFunction();
+    static InterpolatingDoubleTreeMap shooterAngleFunction = initAngleMap();
+    static InterpolatingDoubleTreeMap shooterVelFunction = initShooterVelMap();
     public static ArrayList<Double> HubDists = new ArrayList<>();
     public static ArrayList<Double> ShooterSpeeds = new ArrayList<>();
     public static ArrayList<Rotation2d> HoodAngles = new ArrayList<>();
 
-    static InterpolatingDoubleTreeMap createAngleMap() {
+   private static InterpolatingDoubleTreeMap initAngleMap() {
         InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
 
         for(int i=0; i<ShooterConstants.SHOOT_DISTANCES.length; i++) {
@@ -53,9 +53,8 @@ public class ShooterCalculations {
 
         return map;
     }
-
-    
-    static InterpolatingDoubleTreeMap createRPMFunction() {
+        
+    private static InterpolatingDoubleTreeMap initShooterVelMap() {
         InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
         
         for(int i=0; i<ShooterConstants.SHOOT_SPEEDS.length; i++) {
@@ -65,13 +64,50 @@ public class ShooterCalculations {
         return map;
     }
 
+    // public static Translation2d getObjective() {
+        // return ObjectiveTracker.getObjective() OR DO SOMETHING HERE LIKE
+        // if (allainceZone)
+        //     return ObjectiveTracker.shootObjective();
+        // elseif dangerzone
+        //     return ObjectiveTracker.hideObjective();
+        // else
+        //     return objectivetracker.feedobjective
+    //}
 
-    public static double getHubDistance(Pose2d robotPose) {
-        Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-        return hubPosition.getDistance(getShooterPosition(robotPose).getTranslation());
-    } 
+    // then we change getHubDistance to getObjectiveDistance
+    // getRobotYaw -> (robotPose - objective).angle
 
-    public static Rotation2d getRobotYaw(Pose2d robotPose){
+    // 
+
+    public static Rotation2d getShootAngle(Swerve swerve) {
+        Pose2d robotPose = swerve.getPose();
+        Rectangle2d[] trenchRectangles = getTrenchAvoidanceRectanlges(robotPose, swerve.getFieldRelativeSpeeds());
+        for(int i=0;i<trenchRectangles.length;i++) {
+            if (trenchRectangles[i].contains(robotPose.getTranslation())) {
+                return Rotation2d.fromRadians(ShooterConstants.HOOD_MIN_ANGLE);
+            } 
+        }
+        double hubDistance = getHubDistance(robotPose);
+        Rotation2d HubAngle = new Rotation2d(shooterAngleFunction.get(hubDistance)); 
+        return HubAngle;
+    }
+
+    private static double getFeedingDistance(Pose2d robotPose) {
+        Translation2d feedPosition = ObjectiveTracker.getFeedingObjective(robotPose).aimingLocation; 
+        return feedPosition.getDistance(getShooterPosition(robotPose).getTranslation());
+    }
+
+    public static double getShootVelocity(Swerve swerve) {
+        Pose2d robotPose = swerve.getPose();
+        return shooterVelFunction.get(getHubDistance(robotPose));
+    }
+
+    private static double getHubDistance(Pose2d robotPose) { // TODO RENAME TO getObjectiveDistance
+        var us = getShooterPosition(robotPose).getTranslation();
+        var them = ObjectiveTracker.getObjective(robotPose).aimingLocation;
+        return us.getDistance(them);    } 
+
+    public static Rotation2d getRobotYaw(Pose2d robotPose) {
         Translation2d targetAngle = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
 
         Rotation2d angle = targetAngle.minus(getShooterPosition(robotPose).getTranslation()).getAngle();
@@ -84,7 +120,7 @@ public class ShooterCalculations {
     }
 
     public static double getShooterVelocity(Pose2d robotPose) {
-        return shooterRPMFunction.get(getHubDistance(getShooterPosition(robotPose)));
+        return shooterVelFunction.get(getHubDistance(getShooterPosition(robotPose)));
     }
 
     private static Pose2d getShooterPosition(Pose2d robotPose) {
@@ -92,7 +128,7 @@ public class ShooterCalculations {
         
         Pose2d shooterPose = robotPose.plus(new Transform2d(shooterDistance, new Rotation2d(0)));
         Logger.recordOutput("ShooterCalculations/shooterPosition", shooterPose);
-        return  shooterPose;
+        return shooterPose;
     }
 
     public static Rectangle2d[] getTrenchAvoidanceRectanlges(Pose2d pose, ChassisSpeeds fieldRelativeRobotSpeed) {

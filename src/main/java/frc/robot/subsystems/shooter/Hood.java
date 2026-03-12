@@ -15,6 +15,7 @@ import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
 import static frc.robot.constants.ShooterConstants.HOOD_PID;
+import frc.robot.subsystems.swerve.Swerve;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -41,6 +42,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
+import frc.robot.util.ShooterCalculations;
 
 public class Hood extends SubsystemBase {
     SparkFlex hood = new SparkFlex(HOOD_MOTOR_ID, MotorType.kBrushless);
@@ -194,5 +196,11 @@ public class Hood extends SubsystemBase {
 
     public boolean reverseSysIdLimit() {
         return getAngle().getRadians() <= HOOD_MIN_SYSID_ANGLE;
+    }
+
+     public Command setAngleTreeMapCommand(Swerve swerve) {
+        return this.run(() -> {
+            this.setAngle(ShooterCalculations.getShootAngle(swerve));
+        });
     }
 }
