@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.56,
-        "y": 4.025
+        "y": 4.024728492333901
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.2903030504684843,
-        "y": 5.532752275873085
+        "y": 5.532480768206986
       },
       "isLocked": false,
       "linkedName": "Center Starting Forward Driver Station"
@@ -117,7 +117,7 @@
       "command": null
     },
     {
-      "name": "Start Intake Chomp",
+      "name": "StartIntakeChomp",
       "waypointRelativePos": 2.7529886744966463,
       "endWaypointRelativePos": null,
       "command": null

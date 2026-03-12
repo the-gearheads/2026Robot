@@ -69,7 +69,7 @@
       "command": null
     },
     {
-      "name": "Start Intake Chomp",
+      "name": "StartIntakeChomp",
       "waypointRelativePos": 0.7488726929530222,
       "endWaypointRelativePos": null,
       "command": null
