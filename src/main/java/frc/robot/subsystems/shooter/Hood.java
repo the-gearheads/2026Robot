@@ -14,6 +14,7 @@ import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
+import static frc.robot.constants.ShooterConstants.HOOD_PID;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -30,6 +31,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -49,6 +51,8 @@ public class Hood extends SubsystemBase {
     Rotation2d targetAngle = new Rotation2d();
     TrapezoidProfile.State profileSetpoint;
     TrapezoidProfile.State lastSetpoint;
+
+    PIDController hoodPID = new PIDController(HOOD_PID[0], HOOD_PID[1], HOOD_PID[2]);
     
     @AutoLogOutput
     boolean isManualMode = false;
@@ -64,7 +68,9 @@ public class Hood extends SubsystemBase {
             lastSetpoint = profileSetpoint;
             profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
             double ff = HOOD_FEEDFORWARD.calculateWithVelocities(profileSetpoint.position+HOOD_ANGLE_OFFSET.getRadians(), lastSetpoint.velocity, profileSetpoint.velocity);
-            hoodController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
+            double pid = hoodPID.calculate(getAngle().getRadians(), profileSetpoint.position);
+            hood.setVoltage(pid + ff);
+            // hoodController.setSetpoint(targetAngle.getRadians(), ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
             Logger.recordOutput("Hood/ff", ff);
             Logger.recordOutput("Hood/currentSetpoint", profileSetpoint);
         } else {
