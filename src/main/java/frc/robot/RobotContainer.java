@@ -24,9 +24,15 @@ import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -40,6 +46,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Climber climber;
+  private final SendableChooser<Command> autoChooser;
 
   public static final boolean deathMode = true;
 
@@ -90,6 +97,13 @@ public class RobotContainer {
     //   shooter.setFlywheelVelocity(ShooterCalculations.getHubDistance(swerve.getPose()));
     //   shooter.setKickerVelocity(ShooterCalculations.getHubVelocity(swerve.getPose()));
     // }));
+     // Build an auto chooser. This will use Commands.none() as the default option.
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    // Another option that allows you to specify the default auto by its name
+    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   
 
@@ -179,10 +193,11 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
     // return sysidPicker.get();
     // return Commands.run(()->{hood.setAngle(Rotation2d.fromDegrees(20));});
     // return intake.shimmy();
-    return Swerve.wheelRadiusCharacterization(swerve);
+    //return Swerve.wheelRadiusCharacterization(swerve);
   }
 
   // private void configureFuelSim() {
