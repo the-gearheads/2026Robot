@@ -23,7 +23,6 @@ import frc.robot.commands.NTControl.ShooterNTControl;
 import frc.robot.commands.NTControl.DeployNTControl;
 import frc.robot.controllers.Controllers;
 
-import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 
