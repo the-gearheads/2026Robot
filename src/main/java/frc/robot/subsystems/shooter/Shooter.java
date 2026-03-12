@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.util.ShooterCalculations;
+import frc.robot.subsystems.swerve.Swerve;
 
 public class Shooter extends SubsystemBase {
 
@@ -39,6 +40,8 @@ public class Shooter extends SubsystemBase {
   SparkClosedLoopController kickerController = kicker.getClosedLoopController();
   SparkFlexConfig kickerConfig = new SparkFlexConfig();
   RelativeEncoder kickerEncoder = kicker.getEncoder();
+
+  ShooterCalculations shooterCalculations = new ShooterCalculations();
 
   public Shooter() {
     configure();
@@ -189,4 +192,9 @@ public class Shooter extends SubsystemBase {
         new Mechanism(this::setKickerVoltage, null, this));
   }
 
+  public Command setVelocityTreeMapCommand(Swerve swerve) {
+        return this.run(() -> {
+            this.setShooterVelocity(ShooterCalculations.getShootVelocity(swerve));
+        });
+    }
 }

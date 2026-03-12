@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 4.070144444444445,
-        "y": 7.357855555555556
+        "x": 4.06,
+        "y": 7.539
       },
       "prevControl": {
-        "x": 5.174691912615741,
-        "y": 7.463084707754629
+        "x": 5.164547468171296,
+        "y": 7.644229152199073
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Trench Safe Zone"
+      "linkedName": "Depot Trench"
     }
   ],
   "rotationTargets": [

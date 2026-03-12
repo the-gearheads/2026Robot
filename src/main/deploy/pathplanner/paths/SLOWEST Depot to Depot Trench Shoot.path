@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6,
+        "x": 0.75,
         "y": 5.95
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0965320884795573,
+        "x": 2.246532088479557,
         "y": 6.124259675787905
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.070144444444445,
-        "y": 7.357855555555556
+        "x": 4.06,
+        "y": 7.539
       },
       "prevControl": {
-        "x": 2.103768832517036,
-        "y": 7.064277709752981
+        "x": 2.0936243880725907,
+        "y": 7.245422154197425
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Trench Safe Zone"
+      "linkedName": "Depot Trench"
     }
   ],
   "rotationTargets": [
