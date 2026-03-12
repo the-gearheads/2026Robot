@@ -17,8 +17,8 @@ public class VisionConstants {
     public static final boolean ENABLED = true;
     public static final boolean USE_CONSTRAINED_PNP = false;
 
-    public static final double XY_STDDEV_COEF = 0.16;
-    public static final double THETA_STDDEV_COEF = 0.2;
+    public static final double XY_STDDEV_COEF = 0.23;
+    public static final double THETA_STDDEV_COEF = 0.4;
     public static final double CONSTAINED_STDDEV_FACTOR = 4;  // how much more to trust constrained pnp results
 
     public static final double MAX_PITCHROLL = Units.degreesToRadians(5);

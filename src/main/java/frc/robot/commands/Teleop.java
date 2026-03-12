@@ -23,8 +23,8 @@ public class Teleop extends Command {
     @Override
     public void execute() {
         // runs every 20 milliseconds as long as teleop is running
-        double x = Controllers.driverController.getTranslateXAxis();
-        double y = Controllers.driverController.getTranslateYAxis();
+        double x = -Controllers.driverController.getTranslateXAxis();
+        double y = -Controllers.driverController.getTranslateYAxis();
         double rot = Controllers.driverController.getRotateAxis();
 
         double xSpeed = Math.signum(x) * Math.pow(x, 2);

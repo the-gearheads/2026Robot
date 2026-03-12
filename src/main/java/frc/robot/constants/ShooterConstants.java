@@ -1,7 +1,5 @@
 package frc.robot.constants;
 
-import static frc.robot.constants.ShooterConstants.KICKER_FEEDFORWARD;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;

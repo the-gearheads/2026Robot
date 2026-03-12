@@ -17,14 +17,12 @@ import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.commands.Teleop;
 import frc.robot.commands.NTControl.HoodNTControl;
+import frc.robot.commands.NTControl.ShooterNTControl;
 import frc.robot.controllers.Controllers;
 
-import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
-
-import com.pathplanner.lib.auto.AutoBuilder;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -78,6 +76,7 @@ public class RobotContainer {
     swerve.setPose(new Pose2d(2, 4, Rotation2d.kZero));
 
     hood.setDefaultCommand(new HoodNTControl(hood));
+    shooter.setDefaultCommand(new ShooterNTControl(shooter));
     // intake.setDefaultCommand(new DeployNTControl(intake));
 
     configureBindings();
