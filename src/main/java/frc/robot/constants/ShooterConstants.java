@@ -70,4 +70,7 @@ public class ShooterConstants {
 
     public static final Translation3d CENTER_BOT_TOSHOOT = new Translation3d(Units.inchesToMeters(-7.5572), Units.inchesToMeters(-9.2307), Units.inchesToMeters(20.5469));
 
+    public static final double DEPOT_TRENCH_SHOOT_RPM = 5000; //MUST ACTUALLY INPUT VALUE THIS IS A PLACEHOLDER
+    public static final Rotation2d DEPOT_TRENCH_SHOOT_ANGLE = new Rotation2d(30); //MUST ACTUALLY INPUT VALUE THIS IS A PLACEHOLDER
+
 }
