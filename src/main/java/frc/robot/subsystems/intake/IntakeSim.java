@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 
 public class IntakeSim extends Intake {
     DCMotor intakeGearbox = DCMotor.getNEO(1);
-    SparkMaxSim intakeFlexSim = new SparkMaxSim(intake, intakeGearbox);
-    
+    DCMotor deployGearbox = DCMotor.getNeoVortex(1);
+    SparkMaxSim intakeFlexSim = new SparkMaxSim(intake, intakeGearbox);    
 
     FlywheelSim intakeSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(intakeGearbox, 0.0043895948, INTAKE_GEAR_RATIO), intakeGearbox, 0);
 
@@ -21,7 +21,7 @@ public class IntakeSim extends Intake {
     }
 
     @Override
-    public void simulationPeriodic() {
+    public void simulationPeriodic() {        
         intakeSim.setInputVoltage(intakeFlexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
         intakeSim.update(0.02);
 

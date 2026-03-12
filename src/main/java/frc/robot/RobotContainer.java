@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberSim;
 import frc.robot.subsystems.intake.Deploy;
 import frc.robot.subsystems.intake.DeploySim;
 import frc.robot.subsystems.intake.Intake;
@@ -17,13 +19,21 @@ import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
+import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.commands.NTControl.DeployNTControl;
 import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.MiscConstants.isReal;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -36,6 +46,8 @@ public class RobotContainer {
   private final Hood hood;
   private final Shooter shooter;
   private final Intake intake;
+  private final Climber climber;
+  private final SendableChooser<Command> autoChooser;
   private final Deploy deploy;
 
   public static final boolean deathMode = true;
@@ -55,6 +67,7 @@ public class RobotContainer {
       hood = new HoodSim();
       shooter = new ShooterSim();
       intake = new IntakeSim();
+      climber = new ClimberSim();
       deploy = new DeploySim();
       // configureFuelSim();
     } else {
@@ -62,14 +75,14 @@ public class RobotContainer {
       hood = new Hood();
       shooter = new Shooter();
       intake = new Intake();
+      climber = new Climber();
       deploy = new Deploy();
     }
 
-    // hood.setDefaultCommand(new HoodNTControl(hood));
+    swerve.setPose(new Pose2d(2, 4, Rotation2d.kZero));
+
+    hood.setDefaultCommand(new HoodNTControl(hood));
     deploy.setDefaultCommand(new DeployNTControl(deploy));
-
-
-    ShooterCalculations.getTrenchAvoidanceRectanlges(swerve.getPose(), swerve.getFieldRelativeSpeeds());
 
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
@@ -88,6 +101,13 @@ public class RobotContainer {
     //   shooter.setFlywheelVelocity(ShooterCalculations.getHubDistance(swerve.getPose()));
     //   shooter.setKickerVelocity(ShooterCalculations.getHubVelocity(swerve.getPose()));
     // }));
+     // Build an auto chooser. This will use Commands.none() as the default option.
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    // Another option that allows you to specify the default auto by its name
+    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   
 
@@ -106,17 +126,21 @@ public class RobotContainer {
 
     // voltage numbers are completely arbitrary ngl i just picked things
     Controllers.driverController.getABtn().whileTrue(shooter.run(()->{
-      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(-2000));
-      shooter.setKickerVoltage(2);
+      shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(2500));
     }).finallyDo(()->{
       shooter.setFlywheelVoltage(0);
       shooter.setKickerVoltage(0);
     }));
 
-    Controllers.driverController.getLeftPaddle().whileTrue(hood.run(()->{
-      hood.setAngle(Rotation2d.fromDegrees(20));
-    }).andThen(hood.run(()->{hood.setVoltage(0);})));
+    Controllers.driverController.getLeftPaddle().whileTrue(intake.shimmy());
+    Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
+      intake.stopIntake();
+      intake.setAngle(DEPLOY_MIN_ANGLE);
+    })) ;
 
+    // Controllers.driverController.getLeftPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(30)));
+    // Controllers.driverController.getRightPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(5)));
+    // Controllers.driverController.getBBtn().whileTrue(hood.run(()-> {hood.setAngle(Rotation2d.fromDegrees(20));}));
     // Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
     //   fuelSim.launchFuel(MetersPerSecond.of(shooter.getFlywheelVelocityRadPerSec() * ShooterConstants.FLYWHEEL_RADIUS),
     //       hood.getAngle().getMeasure(),
@@ -127,6 +151,11 @@ public class RobotContainer {
     Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
 
+    // todo fix after merge
+    // Controllers.driverController.getPovRight().onTrue(Commands.run(()->{intake.setAngle(Rotation2d.fromDegrees(30));}).until(()->{return intake.atAngle(Rotation2d.fromDegrees(30));}));
+    // Controllers.driverController.getPovDown().onTrue(Commands.run(()->{intake.setAngle(Rotation2d.fromDegrees(0));}).until(()->{return intake.atAngle(Rotation2d.fromDegrees(0));}));
+    // Controllers.driverController.getPovUp().onTrue(Commands.run(()->{intake.setAngle(DEPLOY_MAX_ANGLE);}).until(()->{return intake.atAngle(DEPLOY_MAX_ANGLE);}));
+        
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageMainSpinner(-12);
     }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
@@ -139,31 +168,45 @@ public class RobotContainer {
       spindexer.setVoltageFeeder(0);
     }));
     
-    Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
-      // shooter.setKickerVoltage(-6);
-      shooter.setFlywheelVoltage(6);
-      // spindexer.setVoltageFeeder(-6);
-    }).finallyDo(() -> {
-      // shooter.setKickerVoltage(0);
-      shooter.setFlywheelVoltage(0);
-      // spindexer.setVoltageFeeder(0);
-    }));
-
+    // Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
+    //   shooter.setKickerVoltage(-6);
+    //   shooter.setFlywheelVoltage(6);
+    //   spindexer.setVoltageFeeder(-6);
+    // }).finallyDo(() -> {
+    //   shooter.setKickerVoltage(0);
+    //   shooter.setFlywheelVoltage(0);
+    //   spindexer.setVoltageFeeder(0);
+    // }));
     Controllers.driverController.getPovUp().onTrue(hood.hoodHome());
     Controllers.driverController.getYBtn().whileTrue(deploy.setVoltageCommand(2));
     Controllers.driverController.getBBtn().whileTrue(deploy.setVoltageCommand(-2));
 
-    // Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
-    //   spindexer.setVoltageFeeder(12);
-    // }));
+
+    Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
+   // Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
+    //  intake.setDeployVoltage(2);
+    //}).finallyDo(() ->{intake.setDeployVoltage(0);}));
+    //Controllers.driverController.getBBtn().whileTrue(Commands.run(() -> {
+    //   intake.setDeployVoltage(-2);
+    // }).finallyDo(() ->{intake.setDeployVoltage(0);}));
+
+     Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
+       spindexer.setVoltageFeeder(12);
+     }));
+    Controllers.driverController.getYBtn().whileTrue(Commands.run(()-> {
+      climber.climberUp();
+    }));
+    Controllers.driverController.getYBtn().whileTrue(Commands.run(()-> {
+      climber.climberDown();
+    }));
   }
 
   public Command getAutonomousCommand() {
-    return sysidPicker.get();
-    // return intake.run(() -> {
-    //   intake.setAngle(Rotation2d.fromDegrees(10));
-    // });
-    // return Commands.none();
+    return autoChooser.getSelected();
+    // return sysidPicker.get();
+    // return Commands.run(()->{hood.setAngle(Rotation2d.fromDegrees(20));});
+    // return intake.shimmy();
+    //return Swerve.wheelRadiusCharacterization(swerve);
   }
 
   // private void configureFuelSim() {

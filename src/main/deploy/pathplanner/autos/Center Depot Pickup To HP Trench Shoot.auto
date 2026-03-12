@@ -1,0 +1,56 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center to Depot with Intaking"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot to HP Trench Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "STOP"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "fireShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shimmy"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

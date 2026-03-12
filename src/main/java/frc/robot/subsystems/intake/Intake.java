@@ -25,66 +25,69 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
+    SparkMax intake = new SparkMax(INTAKE_ID, MotorType.kBrushless); // neo 2.0
+    RelativeEncoder intakeEncoder = intake.getEncoder();
+    SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    SparkClosedLoopController intakeController = intake.getClosedLoopController();
 
-  SparkMax intake = new SparkMax(INTAKE_ID, MotorType.kBrushless); // neo 2.0
-  RelativeEncoder intakEncoder = intake.getEncoder();
-  SparkMaxConfig intakeConfig = new SparkMaxConfig();
-  SparkClosedLoopController intakeController = intake.getClosedLoopController();
+    boolean isManualMode = false;
 
-  boolean isManualMode = false;
+    public Intake() {
+        configure();
+    }
 
-  public Intake() {
-    configure();
-  }
+    @Override
+    public void periodic() {
+    }
 
-  public void configure() {
-    intakeConfig.encoder.quadratureMeasurementPeriod(10);
-    intakeConfig.encoder.quadratureAverageDepth(2);
+    public void configure() {
+        intakeConfig.encoder.quadratureMeasurementPeriod(10);
+        intakeConfig.encoder.quadratureAverageDepth(2);
 
-    intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
-    intakeConfig.idleMode(IdleMode.kCoast);
+        intakeConfig.smartCurrentLimit(IntakeConstants.INTAKE_CURRENT_LIMIT);
+        intakeConfig.idleMode(IdleMode.kCoast);
 
-    intakeConfig.inverted(true);
+        intakeConfig.inverted(true);
 
-    intakeConfig.closedLoop.feedForward.kA(INTAKE_FEEDFORWARD.getKa());
-    intakeConfig.closedLoop.feedForward.kV(INTAKE_FEEDFORWARD.getKv());
-    intakeConfig.closedLoop.feedForward.kS(INTAKE_FEEDFORWARD.getKs());
+        intakeConfig.closedLoop.feedForward.kA(INTAKE_FEEDFORWARD.getKa());
+        intakeConfig.closedLoop.feedForward.kV(INTAKE_FEEDFORWARD.getKv());
+        intakeConfig.closedLoop.feedForward.kS(INTAKE_FEEDFORWARD.getKs());
 
-    intakeConfig.closedLoop.pid(INTAKE_PID[0] / 12.0, INTAKE_PID[1] / 12.0, INTAKE_PID[2] / 12.0);
+        intakeConfig.closedLoop.pid(INTAKE_PID[0] / 12.0, INTAKE_PID[1] / 12.0, INTAKE_PID[2] / 12.0);
+        intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
 
-    intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  }
+    public void setIntakeVoltage(Voltage volts) {
+        setIntakeVoltage(volts.magnitude());
+    }
 
-  public void setIntakeVoltage(Voltage volts) {
-    setIntakeVoltage(volts.magnitude());
-  }
+    public void setIntakeVoltage(double volts) {
+        intake.setVoltage(volts);
+    }
 
-  public void setIntakeVoltage(double volts) {
-    intake.setVoltage(volts);
-  }
+    @AutoLogOutput
+    public double getIntakeVoltage() {
+        return intake.get() * intake.getBusVoltage();
+    }
 
-  public void stopIntake() {
-    intake.setVoltage(0);
-  }
+    public double getIntakeVelocity() {
+        return intakeEncoder.getVelocity();
+    }
 
-  @AutoLogOutput
-  public double getIntakeVoltage() {
-    return intake.get() * intake.getBusVoltage();
-  }
+    public void setIntakeVelocity(double velocity) {
+        intakeController.setSetpoint(velocity, ControlType.kVelocity);
+    }
 
-  public double getIntakeVelocity() {
-    return intakEncoder.getVelocity();
-  }
+    public SysIdRoutine getIntakeSysid() {
+        return new SysIdRoutine(
+                new Config(Volts.of(.5).per(Second), Volts.of(2), null, (state) -> {
+                    Logger.recordOutput("Intake/intakeSysidTestState", state.toString());
+                }),
+                new Mechanism(this::setIntakeVoltage, null, this));
+    }
 
-  public void setIntakeVelocity(double velocity) {
-    intakeController.setSetpoint(velocity, ControlType.kVelocity);
-  }
+    public void stopIntake() {
+        intake.setVoltage(0);
+    }
 
-  public SysIdRoutine getIntakeSysid() {
-    return new SysIdRoutine(
-        new Config(Volts.of(.5).per(Second), Volts.of(2), null, (state) -> {
-          Logger.recordOutput("Intake/intakeSysidTestState", state.toString());
-        }),
-        new Mechanism(this::setIntakeVoltage, null, this));
-  }
 }

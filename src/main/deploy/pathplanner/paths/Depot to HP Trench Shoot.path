@@ -1,0 +1,99 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6,
+        "y": 5.95
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.5999999999999996,
+        "y": 5.95
+      },
+      "isLocked": false,
+      "linkedName": "Depot Intaking"
+    },
+    {
+      "anchor": {
+        "x": 2.3126292679398155,
+        "y": 4.895613353587963
+      },
+      "prevControl": {
+        "x": 1.8598292679398152,
+        "y": 6.219693909143515
+      },
+      "nextControl": {
+        "x": 2.765429267939816,
+        "y": 3.5715327980324076
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.6063676215277782,
+        "y": 1.2380230034722228
+      },
+      "prevControl": {
+        "x": 2.4107249385127325,
+        "y": 1.8847317238136585
+      },
+      "nextControl": {
+        "x": 2.802010304542824,
+        "y": 0.5913142831307876
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.4112,
+        "y": 0.6536777777777774
+      },
+      "prevControl": {
+        "x": 3.4112,
+        "y": 0.6536777777777775
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Right Trench Safe Zone"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "shimmy",
+      "waypointRelativePos": 3.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "fireShooter",
+      "waypointRelativePos": 3.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}

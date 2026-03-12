@@ -1,11 +1,12 @@
 package frc.robot.subsystems.shooter;
 
 
-import static frc.robot.constants.ShooterConstants.HOOD_PID;
 import static frc.robot.constants.ShooterConstants.HOOD_POS_FACTOR;
 import static frc.robot.constants.ShooterConstants.HOOD_VEL_FACTOR;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_OFFSET;
+import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_TOLERANCE;
 import static frc.robot.constants.ShooterConstants.HOOD_CONSTRAINTS;
 import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_ANGLE;
@@ -28,12 +29,12 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -47,6 +48,7 @@ public class Hood extends SubsystemBase {
     TrapezoidProfile profile = new TrapezoidProfile(HOOD_CONSTRAINTS);
     Rotation2d targetAngle = new Rotation2d();
     TrapezoidProfile.State profileSetpoint;
+    TrapezoidProfile.State lastSetpoint;
     
     boolean isManualMode = false;
     public Hood() {
@@ -58,8 +60,9 @@ public class Hood extends SubsystemBase {
     @Override
     public void periodic() {
         if (!isManualMode) {
+            lastSetpoint = profileSetpoint;
             profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
-            double ff = HOOD_FEEDFORWARD.calculate(profileSetpoint.position, profileSetpoint.velocity);
+            double ff = HOOD_FEEDFORWARD.calculateWithVelocities(profileSetpoint.position+HOOD_ANGLE_OFFSET.getRadians(), lastSetpoint.velocity, profileSetpoint.velocity);
             hoodController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
             Logger.recordOutput("Hood/ff", ff);
             Logger.recordOutput("Hood/currentSetpoint", profileSetpoint);
@@ -78,7 +81,8 @@ public class Hood extends SubsystemBase {
         hoodConfig.inverted(false);
         hoodConfig.idleMode(IdleMode.kBrake);
         hoodConfig.voltageCompensation(12);
-        hoodConfig.closedLoop.pid(HOOD_PID[0] / 12.0, HOOD_PID[1] / 12.0, HOOD_PID[2] / 12.0, ClosedLoopSlot.kSlot0);
+        // hoodConfig.closedLoop.pid(HOOD_PID[0] / 12.0, HOOD_PID[1] / 12.0, HOOD_PID[2] / 12.0, ClosedLoopSlot.kSlot0);
+        hoodConfig.closedLoop.pid(0, 0, 0, ClosedLoopSlot.kSlot0);
         // hoodConfig.closedLoop.feedForward.kS(HOOD_FEEDFORWARD.getKs(), ClosedLoopSlot.kSlot0);
         // hoodConfig.closedLoop.feedForward.kV(HOOD_FEEDFORWARD.getKv(), ClosedLoopSlot.kSlot0);
         // hoodConfig.closedLoop.feedForward.kA(HOOD_FEEDFORWARD.getKa(), ClosedLoopSlot.kSlot0);
@@ -117,6 +121,23 @@ public class Hood extends SubsystemBase {
         Logger.recordOutput("Hood/LastGoalAngle", angle);
     }
 
+    public Command setAngleCommand(Rotation2d angle) {
+        return this.run(() -> {
+            this.setAngle(angle);
+        });
+    }
+
+    public Command setAngleCommand(Rotation2d angle, boolean ends) {
+        if (!ends) return setAngleCommand(angle);
+        return this.run(() -> {
+            this.setAngle(angle);
+        }).until(() -> {return atAngle(angle);});
+    }
+
+    public boolean atAngle(Rotation2d angle) {
+        return MathUtil.isNear(angle.getRadians(), getAngle().getRadians(), HOOD_ANGLE_TOLERANCE.getRadians());
+    }
+
     @AutoLogOutput
     public Rotation2d getAngle() {
         return Rotation2d.fromRadians(hoodEncoder.getPosition());
@@ -147,9 +168,10 @@ public class Hood extends SubsystemBase {
     }
 
     public Command hoodHome (){  // bypasses limits 
-        return runEnd(() -> hood.setVoltage(-2), () -> {
+        return runEnd(() -> hood.setVoltage(-0.5), () -> {
             hood.setVoltage(0);
-        }).withTimeout(2).andThen(Commands.waitSeconds(0.1)).andThen(() -> {
+        }).withTimeout(1.5).andThen(() -> {
+            hood.setVoltage(0);
             this.hoodEncoder.setPosition(0);
         });
     }

@@ -19,6 +19,7 @@ public class GyroRedux implements Gyro {
   public GyroRedux() {
     settings.setEphemeral(true);
     gyro.setSettings(settings);
+    gyro.startCalibration();
   }
 
   public void reset() {

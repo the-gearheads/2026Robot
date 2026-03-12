@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.817146932952923,
+        "y": 6.629201141226819
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.76926968407091,
+        "y": 6.680178507158057
+      },
+      "isLocked": false,
+      "linkedName": "Balls end"
+    },
+    {
+      "anchor": {
+        "x": 6.827822222222225,
+        "y": 1.6963333333333308
+      },
+      "prevControl": {
+        "x": 7.776478256568222,
+        "y": 3.3169540586744075
+      },
+      "nextControl": {
+        "x": 6.360088888888892,
+        "y": 0.8972888888888872
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.4112,
+        "y": 0.6536777777777774
+      },
+      "prevControl": {
+        "x": 5.41487777777778,
+        "y": 0.11773333333333069
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "SLOW TF DOWN",
+      "minWaypointRelativePos": 1.0797720797720796,
+      "maxWaypointRelativePos": 1.9952516619183285,
+      "constraints": {
+        "maxVelocity": 1.75,
+        "maxAcceleration": 1.75,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "intakeUp",
+      "waypointRelativePos": 1.1291547958214556,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
