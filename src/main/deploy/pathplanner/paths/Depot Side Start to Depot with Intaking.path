@@ -47,13 +47,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Deploy Intake",
+      "name": "DeployIntake",
       "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "Start Intake Chomp",
+      "name": "StartIntakeChomp",
       "waypointRelativePos": 0.6039810893691592,
       "endWaypointRelativePos": null,
       "command": null

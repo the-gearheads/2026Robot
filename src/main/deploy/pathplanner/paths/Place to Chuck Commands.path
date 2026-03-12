@@ -33,19 +33,19 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Deploy Intake",
+      "name": "DeployIntake",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "Start Intake Chomp",
+      "name": "StartIntakeChomp",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "shimmy",
+      "name": "Shimmy",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null
@@ -70,6 +70,18 @@
     },
     {
       "name": "STOP",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "StopIntakeChomp",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    },
+    {
+      "name": "FireFromDepotTrench",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null

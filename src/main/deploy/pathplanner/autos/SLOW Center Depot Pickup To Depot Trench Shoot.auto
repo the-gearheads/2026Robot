@@ -23,13 +23,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "fireShooter"
+                  "name": "FireFromDepotTrench"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "shimmy"
+                  "name": "Shimmy"
                 }
               },
               {

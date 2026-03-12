@@ -27,10 +27,13 @@ import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
+import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_RPM;
+import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
 
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -111,6 +114,26 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    NamedCommands.registerCommand("StartIntakeChomp", Commands.run(() -> {
+    intake.setIntakeVoltage(12);
+    }));
+    NamedCommands.registerCommand("StopIntakeChomp", Commands.run(() -> {
+    intake.setIntakeVoltage(0);
+    }));
+    NamedCommands.registerCommand("DeployIntake", Commands.run(() -> {
+    deploy.setAngleCommand(DEPLOY_MIN_ANGLE);
+    }));
+    NamedCommands.registerCommand("STOP", Commands.run(() -> {
+    swerve.stop();
+    }));
+    NamedCommands.registerCommand("FireFromDepotTrench", Commands.run(() -> {
+    shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(DEPOT_TRENCH_SHOOT_RPM));
+    hood.setAngle(DEPLOY_MIN_ANGLE);
+    }));
+    NamedCommands.registerCommand("Shimmy", Commands.run(() -> {
+    deploy.shimmy(intake); 
+    }));
   }
   
 

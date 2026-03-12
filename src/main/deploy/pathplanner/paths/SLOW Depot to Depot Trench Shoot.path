@@ -52,14 +52,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "shimmy",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "fireShooter",
-      "waypointRelativePos": 1.0,
+      "name": "StopIntakeChomp",
+      "waypointRelativePos": 0.3,
       "endWaypointRelativePos": null,
       "command": null
     }

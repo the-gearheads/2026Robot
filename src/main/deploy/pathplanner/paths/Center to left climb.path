@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "shimmy",
+      "name": "Shimmy",
       "waypointRelativePos": 0.15,
       "endWaypointRelativePos": null,
       "command": null
