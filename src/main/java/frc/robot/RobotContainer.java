@@ -18,6 +18,7 @@ import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
 import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.commands.NTControl.ShooterNTControl;
@@ -26,6 +27,8 @@ import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
+
+import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -184,6 +187,19 @@ public class RobotContainer {
 
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
+    Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
+      ShooterCalculations.HubDists.add(ShooterCalculations.getHubDistance(swerve.getPose()));
+      ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
+      ShooterCalculations.HoodAngles.add(hood.getAngle());
+      double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
+      double[] ShooterSpeedsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
+      double[] HoodAnglesArray = ShooterCalculations.HoodAngles.stream()
+                        .mapToDouble(r -> r.getRadians())
+                        .toArray();
+      Logger.recordOutput("ShooterCalculations/HubDistances", HubDistsArray);
+      Logger.recordOutput("ShooterCalculations/ShooterSpeeds", ShooterSpeedsArray);
+      Logger.recordOutput("ShooterCalculations/HoodAngles", HoodAnglesArray);
+    }));
    // Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
     //  intake.setDeployVoltage(2);
     //}).finallyDo(() ->{intake.setDeployVoltage(0);}));

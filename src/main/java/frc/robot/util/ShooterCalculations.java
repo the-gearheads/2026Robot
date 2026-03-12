@@ -1,6 +1,8 @@
 package frc.robot.util;
 
 
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -38,6 +40,9 @@ public class ShooterCalculations {
     
     static InterpolatingDoubleTreeMap shooterAngleFunction = createAngleMap();
     static InterpolatingDoubleTreeMap shooterRPMFunction = createRPMFunction();
+    public static ArrayList<Double> HubDists = new ArrayList<>();
+    public static ArrayList<Double> ShooterSpeeds = new ArrayList<>();
+    public static ArrayList<Rotation2d> HoodAngles = new ArrayList<>();
 
     static InterpolatingDoubleTreeMap createAngleMap() {
         InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
