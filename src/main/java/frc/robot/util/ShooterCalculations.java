@@ -3,7 +3,6 @@ package frc.robot.util;
 
 import java.util.ArrayList;
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -65,49 +64,49 @@ public class ShooterCalculations {
         return map;
     }
 
-    // public static Translation2d getObjective() {
-        // return ObjectiveTracker.getObjective() OR DO SOMETHING HERE LIKE
-        // if (allainceZone)
-        //     return ObjectiveTracker.shootObjective();
-        // elseif dangerzone
-        //     return ObjectiveTracker.hideObjective();
-        // else
-        //     return objectivetracker.feedobjective
-    //}
-
-    // then we change getHubDistance to getObjectiveDistance
-    // getRobotYaw -> (robotPose - objective).angle
-
-    // 
-
     public static Rotation2d getShootAngle(Swerve swerve) {
         Pose2d robotPose = swerve.getPose();
         Rectangle2d[] trenchRectangles = getTrenchAvoidanceRectanlges(robotPose, swerve.getFieldRelativeSpeeds());
-        for(int i=0;i<trenchRectangles.length;i++) {
+        for (int i = 0; i < trenchRectangles.length; i++) {
             if (trenchRectangles[i].contains(robotPose.getTranslation())) {
+                Logger.recordOutput("ShooterConstants/inTrench", true);
                 return Rotation2d.fromRadians(ShooterConstants.HOOD_MIN_ANGLE);
-            } 
+            }
         }
+        Logger.recordOutput("ShooterConstants/inTrench", false);
+
         double hubDistance = getHubDistance(robotPose);
-        Rotation2d HubAngle = new Rotation2d(shooterAngleFunction.get(hubDistance)); 
-        return HubAngle;
+        Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(hubDistance));
+        if (ObjectiveTracker.getObjective(robotPose) == Objective.HUB) {
+            return hubAngle;
+        } else if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_LEFT
+                || ObjectiveTracker.getObjective(robotPose) == Objective.FEED_RIGHT
+                || ObjectiveTracker.getObjective(robotPose) == Objective.FEED_OVER) {
+            double feedDistance = getFeedingDistance(robotPose);
+            Logger.recordOutput("ShooterCalculations/FeedingDistance", feedDistance);
+            Rotation2d feedingAngle = Rotation2d.fromRadians(shooterAngleFunction.get(feedDistance));
+            return feedingAngle;
+        } else {
+            return hubAngle;
+        }
     }
-
-    private static double getFeedingDistance(Pose2d robotPose) {
-        Translation2d feedPosition = ObjectiveTracker.getFeedingObjective(robotPose).aimingLocation; 
-        return feedPosition.getDistance(getShooterPosition(robotPose).getTranslation());
-    }
-
+    
     public static double getShootVelocity(Swerve swerve) {
         Pose2d robotPose = swerve.getPose();
-        return shooterVelFunction.get(getHubDistance(robotPose));
+        double hubSpeed = shooterVelFunction.get(getHubDistance(robotPose));
+        if (ObjectiveTracker.getObjective(robotPose) == Objective.HUB) {
+            return hubSpeed;
+        } else if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_LEFT
+                || ObjectiveTracker.getObjective(robotPose) == Objective.FEED_RIGHT
+                || ObjectiveTracker.getObjective(robotPose) == Objective.FEED_OVER) {
+            double feedDistance = getFeedingDistance(robotPose);
+            Logger.recordOutput("ShooterCalculations/FeedingDistance", feedDistance);
+            double feedingSpeed = shooterVelFunction.get(feedDistance);
+            return feedingSpeed;
+        } else {
+            return hubSpeed;
+        }
     }
-
-    @AutoLogOutput
-    private static double getHubDistance(Pose2d robotPose) { // TODO RENAME TO getObjectiveDistance
-        Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-        return hubPosition.getDistance(getShooterPosition(robotPose).getTranslation());
-    } 
 
     public static Rotation2d getRobotYaw(Pose2d robotPose) {
         Translation2d targetAngle = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
@@ -115,12 +114,24 @@ public class ShooterCalculations {
         Rotation2d angle = targetAngle.minus(getShooterPosition(robotPose).getTranslation()).getAngle();
         return angle;
     }
-    
-    // public static Rotation2d getHoodAngle(Swerve swerve) {
-    //     Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(getHubDistance(swerve.getPose())));
-    //     return hubAngle;
-    // }
 
+    // ------------------------
+
+    private static double getFeedingDistance(Pose2d robotPose) {
+        Translation2d feedPosition = ObjectiveTracker.getFeedingObjective(robotPose).aimingLocation; 
+        return feedPosition.getDistance(getShooterPosition(robotPose).getTranslation());
+    }
+    
+    private static double getHubDistance(Pose2d robotPose) { // TODO RENAME TO getObjectiveDistance
+        Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
+        return hubPosition.getDistance(getShooterPosition(robotPose).getTranslation());
+    } 
+
+    /**
+     *  IF YOU'RE CALLING THIS, YOU'RE PROBABLY DOING SOMETHING WRONG AND IT'S ALREADY BEEN CALLED FURTHER DOWN THE LINE
+     * @param robotPose
+     * @return Position of shooter on field
+     */
     private static Pose2d getShooterPosition(Pose2d robotPose) {
         Translation2d shooterDistance = ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d();
         
@@ -160,8 +171,8 @@ public class ShooterCalculations {
         return kickerSpeed;
     }
 
-    public static void log(Pose2d pose) {
-        Logger.recordOutput("ShooterCalculations/hubDistance", getHubDistance(pose));
-
+    public static void log(Pose2d robotPose) {
+        ObjectiveTracker.log(robotPose);
+        Logger.recordOutput("ShooterCalculations/hubDistance", getHubDistance(robotPose));
     }
 }

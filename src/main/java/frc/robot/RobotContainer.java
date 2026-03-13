@@ -21,7 +21,6 @@ import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
 import frc.robot.commands.NTControl.ShooterNTControl;
-import frc.robot.commands.NTControl.DeployNTControl;
 import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
@@ -262,10 +261,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return autoChooser.getSelected();
+    return autoChooser.getSelected();
     // return sysidPicker.get();
     // return Commands.run(()->{hood.setAngle(Rotation2d.fromDegrees(20));});
-    return deploy.shimmy(intake);
+    // return deploy.shimmy(intake);
     //return Swerve.wheelRadiusCharacterization(swerve);
   }
 

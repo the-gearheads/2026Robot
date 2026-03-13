@@ -66,6 +66,7 @@ public class Deploy extends SubsystemBase {
     deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
     deployConfig.idleMode(IdleMode.kBrake);
+    deployConfig.disableVoltageCompensation();
     deployConfig.inverted(true);
 
     deployAbsEncoderConfig.positionConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
@@ -178,7 +179,6 @@ public class Deploy extends SubsystemBase {
     });
   }
 
-
   @AutoLogOutput
   public boolean isAtGoal() {
     return deployController.isAtSetpoint() && MathUtil.isNear(profileSetpoint.position, targetAngle.getRadians(), 1e-3);
@@ -214,10 +214,10 @@ public class Deploy extends SubsystemBase {
     return deployController.getSetpoint();
   }
 
-  @AutoLogOutput
-  public ControlType getDeployControlType() {
-    return deployController.getControlType();
-  }
+  // @AutoLogOutput
+  // public ControlType getDeployControlType() {
+  //   return deployController.getControlType();  // this always logs duty cycle even when def in position mode?
+  // }
 
   public SysIdRoutine getDeploySysid() {
     return new SysIdRoutine(
