@@ -17,10 +17,8 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
-import frc.robot.commands.NTControl.ShooterNTControl;
 import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
@@ -35,14 +33,16 @@ import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class RobotContainer {
  
@@ -85,41 +85,20 @@ public class RobotContainer {
       deploy = new Deploy();
     }
 
-    swerve.setPose(AllianceFlipUtil.apply(new Pose2d(3.560, 4.025, Rotation2d.k180deg)));
-
-    // hood.setDefaultCommand(new HoodNTControl(hood));
-    // deploy.setDefaultCommand(new DeployNTControl(deploy));
-    hood.setDefaultCommand(hood.setAngleTreeMapCommand(swerve));
-    shooter.setDefaultCommand(new ShooterNTControl(shooter));
-    deploy.setDefaultCommand(deploy.holdDownCommand());
-
-    configureBindings();
-    sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
-    sysidPicker.addSysidRoutines("Intake Deploy", deploy.getDeploySysid(), deploy::getForwardSysidLimit, deploy::getBackwardSysidLimit);
-    // // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
-    // sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
-    // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
-    sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine(), hood::forwardSysIdLimit, hood::reverseSysIdLimit);
-    sysidPicker.addSysidRoutines("Feeder", spindexer.getFeederSysidRoutine());
-
-    // hood.setDefaultCommand(hood.run(() -> {
-    //   hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));
-    // }));
-
-    // shooter.setDefaultCommand(shooter.run(() -> {
-    //   shooter.setFlywheelVelocity(ShooterCalculations.getHubDistance(swerve.getPose()));
-    //   shooter.setKickerVelocity(ShooterCalculations.getHubVelocity(swerve.getPose()));
-    // }));
-     // Build an auto chooser. This will use Commands.none() as the default option.
-    autoChooser = AutoBuilder.buildAutoChooser();
-
-    // Another option that allows you to specify the default auto by its name
-    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-
+    NamedCommands.registerCommand("ShootPreload", Commands.parallel(
+      hood.setAngleTreeMapCommand(swerve),
+      shooter.setVelocityTreeMapCommand(swerve),
+      deploy.shimmy(intake),
+      swerve.run(()->{swerve.drive(new ChassisSpeeds(), Rotation2d.fromDegrees(180));}),
+      new SequentialCommandGroup(
+        new WaitCommand(1),
+        spindexer.runSpindexer(12)
+      )
+    ));
+    
     NamedCommands.registerCommand("StartIntakeChomp", Commands.run(() -> {
     intake.setIntakeVoltage(12);
+    System.out.println("Awdased");
     }, intake));
     NamedCommands.registerCommand("StopIntakeChomp", Commands.run(() -> {
     intake.setIntakeVoltage(0);
@@ -138,9 +117,7 @@ public class RobotContainer {
     shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(HP_TRENCH_SHOOT_VELOCITY));
     hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
     }, shooter, hood));
-    NamedCommands.registerCommand("Shimmy", Commands.run(() -> {
-    deploy.shimmy(intake); 
-    }, deploy));
+    NamedCommands.registerCommand("Shimmy", deploy.shimmy(intake));
     NamedCommands.registerCommand("StartSpindexFeed", Commands.run(() ->{
     spindexer.setVoltageMainSpinner(-12);
     spindexer.setVoltageFeeder(12);
@@ -149,6 +126,33 @@ public class RobotContainer {
     spindexer.setVoltageMainSpinner(0);
     spindexer.setVoltageFeeder(0);
     }, spindexer));
+
+    // hood.setDefaultCommand(new HoodNTControl(hood));
+    // // deploy.setDefaultCommand(new DeployNTControl(deploy));
+    // hood.setDefaultCommand(hood.setAngleTreeMapCommand(swerve));
+    // shooter.setDefaultCommand(new ShooterNTControl(shooter));
+    // deploy.setDefaultCommand(deploy.holdDownCommand());
+
+    configureBindings();
+    sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
+    sysidPicker.addSysidRoutines("Intake Deploy", deploy.getDeploySysid(), deploy::getForwardSysidLimit, deploy::getBackwardSysidLimit);
+    // // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
+    // sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
+    // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
+    sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine(), hood::forwardSysIdLimit, hood::reverseSysIdLimit);
+    sysidPicker.addSysidRoutines("Feeder", spindexer.getFeederSysidRoutine());
+
+    // hood.setDefaultCommand(hood.run(() -> {
+    //   hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));
+    // }));
+
+    // shooter.setDefaultCommand(shooter.run(() -> {
+    //   shooter.setFlywheelVelocity(ShooterCalculations.getHubDistance(swerve.getPose()));
+    //   shooter.setKickerVelocity(ShooterCalculations.getHubVelocity(swerve.getPose()));
+    // }));
+    
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   
 
