@@ -132,8 +132,19 @@ public class ShooterCalculations {
     }
 
     public static Rotation2d getRobotYaw(Pose2d robotPose) {
-        Translation2d targetAngle = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-
+        Translation2d hubAngle = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
+        Translation2d targetAngle = hubAngle;
+        if (ObjectiveTracker.getObjective(robotPose) == Objective.HUB) {
+            targetAngle = hubAngle;
+        } else if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_LEFT) {
+            targetAngle = Objective.FEED_LEFT.aimingLocation;
+        } else if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_RIGHT) {
+            targetAngle = Objective.FEED_RIGHT.aimingLocation;
+        } else if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_OVER) {
+            targetAngle = Objective.FEED_OVER.aimingLocation;
+        } else {
+            targetAngle = hubAngle;
+        }
         Rotation2d angle = targetAngle.minus(getShooterPosition(robotPose).getTranslation()).getAngle();
         return angle;
     }
