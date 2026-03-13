@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP Move to Position"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimShoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "New Autons Style",
+  "choreoAuto": false
+}

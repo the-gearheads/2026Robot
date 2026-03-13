@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5411962973807496,
+        "y": 0.6
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.521638811560332,
+        "y": 1.0325018429318402
+      },
+      "isLocked": false,
+      "linkedName": "Center Starting Forward Hub"
+    },
+    {
+      "anchor": {
+        "x": 2.1366136859861014,
+        "y": 2.409128952914134
+      },
+      "prevControl": {
+        "x": 2.23151564543701,
+        "y": 1.239621111498634
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 35.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
