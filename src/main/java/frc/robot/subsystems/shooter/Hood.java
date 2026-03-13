@@ -203,4 +203,10 @@ public class Hood extends SubsystemBase {
             this.setAngle(ShooterCalculations.getShootAngle(swerve));
         });
     }
+
+    public Command setAngleAuto(Swerve swerve) {
+        return this.run(() -> {
+            this.setAngle(ShooterCalculations.getAutonAngle(swerve));
+        });
+    }
 }

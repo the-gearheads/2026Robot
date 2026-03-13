@@ -73,6 +73,13 @@ public class ShooterCalculations {
     }
 
 
+    /**
+     * NOT FOR USE IN AUTO
+     * @param swerve
+     * @param hood
+     * @param shooter
+     * @return boolean if aligned with the current Objective, FEEDING or HUB, doesn't wait for 0 robot velocity
+     */
     public static boolean isReadyToShoot(Swerve swerve, Hood hood, Shooter shooter) {
         Pose2d robotPose = swerve.getPose();
         boolean yawReady = MathUtil.isNear(robotPose.getRotation().getRadians(), getRobotYaw(robotPose).getRadians(), YAW_ALIGN_TOLERANCE.getRadians());
@@ -86,7 +93,37 @@ public class ShooterCalculations {
         return yawReady && hoodReady && shooterReady;
     }
 
+    public static boolean autonShootReady(Swerve swerve, Hood hood, Shooter shooter) {
+        Pose2d robotPose = swerve.getPose();
+        boolean yawReady = MathUtil.isNear(robotPose.getRotation().getRadians(), getAutonYaw(swerve).getRadians(), YAW_ALIGN_TOLERANCE.getRadians());
+        boolean shooterReady = MathUtil.isNear(shooter.getFlywheelVelocityRadPerSec(), getAutonVelocity(swerve),
+                FLYWHEEL_TOLERANCE) &&
+                MathUtil.isNear(shooter.getKickerVelocityRadPerSec(), getKickerSpeed(getAutonVelocity(swerve)), KICKER_TOLERANCE);
+        boolean hoodReady = MathUtil.isNear(hood.getAngle().getRadians(), getAutonAngle(swerve).getRadians(), HOOD_ANGLE_TOLERANCE.getRadians());
+        Logger.recordOutput("ShooterCalculations/isReady/yawReadyAuton", yawReady);
+        Logger.recordOutput("ShooterCalculations/isReady/shooterReadyAuton", shooterReady);
+        Logger.recordOutput("ShooterCalculations/isReady/hoodReadyAuton", hoodReady);
 
+        return yawReady && hoodReady && shooterReady;
+    }
+
+    public static Rotation2d getAutonAngle(Swerve swerve) {
+        double hubDistance = getHubDistance(swerve.getPose());
+        Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(hubDistance));
+        return hubAngle;
+    }
+    
+    public static double getAutonVelocity(Swerve swerve) {
+        Pose2d robotPose = swerve.getPose();
+        double hubSpeed = shooterVelFunction.get(getHubDistance(robotPose));
+        return hubSpeed;
+    }
+
+    public static Rotation2d getAutonYaw(Swerve swerve) {
+        Pose2d robotPose = swerve.getPose();
+        Rotation2d robotYaw = getRobotYaw(robotPose);
+        return robotYaw;
+    }
     public static Rotation2d getShootAngle(Swerve swerve) {
         Pose2d robotPose = swerve.getPose();
         Rectangle2d[] trenchRectangles = getTrenchAvoidanceRectanlges(robotPose, swerve.getFieldRelativeSpeeds());

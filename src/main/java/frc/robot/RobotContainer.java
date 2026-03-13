@@ -85,13 +85,13 @@ public class RobotContainer {
       deploy = new Deploy();
     }
 
-    NamedCommands.registerCommand("ShootPreload", Commands.parallel(
+    NamedCommands.registerCommand("aimShoot", Commands.parallel(
       hood.setAngleTreeMapCommand(swerve),
       shooter.setVelocityTreeMapCommand(swerve),
       deploy.shimmy(intake),
-      swerve.run(()->{swerve.drive(new ChassisSpeeds(), Rotation2d.fromDegrees(180));}),
+      swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getAutonAngle(swerve));}),
       new SequentialCommandGroup(
-        new WaitCommand(1),
+        Commands.waitUntil(() -> {return ShooterCalculations.autonShootReady(swerve, hood, shooter);}),
         spindexer.runSpindexer(12)
       )
     ));

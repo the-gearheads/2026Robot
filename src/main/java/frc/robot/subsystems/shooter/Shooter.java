@@ -196,5 +196,11 @@ public class Shooter extends SubsystemBase {
         return this.run(() -> {
             this.setShooterVelocity(ShooterCalculations.getShootVelocity(swerve));
         });
-    }
+  }
+  
+  public Command setAutonVelocityCommand(Swerve swerve) {
+        return this.run(() -> {
+            this.setShooterVelocity(ShooterCalculations.getAutonVelocity(swerve));
+        });
+  }
 }
