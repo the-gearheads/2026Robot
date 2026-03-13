@@ -42,8 +42,8 @@ public class IntakeConstants {
 
     public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromDegrees(0);
     public static final Rotation2d DEPLOY_SHIMMY_ANGLE = Rotation2d.fromDegrees(60);
+    public static final double SHIMMY_TIMEOUT = 0.8;  // will go up for x seconds, down for x, etc
     public static final Rotation2d DEPLOY_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5);
-    public static final Rotation2d DEPLOY_SHIMMY_TOLERANCE = Rotation2d.fromDegrees(8);
 
     public static final double INTAKE_VELOCITY = 5250;
 

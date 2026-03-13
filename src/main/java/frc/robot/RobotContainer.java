@@ -262,10 +262,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
     // return sysidPicker.get();
     // return Commands.run(()->{hood.setAngle(Rotation2d.fromDegrees(20));});
-    // return intake.shimmy();
+    return deploy.shimmy(intake);
     //return Swerve.wheelRadiusCharacterization(swerve);
   }
 

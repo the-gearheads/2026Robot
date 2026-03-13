@@ -99,7 +99,7 @@ public class Deploy extends SubsystemBase {
     } else {
       profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
       deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-      Logger.recordOutput("Intake/currentDeploySetpoint", profileSetpoint);
+      Logger.recordOutput("Deploy/currentDeploySetpoint", profileSetpoint);
     }
   }
 
@@ -143,32 +143,24 @@ public class Deploy extends SubsystemBase {
         return deploySplineEncoder.getVelocity();
     }
 
-  public void setAngle(Rotation2d angle) {
-    if (voltageMode) {
-      profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+    public void setAngle(Rotation2d angle) {
+      if (voltageMode) {
+        profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+      }
+      voltageMode = false;
+      targetAngle = angle;
+      Logger.recordOutput("Deploy/DeployLastGoalAngle", angle);
     }
-    voltageMode = false;
-    targetAngle = angle;
-    Logger.recordOutput("Intake/DeployLastGoalAngle", angle);
-  }
 
     public boolean atAngle(Rotation2d angle) {
         return MathUtil.isNear(angle.getRadians(), getAngle().getRadians(), DEPLOY_ANGLE_TOLERANCE.getRadians());
     }
 
-    public void goToShimmyAngle() {
-        if (MathUtil.isNear(DEPLOY_SHIMMY_ANGLE.getRadians(), getAngle().getRadians(), DEPLOY_SHIMMY_TOLERANCE.getRadians())) {
-            setAngle(DEPLOY_MIN_ANGLE);
-        } else if (MathUtil.isNear(DEPLOY_MIN_ANGLE.getRadians(), getAngle().getRadians(), DEPLOY_SHIMMY_TOLERANCE.getRadians())){
-            setAngle(DEPLOY_SHIMMY_ANGLE);
-        }
-    }
-
     public Command shimmy(Intake intake) {
-        return this.runOnce(()->{setAngle(DEPLOY_SHIMMY_ANGLE);}).andThen(Commands.run(()->{
-            intake.setIntakeVoltage(12);
-            this.goToShimmyAngle();
-        }, this, intake));
+      return Commands.repeatingSequence(
+        this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_ANGLE).withTimeout(SHIMMY_TIMEOUT),
+        this.setAngleCommand(IntakeConstants.DEPLOY_MIN_ANGLE).withTimeout(SHIMMY_TIMEOUT)
+      );
     }
 
 
@@ -178,7 +170,7 @@ public class Deploy extends SubsystemBase {
   }
 
   public Command setAngleCommand(Rotation2d angle) {
-    return this.runOnce(()->{
+    return this.run(()->{
       setAngle(angle);
     });
   }
@@ -216,7 +208,7 @@ public class Deploy extends SubsystemBase {
   public SysIdRoutine getDeploySysid() {
     return new SysIdRoutine(
         new Config(Volts.of(.5).per(Second), Volts.of(1.5), null, (state) -> {
-          Logger.recordOutput("Intake/deploySysidTestState", state.toString());
+          Logger.recordOutput("Deploy/deploySysidTestState", state.toString());
         }),
         new Mechanism(this::setVoltage, null, this));
   }
