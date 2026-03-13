@@ -120,27 +120,35 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("StartIntakeChomp", Commands.run(() -> {
     intake.setIntakeVoltage(12);
-    }));
+    }, intake));
     NamedCommands.registerCommand("StopIntakeChomp", Commands.run(() -> {
     intake.setIntakeVoltage(0);
-    }));
+    }, intake));
     NamedCommands.registerCommand("DeployIntake", Commands.run(() -> {
     deploy.setAngleCommand(DEPLOY_MIN_ANGLE);
-    }));
+    }, deploy));
     NamedCommands.registerCommand("STOP", Commands.run(() -> {
     swerve.stop();
-    }));
+    }, swerve));
     NamedCommands.registerCommand("FireFromDepotTrench", Commands.run(() -> {
     shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(DEPOT_TRENCH_SHOOT_VELOCITY));
     hood.setAngle(DEPOT_TRENCH_SHOOT_ANGLE);
-    }));
+    }, shooter, hood));
     NamedCommands.registerCommand("FireFromHPTrench", Commands.run(() -> {
     shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(HP_TRENCH_SHOOT_VELOCITY));
     hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
-    }));
+    }, shooter, hood));
     NamedCommands.registerCommand("Shimmy", Commands.run(() -> {
     deploy.shimmy(intake); 
-    }));
+    }, deploy));
+    NamedCommands.registerCommand("StartSpindexFeed", Commands.run(() ->{
+    spindexer.setVoltageMainSpinner(-12);
+    spindexer.setVoltageFeeder(12);
+    }, spindexer));
+    NamedCommands.registerCommand("StopSpindexFeed", Commands.run(() ->{
+    spindexer.setVoltageMainSpinner(0);
+    spindexer.setVoltageFeeder(0);
+    }, spindexer));
   }
   
 

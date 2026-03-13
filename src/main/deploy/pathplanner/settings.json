@@ -7,8 +7,10 @@
     "SLOW Paths"
   ],
   "autoFolders": [
-    "SLOWEST AUTONS",
-    "SLOW Autons"
+    "Tested Autons",
+    "Questionable Autons",
+    "SLOW Autons",
+    "SLOWEST AUTONS"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

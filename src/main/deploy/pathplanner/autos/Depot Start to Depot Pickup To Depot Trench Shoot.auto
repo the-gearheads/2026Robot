@@ -17,15 +17,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "FireFromDepotTrench"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "FireFromDepotTrench"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -33,9 +39,21 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "StartSpindexFeed"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
                   "waitTime": 5.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "STOP"
                 }
               }
             ]
