@@ -3,49 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.731418218496245,
-        "y": 1.2656031063671207
+        "x": 3.5411962973807496,
+        "y": 0.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.10459240577087,
-        "y": 0.6152299164182284
+        "x": 2.7711303080533907,
+        "y": 0.5996870357816508
       },
       "isLocked": false,
-      "linkedName": "HP Balls Endpoint"
+      "linkedName": "HP Starting Forward Driver Station"
     },
     {
       "anchor": {
-        "x": 4.392811197916667,
-        "y": 0.5477345920138896
+        "x": 0.5,
+        "y": 0.65
       },
       "prevControl": {
-        "x": 4.889326540761641,
-        "y": 0.3858535561441182
+        "x": 1.6474854704560022,
+        "y": 0.6557704605455991
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "HP Trench"
+      "linkedName": "HP Station"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.4,
-      "rotationDegrees": 90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "fireShooter",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "Shimmy",
-      "waypointRelativePos": 1.0,
+      "name": "DeployIntake",
+      "waypointRelativePos": 0.20027938741721849,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -60,7 +49,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,

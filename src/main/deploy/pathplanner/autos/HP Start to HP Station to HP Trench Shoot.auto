@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SLOW Center to Depot with Intaking"
+            "pathName": "HP Side to HP Station"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SLOW Depot to Depot Trench Shoot"
+            "pathName": "HP Station to HP Trench Shoot"
           }
         },
         {
@@ -23,7 +23,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "FireFromDepotTrench"
+                  "name": "FireFromHPTrench"
                 }
               },
               {
@@ -45,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "SLOW Autons",
+  "folder": null,
   "choreoAuto": false
 }

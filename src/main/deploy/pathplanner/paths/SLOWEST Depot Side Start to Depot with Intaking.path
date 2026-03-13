@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.75,
-        "y": 5.95
+        "x": 3.6493389320698473,
+        "y": 7.3427756335178875
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7499999999999998,
-        "y": 5.95
+        "x": 3.5615173398871014,
+        "y": 6.326509783317071
       },
       "isLocked": false,
-      "linkedName": "Depot Intaking"
+      "linkedName": "Depot Starting Forward HP"
     },
     {
       "anchor": {
-        "x": 1.6504665274805603,
-        "y": 3.85
+        "x": 0.75,
+        "y": 5.95
       },
       "prevControl": {
-        "x": 2.1793461190342525,
-        "y": 4.398985383730539
+        "x": 3.1128439655922193,
+        "y": 5.95
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Center Safe Zone"
+      "linkedName": "Depot Intaking"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
+      "minWaypointRelativePos": 0.0,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
@@ -47,14 +47,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Shimmy",
-      "waypointRelativePos": 1.0,
+      "name": "DeployIntake",
+      "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "fireShooter",
-      "waypointRelativePos": 1.0,
+      "name": "StartIntakeChomp",
+      "waypointRelativePos": 0.6039810893691592,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -69,7 +69,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "SLOWEST Paths",

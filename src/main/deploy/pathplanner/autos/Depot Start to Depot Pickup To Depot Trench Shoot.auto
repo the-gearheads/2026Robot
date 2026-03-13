@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SLOW Center to Depot with Intaking"
+            "pathName": "Depot Side Start to Depot with Intaking"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SLOW Depot to Depot Trench Shoot"
+            "pathName": "Depot to Depot Trench Shoot"
           }
         },
         {
@@ -45,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "SLOW Autons",
+  "folder": null,
   "choreoAuto": false
 }

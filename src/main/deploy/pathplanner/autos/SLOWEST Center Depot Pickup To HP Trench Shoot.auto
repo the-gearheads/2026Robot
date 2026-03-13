@@ -45,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "SLOWEST AUTONS",
   "choreoAuto": false
 }

@@ -48,12 +48,12 @@
     },
     {
       "anchor": {
-        "x": 4.4112,
-        "y": 0.6536777777777774
+        "x": 4.392811197916667,
+        "y": 0.5477345920138896
       },
       "prevControl": {
-        "x": 3.4112,
-        "y": 0.6536777777777775
+        "x": 3.392811197916667,
+        "y": 0.5477345920138897
       },
       "nextControl": null,
       "isLocked": false,
@@ -77,20 +77,7 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Shimmy",
-      "waypointRelativePos": 3.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "fireShooter",
-      "waypointRelativePos": 3.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -104,7 +91,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "SLOWEST Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0

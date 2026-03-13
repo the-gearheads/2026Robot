@@ -27,6 +27,9 @@ import frc.robot.controllers.Controllers;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_VELOCITY;
+import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
+import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_VELOCITY;
+import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -129,7 +132,11 @@ public class RobotContainer {
     }));
     NamedCommands.registerCommand("FireFromDepotTrench", Commands.run(() -> {
     shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(DEPOT_TRENCH_SHOOT_VELOCITY));
-    hood.setAngle(DEPLOY_MIN_ANGLE);
+    hood.setAngle(DEPOT_TRENCH_SHOOT_ANGLE);
+    }));
+    NamedCommands.registerCommand("FireFromHPTrench", Commands.run(() -> {
+    shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(HP_TRENCH_SHOOT_VELOCITY));
+    hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
     }));
     NamedCommands.registerCommand("Shimmy", Commands.run(() -> {
     deploy.shimmy(intake); 

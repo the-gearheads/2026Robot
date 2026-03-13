@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.627852433793746,
+        "x": 4.628,
         "y": 4.029357079530731
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.627852433793745,
+        "x": 5.627999999999999,
         "y": 4.029357079530731
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.06,
-        "y": 7.54
+        "x": 3.552,
+        "y": 4.029357079530731
       },
       "prevControl": {
-        "x": 3.0599999999999996,
-        "y": 7.54
+        "x": 2.552,
+        "y": 4.029357079530731
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot Trench"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],

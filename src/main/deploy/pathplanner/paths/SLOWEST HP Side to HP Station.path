@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.75,
-        "y": 5.95
+        "x": 3.5411962973807496,
+        "y": 0.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7499999999999998,
-        "y": 5.95
+        "x": 2.7711303080533907,
+        "y": 0.5996870357816508
       },
       "isLocked": false,
-      "linkedName": "Depot Intaking"
+      "linkedName": "HP Starting Forward Driver Station"
     },
     {
       "anchor": {
-        "x": 1.6504665274805603,
-        "y": 3.85
+        "x": 0.5,
+        "y": 0.65
       },
       "prevControl": {
-        "x": 2.1793461190342525,
-        "y": 4.398985383730539
+        "x": 1.6474854704560022,
+        "y": 0.6557704605455991
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Center Safe Zone"
+      "linkedName": "HP Station"
     }
   ],
   "rotationTargets": [],
@@ -47,14 +47,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Shimmy",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "fireShooter",
-      "waypointRelativePos": 1.0,
+      "name": "DeployIntake",
+      "waypointRelativePos": 0.20027938741721849,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -69,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "SLOWEST Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
