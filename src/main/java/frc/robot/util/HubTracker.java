@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -16,9 +18,11 @@ public class HubTracker {
         Alliance teamAlliance = DriverStation.getAlliance().orElse(Alliance.Blue);
 
         if (activeAlliance == null) {
-            return false;
+            Logger.recordOutput("ObjectiveTracker/activeAllianceNull", true);
+            return true;
         }
 
+        Logger.recordOutput("ObjectiveTracker/activeAllianceNull", false);
         return activeAlliance == teamAlliance;
     }
 
