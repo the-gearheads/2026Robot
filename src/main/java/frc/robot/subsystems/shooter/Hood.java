@@ -198,7 +198,7 @@ public class Hood extends SubsystemBase {
         return getAngle().getRadians() <= HOOD_MIN_SYSID_ANGLE;
     }
 
-     public Command setAngleTreeMapCommand(Swerve swerve) {
+    public Command setAngleTreeMapCommand(Swerve swerve) {
         return this.run(() -> {
             this.setAngle(ShooterCalculations.getShootAngle(swerve));
         });

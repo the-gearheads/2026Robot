@@ -22,7 +22,6 @@ import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
 import frc.robot.commands.NTControl.ShooterNTControl;
 import frc.robot.commands.NTControl.DeployNTControl;
-import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
@@ -86,7 +85,8 @@ public class RobotContainer {
 
     swerve.setPose(AllianceFlipUtil.apply(new Pose2d(3.560, 4.025, Rotation2d.k180deg)));
 
-    hood.setDefaultCommand(new HoodNTControl(hood));
+    // hood.setDefaultCommand(new HoodNTControl(hood));
+    hood.setDefaultCommand(hood.setAngleTreeMapCommand(swerve));
     shooter.setDefaultCommand(new ShooterNTControl(shooter));
     deploy.setDefaultCommand(new DeployNTControl(deploy));
 
@@ -128,7 +128,7 @@ public class RobotContainer {
     swerve.stop();
     }));
     NamedCommands.registerCommand("FireFromDepotTrench", Commands.run(() -> {
-    shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(DEPOT_TRENCH_SHOOT_VELOCITY));
+    shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(DEPOT_TRENCH_SHOOT_VELOCITY));
     hood.setAngle(DEPLOY_MIN_ANGLE);
     }));
     NamedCommands.registerCommand("Shimmy", Commands.run(() -> {
@@ -162,6 +162,14 @@ public class RobotContainer {
     deploy.setDefaultCommand(deploy.setAngleCommand(DEPLOY_MIN_ANGLE));
     Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
       intake.stopIntake();
+    }));
+
+    Controllers.driverController.getRightPaddle().whileTrue(shooter.run(()->{
+      shooter.setShooterVelocity(ShooterCalculations.getShootVelocity(swerve));
+    }));
+
+    Controllers.driverController.getRightPaddle().whileFalse(shooter.run(()->{
+      shooter.setShooterVelocity(0);
     }));
 
     // Controllers.driverController.getLeftPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(30)));

@@ -12,7 +12,7 @@ public class IntakeConstants {
     public static final int INTAKE_CURRENT_LIMIT = 60;
     public static final int DEPLOY_CURRENT_LIMIT = 60;
 
-    public static final double[] DEPLOY_PID = {0.5, 0, 0};
+    public static final double[] DEPLOY_PID = {0.55, 0, 0};
     public static final Constraints DEPLOY_CONSTRAINTS = new Constraints(
         Units.degreesToRadians(1500), // per second; max vel
         Units.degreesToRadians(2500)  //  per sec^2; max accel
@@ -34,7 +34,7 @@ public class IntakeConstants {
 
     public static final double DEPLOY_LENGTH = Units.inchesToMeters(21);  // not exact
 
-    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(-1.5);  // it sinks into the bumper a bit to hold position
+    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(-5);  // it sinks into the bumper a bit to hold position
     public static final Rotation2d DEPLOY_MAX_ANGLE = Rotation2d.fromDegrees(84);
 
     public static final Rotation2d DEPLOY_MIN_SYSID_ANGLE = Rotation2d.fromDegrees(4);

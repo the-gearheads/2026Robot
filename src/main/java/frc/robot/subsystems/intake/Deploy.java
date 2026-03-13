@@ -55,7 +55,7 @@ public class Deploy extends SubsystemBase {
     configure();
     deployRelativeEncoder.setPosition(deploySplineEncoder.getAngle());
     targetAngle = getAngle();
-    profileSetpoint = new State(getIntegratedRelativeDeployAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+    profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
   }
 
   void configure() {
@@ -88,12 +88,12 @@ public class Deploy extends SubsystemBase {
   public void periodic() {
     if (DriverStation.isDisabled()) {
       deployRelativeEncoder.setPosition(deploySplineEncoder.getAngle());
-      profileSetpoint = new State(getIntegratedRelativeDeployAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+      profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
       targetAngle = getAngle();
     }
 
     if(voltageMode) {
-      profileSetpoint = new State(getIntegratedRelativeDeployAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+      profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
       targetAngle = getAngle();
       voltageMode = false; // voltageMode should be continuously set to set a voltage, so we default to maintaining pid when no command is being called
     } else {
@@ -145,7 +145,7 @@ public class Deploy extends SubsystemBase {
 
   public void setAngle(Rotation2d angle) {
     if (voltageMode) {
-      profileSetpoint = new State(getIntegratedRelativeDeployAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+      profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
     }
     voltageMode = false;
     targetAngle = angle;
@@ -153,7 +153,7 @@ public class Deploy extends SubsystemBase {
   }
 
     public boolean atAngle(Rotation2d angle) {
-        return MathUtil.isNear(angle.getRadians(), getIntegratedRelativeDeployAngle().getRadians(), DEPLOY_ANGLE_TOLERANCE.getRadians());
+        return MathUtil.isNear(angle.getRadians(), getAngle().getRadians(), DEPLOY_ANGLE_TOLERANCE.getRadians());
     }
 
     public void goToShimmyAngle() {

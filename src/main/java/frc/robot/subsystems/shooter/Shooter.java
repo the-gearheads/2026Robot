@@ -130,11 +130,11 @@ public class Shooter extends SubsystemBase {
     setKickerVelocity(ShooterCalculations.getKickerSpeed(velocity));
   }
 
-  public void setFlywheelVelocity(double velocity) {
+  private void setFlywheelVelocity(double velocity) {
     flywheelController.setSetpoint(velocity, ControlType.kVelocity);
   }
 
-  public void setKickerVelocity(double velocity) {
+  private void setKickerVelocity(double velocity) {
     kickerController.setSetpoint(velocity, ControlType.kVelocity);
   }
 

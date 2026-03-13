@@ -33,18 +33,18 @@ public class ShooterConstants {
     public static final double KICKER_VEL_FACTOR = ((1.0/KICKER_GEAR_RATIO) * (2 * Math.PI)) / 60;  // motor rpm -> hood rad/sec
 
     public static final double[] FLYWHEEL_PID = {0.001, 0, 0};
-    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0.088376, 0.01389, 0.00072178);
+    public static final SimpleMotorFeedforward FLYWHEEL_FEEDFORWARD = new SimpleMotorFeedforward(0.088376, 0.01339, 0.00072178);
 
     public static final double[] KICKER_PID = {0.001, 0, 0};
     public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017501, 0.00038719);
 
     // public static final double[] HOOD_PID = {0.14218, 0, 0};
-    public static final double[] HOOD_PID = {30, 0, 0};
-    public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.19535, 0.14086, 0.75006, 0.019405); 
+    public static final double[] HOOD_PID = {20, 0, 0};
+    public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.19535 + 0.14086, 0, 0.75006, 0.019405); 
     // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0); 
     public static final Constraints HOOD_CONSTRAINTS = new Constraints(
-        Units.degreesToRadians(500), // per second; max vel
-        Units.degreesToRadians(500)  //  per sec^2; max accel
+        Units.degreesToRadians(1500), // per second; max vel
+        Units.degreesToRadians(2000)  //  per sec^2; max accel
     );
 
     // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);  // 0.75006
@@ -61,9 +61,16 @@ public class ShooterConstants {
 
     public static final double FLYWHEEL_RADIUS = Units.inchesToMeters(3);  // i mean its not, but it is, but its not
 
-    public static final double[] SHOOT_DISTANCES = {1.248, 1.666, 2.070, 2.382, 2.710, 3.157, 4.226, 4.637, 5.430, 4.943, 3.632};  // in meters
-    public static final double[] SHOOT_ANGLES = {0.049, 0.1, 0.145, 0.154, 0.206, 0.224, 0.347, 0.381, 0.436, 0.383, 0.258};  // in Radians
-    public static final double[] SHOOT_SPEEDS = {215.141, 218.428, 226.646, 238.589, 245.985, 247.574, 272.172, 278.637, 312.439, 299.838, 262.420};  // in Radians/Sec
+    // public static final double[] SHOOT_DISTANCES = {1.248, 1.666, 2.070, 2.382, 2.710, 3.157, 3.632, 4.226, 4.637, 5.430, 4.943, };  // in meters
+    // public static final double[] SHOOT_ANGLES = {0.049, 0.1, 0.145, 0.154, 0.206, 0.224, 0.258, 0.347, 0.381, 0.436, 0.383};  // in Radians
+    // public static final double[] SHOOT_SPEEDS = {215.141, 218.428, 226.646, 238.589, 245.985, 262.420, 247.574, 272.172, 278.637, 312.439, 299.838};  // in Radians/Sec
+
+    public static final double[] SHOOT_DISTANCES = {1.248,   1.666,   2.070,   2.382,   2.710,   3.157,   3.695, 3.909,    4.226,   4.637,   5.430,   4.943,   3.632};  // in meters
+    public static final double[] SHOOT_ANGLES =    {0.049,   0.1,     0.145,   0.154,   0.206,   0.224,   0.314, 0.340,    0.347,   0.381,   0.436,   0.383,   0.258};  // in Radians
+    public static final double[] SHOOT_SPEEDS =    {215.141, 218.428, 226.646, 238.589, 245.985, 247.574, 267.03, 268.666, 272.172, 278.637, 312.439, 299.838, 262.420};  // in Radians/Sec
+    // public static final double[] SHOOT_DISTANCES = {1.248, 1.666, 2.070, 2.382, 2.710, 3.157, 4.226, 4.637, 5.430, 4.943};  // in meters
+    // public static final double[] SHOOT_ANGLES = {0.049, 0.1, 0.145, 0.154, 0.206, 0.210, 0.307, 0.381, 0.436, 0.383};  // in Radians
+    // public static final double[] SHOOT_SPEEDS = {215.141, 218.428, 226.646, 238.589, 245.985, 247.574, 272.172, 278.637, 312.439, 299.838};  // in Radians/Sec
 
     public static final double MAX_KICKER_SPEED = KICKER_FEEDFORWARD.maxAchievableVelocity(12, 0);
     public static final double MAX_EFFECTIVE_FLYWHEEL_SPEED = (MAX_KICKER_SPEED * EFFECTIVE_KICKER_DIAMETER) / (EFFECTIVE_FLYWHEEL_DIAMETER * KICKER_SURFACE_SPEED_RATIO);  // in order to maintain the surface speed ratio, the flywheel can't go faster than this speed or the kicker will be commanded to go faster than its max speed

@@ -3,6 +3,7 @@ package frc.robot.util;
 
 import java.util.ArrayList;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -102,10 +103,11 @@ public class ShooterCalculations {
         return shooterVelFunction.get(getHubDistance(robotPose));
     }
 
+    @AutoLogOutput
     private static double getHubDistance(Pose2d robotPose) { // TODO RENAME TO getObjectiveDistance
-        var us = getShooterPosition(robotPose).getTranslation();
-        var them = ObjectiveTracker.getObjective(robotPose).aimingLocation;
-        return us.getDistance(them);    } 
+        Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
+        return hubPosition.getDistance(getShooterPosition(robotPose).getTranslation());
+    } 
 
     public static Rotation2d getRobotYaw(Pose2d robotPose) {
         Translation2d targetAngle = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
@@ -114,14 +116,10 @@ public class ShooterCalculations {
         return angle;
     }
     
-    public static Rotation2d getHoodAngle(Swerve swerve) {
-        Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(getHubDistance(getShooterPosition(swerve.getPose()))));
-        return hubAngle;
-    }
-
-    public static double getShooterVelocity(Pose2d robotPose) {
-        return shooterVelFunction.get(getHubDistance(getShooterPosition(robotPose)));
-    }
+    // public static Rotation2d getHoodAngle(Swerve swerve) {
+    //     Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(getHubDistance(swerve.getPose())));
+    //     return hubAngle;
+    // }
 
     private static Pose2d getShooterPosition(Pose2d robotPose) {
         Translation2d shooterDistance = ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d();
@@ -146,7 +144,7 @@ public class ShooterCalculations {
             new Translation2d(11.918, FieldConstants.fieldWidth + 0.3)
         };
 
-        double rectWidth = (fieldRelativeRobotSpeed.vxMetersPerSecond * 0.3) + Units.inchesToMeters(35);
+        double rectWidth = (fieldRelativeRobotSpeed.vxMetersPerSecond * 0.5) + Units.inchesToMeters(45);
         Rectangle2d[] scaryZones = new Rectangle2d[hubSideCorners.length];
         for(int i=0; i<hubSideCorners.length; i++) {
             Rectangle2d currentZone = new Rectangle2d(hubSideCorners[i].plus(new Translation2d(rectWidth, 0)), WallSideCorners[i].plus(new Translation2d(-rectWidth, 0)));
@@ -160,5 +158,10 @@ public class ShooterCalculations {
     public static double getKickerSpeed(double flywheelSpeed) {
         double kickerSpeed = flywheelSpeed * ShooterConstants.KICKER_SURFACE_SPEED_RATIO * (ShooterConstants.EFFECTIVE_FLYWHEEL_DIAMETER / ShooterConstants.EFFECTIVE_KICKER_DIAMETER);
         return kickerSpeed;
+    }
+
+    public static void log(Pose2d pose) {
+        Logger.recordOutput("ShooterCalculations/hubDistance", getHubDistance(pose));
+
     }
 }
