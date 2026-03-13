@@ -1,6 +1,7 @@
 package frc.robot.constants;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -71,6 +72,8 @@ public final class SwerveConstants {
 
     public static double[] DRIVE_CONTROLLER_PID = {5, 0, 0.3};
     public static double[] ROT_CONTROLLER_PID = {3.2, 0, 0};
+
+    public static Rotation2d YAW_ALIGN_TOLERANCE = Rotation2d.fromDegrees(3);
 
     public static double ALIGNMENT_MAX_STOPPED_TRANS_SPEED = 0.1; // m/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning
     public static double ALIGNMENT_MAX_STOPPED_ROT_SPEED = Units.degreesToRadians(1); // rad/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning

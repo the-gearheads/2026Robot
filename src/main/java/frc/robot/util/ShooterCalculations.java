@@ -1,10 +1,16 @@
 package frc.robot.util;
 
 
+import static frc.robot.constants.ShooterConstants.FLYWHEEL_TOLERANCE;
+import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_TOLERANCE;
+import static frc.robot.constants.ShooterConstants.KICKER_TOLERANCE;
+import static frc.robot.constants.SwerveConstants.YAW_ALIGN_TOLERANCE;
+
 import java.util.ArrayList;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +21,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.ShooterConstants;
+import frc.robot.subsystems.shooter.Hood;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
 
 public class ShooterCalculations {
@@ -63,6 +71,21 @@ public class ShooterCalculations {
 
         return map;
     }
+
+
+    public static boolean isReadyToShoot(Swerve swerve, Hood hood, Shooter shooter) {
+        Pose2d robotPose = swerve.getPose();
+        boolean yawReady = MathUtil.isNear(robotPose.getRotation().getRadians(), getRobotYaw(robotPose).getRadians(), YAW_ALIGN_TOLERANCE.getRadians());
+        boolean shooterReady = MathUtil.isNear(shooter.getFlywheelVelocityRadPerSec(), getShootVelocity(swerve),
+                FLYWHEEL_TOLERANCE) &&
+                MathUtil.isNear(shooter.getKickerVelocityRadPerSec(), getKickerSpeed(getShootVelocity(swerve)), KICKER_TOLERANCE);
+        boolean hoodReady = MathUtil.isNear(hood.getAngle().getRadians(), getShootAngle(swerve).getRadians(), HOOD_ANGLE_TOLERANCE.getRadians());
+        Logger.recordOutput("ShooterCalculations/isReady/yawReady", yawReady);
+        Logger.recordOutput("ShooterCalculations/isReady/shooterReady", shooterReady);
+        Logger.recordOutput("ShooterCalculations/isReady/hoodReady", hoodReady);
+        return yawReady && hoodReady && shooterReady;
+    }
+
 
     public static Rotation2d getShootAngle(Swerve swerve) {
         Pose2d robotPose = swerve.getPose();
