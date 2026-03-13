@@ -50,6 +50,8 @@ public class Deploy extends SubsystemBase {
   TrapezoidProfile.State profileSetpoint;
   @AutoLogOutput
   boolean voltageMode = false;
+  @AutoLogOutput
+  double holdVoltage;
 
   public Deploy() {
     configure();
@@ -98,9 +100,11 @@ public class Deploy extends SubsystemBase {
       voltageMode = false; // voltageMode should be continuously set to set a voltage, so we default to maintaining pid when no command is being called
     } else {
       profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
-      deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+      deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, holdVoltage);
       Logger.recordOutput("Deploy/currentDeploySetpoint", profileSetpoint);
     }
+
+    holdVoltage = 0;
   }
 
   void setVoltage(double volts) {
@@ -123,45 +127,56 @@ public class Deploy extends SubsystemBase {
     return Rotation2d.fromRadians(deploySplineEncoder.getAngle());
   }
 
-    @AutoLogOutput
-    public Rotation2d getSplineEncoderRelativeDeployAngle() {
-        return Rotation2d.fromRadians(deploySplineEncoder.getPosition());
-    }
+  @AutoLogOutput
+  public Rotation2d getSplineEncoderRelativeDeployAngle() {
+      return Rotation2d.fromRadians(deploySplineEncoder.getPosition());
+  }
 
-    @AutoLogOutput
-    public Rotation2d getIntegratedRelativeDeployAngle() {
-        return Rotation2d.fromRadians(deployRelativeEncoder.getPosition());
-    }
+  @AutoLogOutput
+  public Rotation2d getIntegratedRelativeDeployAngle() {
+      return Rotation2d.fromRadians(deployRelativeEncoder.getPosition());
+  }
 
-    @AutoLogOutput
-    public double getIntegratedRelativeDeployVelocity() {
-        return deployRelativeEncoder.getVelocity();
-    }
+  @AutoLogOutput
+  public double getIntegratedRelativeDeployVelocity() {
+      return deployRelativeEncoder.getVelocity();
+  }
 
-    @AutoLogOutput
-    public double getSpineRelativeDeployVelocity() {
-        return deploySplineEncoder.getVelocity();
-    }
+  @AutoLogOutput
+  public double getSpineRelativeDeployVelocity() {
+      return deploySplineEncoder.getVelocity();
+  }
 
-    public void setAngle(Rotation2d angle) {
-      if (voltageMode) {
-        profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+  public void setAngle(Rotation2d angle) {
+    if (voltageMode) {
+      profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
+    }
+    voltageMode = false;
+    targetAngle = angle;
+    Logger.recordOutput("Deploy/DeployLastGoalAngle", angle);
+  }
+
+  public boolean atAngle(Rotation2d angle) {
+      return MathUtil.isNear(angle.getRadians(), getAngle().getRadians(), DEPLOY_ANGLE_TOLERANCE.getRadians());
+  }
+
+  public Command shimmy(Intake intake) {
+    return Commands.repeatingSequence(
+      this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_ANGLE).withTimeout(SHIMMY_TIMEOUT),
+      this.setAngleCommand(IntakeConstants.DEPLOY_MIN_ANGLE).withTimeout(SHIMMY_TIMEOUT)
+    );
+  }
+
+  public Command holdDownCommand() {
+    return this.run(()->{
+      setAngle(DEPLOY_MIN_ANGLE);
+      if (MathUtil.isNear(DEPLOY_MIN_ANGLE.getRadians(), getAngle().getRadians(), DEPLOY_ANGLE_TOLERANCE.getRadians())) {
+        holdVoltage = DEPLOY_STALL_VOLTAGE;
+      } else {
+        holdVoltage = 0;  // this isn't necessary but wtv
       }
-      voltageMode = false;
-      targetAngle = angle;
-      Logger.recordOutput("Deploy/DeployLastGoalAngle", angle);
-    }
-
-    public boolean atAngle(Rotation2d angle) {
-        return MathUtil.isNear(angle.getRadians(), getAngle().getRadians(), DEPLOY_ANGLE_TOLERANCE.getRadians());
-    }
-
-    public Command shimmy(Intake intake) {
-      return Commands.repeatingSequence(
-        this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_ANGLE).withTimeout(SHIMMY_TIMEOUT),
-        this.setAngleCommand(IntakeConstants.DEPLOY_MIN_ANGLE).withTimeout(SHIMMY_TIMEOUT)
-      );
-    }
+    });
+  }
 
 
   @AutoLogOutput
@@ -194,7 +209,6 @@ public class Deploy extends SubsystemBase {
     return getAngle().getRadians() < DEPLOY_MIN_SYSID_ANGLE.getRadians();
   }
 
-
   @AutoLogOutput
   public double getDeploySetpoint() {
     return deployController.getSetpoint();
@@ -212,5 +226,4 @@ public class Deploy extends SubsystemBase {
         }),
         new Mechanism(this::setVoltage, null, this));
   }
-
 }

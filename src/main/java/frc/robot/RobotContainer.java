@@ -89,9 +89,10 @@ public class RobotContainer {
     swerve.setPose(AllianceFlipUtil.apply(new Pose2d(3.560, 4.025, Rotation2d.k180deg)));
 
     // hood.setDefaultCommand(new HoodNTControl(hood));
+    // deploy.setDefaultCommand(new DeployNTControl(deploy));
     hood.setDefaultCommand(hood.setAngleTreeMapCommand(swerve));
     shooter.setDefaultCommand(new ShooterNTControl(shooter));
-    deploy.setDefaultCommand(new DeployNTControl(deploy));
+    deploy.setDefaultCommand(deploy.holdDownCommand());
 
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
@@ -166,7 +167,6 @@ public class RobotContainer {
     // }));
 
     Controllers.driverController.getLeftPaddle().whileTrue(deploy.shimmy(intake));
-    deploy.setDefaultCommand(deploy.setAngleCommand(DEPLOY_MIN_ANGLE));
     Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
       intake.stopIntake();
     }));

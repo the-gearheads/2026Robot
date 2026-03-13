@@ -10,7 +10,7 @@ public class IntakeConstants {
     public static final int INTAKE_ID = 31;
     public static final int DEPLOY_ENCODER_ID = 34;
     public static final int INTAKE_CURRENT_LIMIT = 60;
-    public static final int DEPLOY_CURRENT_LIMIT = 60;
+    public static final int DEPLOY_CURRENT_LIMIT = 20;
 
     public static final double[] DEPLOY_PID = {0.55, 0, 0};
     public static final Constraints DEPLOY_CONSTRAINTS = new Constraints(
@@ -45,7 +45,7 @@ public class IntakeConstants {
     public static final double SHIMMY_TIMEOUT = 0.8;  // will go up for x seconds, down for x, etc
     public static final Rotation2d DEPLOY_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5);
 
+    public static final double DEPLOY_STALL_VOLTAGE = 0.6;  // power consumption isn't an issue at these low current limit/voltages, but voltage drop on the battery is, so this has to be low
+
     public static final double INTAKE_VELOCITY = 5250;
-
-
 }
