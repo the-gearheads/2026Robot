@@ -261,13 +261,13 @@ public class ShooterCalculations {
         };
 
         Translation2d[] WallSideCorners = {  // 0.3 is a tiny bit of tolerance in case localization is outside of the field
-            new Translation2d(4.63, 0 - 0.3),
-            new Translation2d(4.63, FieldConstants.fieldWidth + 0.3),
-            new Translation2d(11.918, 0 - 0.3),
-            new Translation2d(11.918, FieldConstants.fieldWidth + 0.3)
+            new Translation2d(4.63, 0 - 5),
+            new Translation2d(4.63, FieldConstants.fieldWidth + 5),
+            new Translation2d(11.918, 0 - 5),
+            new Translation2d(11.918, FieldConstants.fieldWidth + 5)
         };
 
-        double rectWidth = (fieldRelativeRobotSpeed.vxMetersPerSecond * 0.5) + Units.inchesToMeters(45);
+        double rectWidth = (fieldRelativeRobotSpeed.vxMetersPerSecond * 0.6) + Units.inchesToMeters(45);
         Rectangle2d[] scaryZones = new Rectangle2d[hubSideCorners.length];
         for(int i=0; i<hubSideCorners.length; i++) {
             Rectangle2d currentZone = new Rectangle2d(hubSideCorners[i].plus(new Translation2d(rectWidth, 0)), WallSideCorners[i].plus(new Translation2d(-rectWidth, 0)));
