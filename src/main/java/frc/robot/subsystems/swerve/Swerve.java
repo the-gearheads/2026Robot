@@ -31,6 +31,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -222,6 +223,20 @@ public class Swerve extends SubsystemBase {
   public void driveFieldRelative(ChassisSpeeds speeds) {
     driveFieldRelative(speeds, null);
   }
+
+  /* relative to your alliance's DS wall */
+  public void driveAllianceRelative(ChassisSpeeds speeds, Rotation2d alignToAngle) {
+    var rot = getPose().getRotation();
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+      rot = rot.rotateBy(Rotation2d.fromDegrees(180));
+    }
+    this.drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, rot), alignToAngle);
+  }
+
+  public void driveAllianceRelative(ChassisSpeeds speeds) {
+    driveAllianceRelative(speeds, null);
+  }
+
 
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];

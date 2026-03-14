@@ -24,8 +24,8 @@ public class Teleop extends Command {
     @Override
     public void execute() {
         // runs every 20 milliseconds as long as teleop is running
-        double x = -Controllers.driverController.getTranslateXAxis();
-        double y = -Controllers.driverController.getTranslateYAxis();
+        double x = Controllers.driverController.getTranslateXAxis();
+        double y = Controllers.driverController.getTranslateYAxis();
         double rot = Controllers.driverController.getRotateAxis();
 
         double xSpeed = Math.signum(x) * Math.pow(x, 2);
@@ -37,9 +37,9 @@ public class Teleop extends Command {
         rotSpeed *= SwerveConstants.MAX_ROBOT_TRANS_SPEED;
 
         if (Controllers.driverController.getRightPaddle().getAsBoolean()) {
-            swerve.drive(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), swerve.getRotation()), ShooterCalculations.getHubYaw(swerve));
+            swerve.driveAllianceRelative(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), swerve.getRotation()), ShooterCalculations.getHubYaw(swerve));
         } else {
-            swerve.drive(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), swerve.getRotation()));
+            swerve.driveAllianceRelative(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), swerve.getRotation()));
         }
     }
 
