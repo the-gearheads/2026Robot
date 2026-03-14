@@ -198,6 +198,12 @@ public class RobotContainer {
     Controllers.driverController.getXBtn().whileFalse(Commands.run(() -> {
       spindexer.setVoltageFeeder(0);
     }));
+
+    Controllers.driverController.getPovUp().whileTrue(Commands.run(()->{
+      shooter.setShooterVelocity(HP_TRENCH_SHOOT_VELOCITY);
+      hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
+      
+    }, shooter, hood));
     
     // Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
     //   shooter.setKickerVoltage(-6);

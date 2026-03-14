@@ -165,7 +165,7 @@ public class Deploy extends SubsystemBase {
     return Commands.repeatingSequence(
       this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_ANGLE).withTimeout(SHIMMY_TIMEOUT),
       this.setAngleCommand(IntakeConstants.DEPLOY_MIN_ANGLE).withTimeout(SHIMMY_TIMEOUT)
-    );
+    ).alongWith(intake.run(()->{intake.setIntakeVoltage(12);}));
   }
 
   public Command holdDownCommand() {

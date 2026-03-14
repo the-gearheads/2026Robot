@@ -179,11 +179,11 @@ public class Hood extends SubsystemBase {
     public Command hoodHome() { // bypasses limits
         return this.run(()->{
             this.isManualMode = true;
-            this.setVoltage(-1.5);
+            this.hood.setVoltage(-1.5);
         }).withTimeout(2).andThen(this.runEnd(()->{
             this.targetAngle = getAngle();  // shouldn't need this but if manual mode breaks or something
             this.isManualMode = true;
-            this.setVoltage(0);
+            this.hood.setVoltage(0);
         }, ()->{this.hoodEncoder.setPosition(0); this.setAngle(Rotation2d.kZero);}));
     }
 
