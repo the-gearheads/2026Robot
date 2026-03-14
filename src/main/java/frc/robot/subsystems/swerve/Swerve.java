@@ -172,6 +172,7 @@ public class Swerve extends SubsystemBase {
 
     if (alignToAngle != null) {
       Logger.recordOutput("Swerve/PoseRotPidAtSetpoint", headingController.atSetpoint());
+      Logger.recordOutput("Swerve/alignToAngleSetpoint", headingController.getSetpoint());
       headingController.setSetpoint(alignToAngle.getRadians());
       if (!headingController.atSetpoint()) {
         speeds.omegaRadiansPerSecond = commandedRot;
