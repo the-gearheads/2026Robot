@@ -69,21 +69,21 @@ public class Camera {
     }
 
     private Optional<Pose3d> filterPose(EstimatedRobotPose estimatedPose, boolean onBump) {
-        if (DriverStation.isDisabled()) {
-            return Optional.of(estimatedPose.estimatedPose);
-        }
-
         Pose3d estPose = estimatedPose.estimatedPose;
         double pitch = estPose.getRotation().getX();
         double roll = estPose.getRotation().getY();
+        if (!VisionConstants.FIELD.contains(estPose.toPose2d().getTranslation())) {
+            return Optional.empty();
+        }
+
+        if (DriverStation.isDisabled()) {
+            return Optional.of(estimatedPose.estimatedPose);  // only do yaw and roll checks if we are enabled so that we can make sure vision inits
+        }
+
 
         
         if (Math.abs(pitch) > MAX_PITCHROLL || Math.abs(roll) > MAX_PITCHROLL
         || Math.abs(estPose.getTranslation().getZ()) > MAX_Z && !onBump) {
-            return Optional.empty();
-        }
-        
-        if (!VisionConstants.FIELD.contains(estPose.toPose2d().getTranslation())) {
             return Optional.empty();
         }
 
