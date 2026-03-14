@@ -128,6 +128,38 @@ public class ShooterCalculations {
         return angle;
     }
 
+    public static Rotation2d getFeederHoodAngle(Swerve swerve) {
+        double feedDistance = getFeedingDistance(swerve.getPose());
+        Logger.recordOutput("ShooterCalculations/FeedingDistance", feedDistance);
+        Rotation2d feedingAngle = Rotation2d.fromRadians(shooterAngleFunction.get(feedDistance));
+        Logger.recordOutput("ShooterCalculations/FeederHoodAngle", feedingAngle);
+        return feedingAngle;
+    }
+    
+    public static double getFeedVelocity(Swerve swerve) {
+        double feedDistance = getFeedingDistance(swerve.getPose());
+        Logger.recordOutput("ShooterCalculations/FeedingDistance", feedDistance);
+        double feedingSpeed = shooterVelFunction.get(feedDistance);
+        Logger.recordOutput("ShooterCalculations/FeedShootVel", feedingSpeed);
+        return feedingSpeed;
+    }
+
+    public static Rotation2d getFeederYaw(Swerve swerve) {
+        Pose2d robotPose = swerve.getPose();
+        Translation2d targetAngle = Objective.FEED_LEFT.aimingLocation;
+        if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_LEFT) {
+            targetAngle = Objective.FEED_LEFT.aimingLocation;
+        } else if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_RIGHT) {
+            targetAngle = Objective.FEED_RIGHT.aimingLocation;
+        } else if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_OVER) {
+            targetAngle = Objective.FEED_OVER.aimingLocation;
+        }
+
+        Rotation2d angle = targetAngle.minus(getShooterPosition(robotPose).getTranslation()).getAngle();
+        Logger.recordOutput("ShooterCalculations/FeederRobotYaw", angle);
+        return angle;
+    }
+
     public static Rotation2d getObjectiveHoodAngle(Swerve swerve) {
         Pose2d robotPose = swerve.getPose();
         Rectangle2d[] trenchRectangles = getTrenchAvoidanceRectanlges(robotPose, swerve.getFieldRelativeSpeeds());

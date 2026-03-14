@@ -33,7 +33,6 @@ import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -42,7 +41,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class RobotContainer {
  
@@ -170,14 +168,6 @@ public class RobotContainer {
     Controllers.updateActiveControllerInstance();
 
 
-    // voltage numbers are completely arbitrary ngl i just picked things
-    // Controllers.driverController.getABtn().whileTrue(shooter.run(()->{
-    //   shooter.setFlywheelVelocity(Units.rotationsPerMinuteToRadiansPerSecond(2500));
-    // }).finallyDo(()->{
-    //   shooter.setFlywheelVoltage(0);
-    //   shooter.setKickerVoltage(0);
-    // }));
-
     Controllers.driverController.getLeftPaddle().whileTrue(deploy.shimmy(intake));
     Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
       intake.stop();
@@ -205,7 +195,6 @@ public class RobotContainer {
     Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
       spindexer.setVoltageFeeder(12);
     }));
-
     Controllers.driverController.getXBtn().whileFalse(Commands.run(() -> {
       spindexer.setVoltageFeeder(0);
     }));
@@ -245,21 +234,26 @@ public class RobotContainer {
     //   intake.setDeployVoltage(-2);
     // }).finallyDo(() ->{intake.setDeployVoltage(0);}));
 
-     Controllers.driverController.getXBtn().whileTrue(spindexer.run(()->{
-       spindexer.setVoltageFeeder(12);
-     }));
     // Controllers.driverController.getYBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
     // Controllers.driverController.getBBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
+
+    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
+    Controllers.driverController.getBBtn().onTrue(climber.climberDown());
     // Controllers.driverController.getYBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()+Units.rotationsPerMinuteToRadiansPerSecond(25));}));
     // Controllers.driverController.getBBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()-Units.rotationsPerMinuteToRadiansPerSecond(25));}));
     // Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()+Units.degreesToRadians(0.5)));}));
     // Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()-Units.degreesToRadians(0.5)));}));
 
-    // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
-    // Controllers.driverController.getBBtn().onTrue(climber.climberDown());
+    Controllers.driverController.getRightBumper().whileTrue(shooter.run(()->{
+      shooter.setShooterVelocity(ShooterCalculations.getHubVelocity(swerve));
+    }));
 
-    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.setObjectiveAngleCommand(swerve));
-    Controllers.driverController.getRightTriggerBtn().whileTrue(shooter.setObjectiveVelocityCommand(swerve));
+    Controllers.driverController.getRightBumper().whileFalse(shooter.run(()->{
+      shooter.setShooterVelocity(0);
+    }));
+    
+    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.setAngleFeed(swerve));
+    Controllers.driverController.getRightTriggerBtn().whileTrue(shooter.setFeedVelocityCommand(swerve));
   }
 
   public Command getAutonomousCommand() {

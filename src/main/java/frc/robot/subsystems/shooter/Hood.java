@@ -38,7 +38,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -204,6 +203,12 @@ public class Hood extends SubsystemBase {
     public Command setObjectiveAngleCommand(Swerve swerve) {
         return this.run(() -> {
             this.setAngle(ShooterCalculations.getObjectiveHoodAngle(swerve));
+        });
+    }
+
+    public Command setAngleFeed(Swerve swerve) {
+        return this.run(() -> {
+            this.setAngle(ShooterCalculations.getFeederHoodAngle(swerve));
         });
     }
 
