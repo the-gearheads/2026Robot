@@ -86,7 +86,7 @@ public class ShooterCalculations {
         boolean shooterReady = MathUtil.isNear(shooter.getFlywheelVelocityRadPerSec(), getShootVelocity(swerve),
                 FLYWHEEL_TOLERANCE) &&
                 MathUtil.isNear(shooter.getKickerVelocityRadPerSec(), getKickerSpeed(getShootVelocity(swerve)), KICKER_TOLERANCE);
-        boolean hoodReady = MathUtil.isNear(hood.getAngle().getRadians(), getShootAngle(swerve).getRadians(), HOOD_ANGLE_TOLERANCE.getRadians());
+        boolean hoodReady = MathUtil.isNear(hood.getAngle().getRadians(), getHoodAngle(swerve).getRadians(), HOOD_ANGLE_TOLERANCE.getRadians());
         Logger.recordOutput("ShooterCalculations/isReady/yawReady", yawReady);
         Logger.recordOutput("ShooterCalculations/isReady/shooterReady", shooterReady);
         Logger.recordOutput("ShooterCalculations/isReady/hoodReady", hoodReady);
@@ -99,7 +99,7 @@ public class ShooterCalculations {
         boolean shooterReady = MathUtil.isNear(shooter.getFlywheelVelocityRadPerSec(), getAutonVelocity(swerve),
                 FLYWHEEL_TOLERANCE) &&
                 MathUtil.isNear(shooter.getKickerVelocityRadPerSec(), getKickerSpeed(getAutonVelocity(swerve)), KICKER_TOLERANCE);
-        boolean hoodReady = MathUtil.isNear(hood.getAngle().getRadians(), getAutonAngle(swerve).getRadians(), HOOD_ANGLE_TOLERANCE.getRadians());
+        boolean hoodReady = MathUtil.isNear(hood.getAngle().getRadians(), getAutonHoodAngle(swerve).getRadians(), HOOD_ANGLE_TOLERANCE.getRadians());
         Logger.recordOutput("ShooterCalculations/isReady/yawReadyAuton", yawReady);
         Logger.recordOutput("ShooterCalculations/isReady/shooterReadyAuton", shooterReady);
         Logger.recordOutput("ShooterCalculations/isReady/hoodReadyAuton", hoodReady);
@@ -107,24 +107,28 @@ public class ShooterCalculations {
         return yawReady && hoodReady && shooterReady;
     }
 
-    public static Rotation2d getAutonAngle(Swerve swerve) {
+    public static Rotation2d getAutonHoodAngle(Swerve swerve) {
         double hubDistance = getHubDistance(swerve.getPose());
         Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(hubDistance));
+        Logger.recordOutput("ShooterCalculations/AutonAngle", hubAngle);
         return hubAngle;
     }
     
     public static double getAutonVelocity(Swerve swerve) {
         Pose2d robotPose = swerve.getPose();
         double hubSpeed = shooterVelFunction.get(getHubDistance(robotPose));
+        Logger.recordOutput("ShooterCalculations/AutonVelocity", hubSpeed);
         return hubSpeed;
     }
 
     public static Rotation2d getAutonYaw(Swerve swerve) {
-        Pose2d robotPose = swerve.getPose();
-        Rotation2d robotYaw = getRobotYaw(robotPose);
-        return robotYaw;
+        Translation2d hubAngle = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
+        Rotation2d angle = hubAngle.minus(getShooterPosition(swerve.getPose()).getTranslation()).getAngle();
+        Logger.recordOutput("ShooterCalculations/AutonYaw", angle);
+        return angle;
     }
-    public static Rotation2d getShootAngle(Swerve swerve) {
+
+    public static Rotation2d getHoodAngle(Swerve swerve) {
         Pose2d robotPose = swerve.getPose();
         Rectangle2d[] trenchRectangles = getTrenchAvoidanceRectanlges(robotPose, swerve.getFieldRelativeSpeeds());
         for (int i = 0; i < trenchRectangles.length; i++) {

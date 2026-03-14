@@ -86,10 +86,10 @@ public class RobotContainer {
     }
 
     NamedCommands.registerCommand("aimShoot", Commands.parallel(
-      hood.setAngleTreeMapCommand(swerve),
-      shooter.setVelocityTreeMapCommand(swerve),
+      hood.setAngleAuto(swerve),
+      shooter.setAutonVelocityCommand(swerve),
       deploy.shimmy(intake),
-      swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getAutonAngle(swerve));}),
+      swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getAutonYaw(swerve));}),
       new SequentialCommandGroup(
         Commands.waitUntil(() -> {return ShooterCalculations.autonShootReady(swerve, hood, shooter);}),
         spindexer.runSpindexer(12)
@@ -129,9 +129,10 @@ public class RobotContainer {
 
     // hood.setDefaultCommand(new HoodNTControl(hood));
     // // deploy.setDefaultCommand(new DeployNTControl(deploy));
-    // hood.setDefaultCommand(hood.setAngleTreeMapCommand(swerve));
     // shooter.setDefaultCommand(new ShooterNTControl(shooter));
-    // deploy.setDefaultCommand(deploy.holdDownCommand());
+    hood.setDefaultCommand(hood.setAngleTreeMapCommand(swerve));
+    shooter.setDefaultCommand(shooter.run(()->{shooter.setShooterVelocity(0);}));
+    deploy.setDefaultCommand(deploy.holdDownCommand());
 
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
