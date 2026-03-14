@@ -268,7 +268,7 @@ public class ShooterCalculations {
             new Translation2d(11.918, FieldConstants.fieldWidth + 5)
         };
 
-        double rectWidth = (fieldRelativeRobotSpeed.vxMetersPerSecond * 0.6) + Units.inchesToMeters(45);
+        double rectWidth = (Math.abs(fieldRelativeRobotSpeed.vxMetersPerSecond) * 0.6) + Units.inchesToMeters(45);
         Rectangle2d[] scaryZones = new Rectangle2d[hubSideCorners.length];
         for(int i=0; i<hubSideCorners.length; i++) {
             Rectangle2d currentZone = new Rectangle2d(hubSideCorners[i].plus(new Translation2d(rectWidth, 0)), WallSideCorners[i].plus(new Translation2d(-rectWidth, 0)));
