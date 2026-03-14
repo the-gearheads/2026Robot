@@ -54,7 +54,7 @@ public class ShooterConstants {
     public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);  // hood 0 is 7.5 deg up
     public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(47);
 
-    public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(0.2);
+    public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(0.8);
 
     public static final double HOOD_MIN_SYSID_ANGLE = Units.degreesToRadians(5);  // more conservative so sysid doesn't break anything
     public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(45);

@@ -86,12 +86,12 @@ public class RobotContainer {
     }
 
     NamedCommands.registerCommand("aimShoot", Commands.parallel(
-      hood.setAngleAuto(swerve),
-      shooter.setAutonVelocityCommand(swerve),
+      hood.setAngleHub(swerve),
+      shooter.setHubVelocityCommand(swerve),
       deploy.shimmy(intake),
-      swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getAutonYaw(swerve));}),
+      swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getHubYaw(swerve));}),
       new SequentialCommandGroup(
-        Commands.waitUntil(() -> {return ShooterCalculations.autonShootReady(swerve, hood, shooter);}),
+        Commands.waitUntil(() -> {return ShooterCalculations.hubShootReady(swerve, hood, shooter);}),
         spindexer.runSpindexer(12)
       )
     ));
@@ -184,7 +184,7 @@ public class RobotContainer {
     }));
 
     Controllers.driverController.getRightPaddle().whileTrue(shooter.run(()->{
-      shooter.setShooterVelocity(ShooterCalculations.getShootVelocity(swerve));
+      shooter.setShooterVelocity(ShooterCalculations.getObjectiveShootVelocity(swerve));
     }));
 
     Controllers.driverController.getRightPaddle().whileFalse(shooter.run(()->{
