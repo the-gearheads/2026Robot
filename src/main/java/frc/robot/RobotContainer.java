@@ -89,7 +89,7 @@ public class RobotContainer {
       deploy.shimmy(intake),
       swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getHubYaw(swerve));}),
       new SequentialCommandGroup(
-        Commands.waitUntil(() -> {return ShooterCalculations.hubShootReady(swerve, hood, shooter);}),
+        Commands.waitUntil(() -> {return ShooterCalculations.hubShootReady(swerve, hood, shooter);}).withTimeout(5),
         spindexer.runSpindexer(12)
       )
     ));
@@ -202,7 +202,7 @@ public class RobotContainer {
     Controllers.driverController.getPovUp().whileTrue(Commands.run(()->{
       shooter.setShooterVelocity(HP_TRENCH_SHOOT_VELOCITY);
       hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
-      
+
     }, shooter, hood));
     
     // Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
