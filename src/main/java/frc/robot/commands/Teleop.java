@@ -38,6 +38,8 @@ public class Teleop extends Command {
 
         if (Controllers.driverController.getRightPaddle().getAsBoolean()) {
             swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), ShooterCalculations.getHubYaw(swerve));
+        } else if (Controllers.driverController.getRightTriggerBtn().getAsBoolean()) {
+            swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), ShooterCalculations.getFeederYaw(swerve));
         } else {
             swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed));
         }

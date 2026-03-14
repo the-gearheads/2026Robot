@@ -199,6 +199,8 @@ public class RobotContainer {
       spindexer.setVoltageFeeder(0);
     }));
 
+    Controllers.driverController.getXBtn().whileTrue(deploy.shimmy(intake));
+
     Controllers.driverController.getPovUp().whileTrue(Commands.run(()->{
       shooter.setShooterVelocity(HP_TRENCH_SHOOT_VELOCITY);
       hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
@@ -206,11 +208,11 @@ public class RobotContainer {
     }, shooter, hood));
 
     Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{
-      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(0.5));
+      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(0.5));
     }));
 
     Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{
-      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(0.5));
+      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(0.5));
     }));
 
     Controllers.driverController.getPovDown().onTrue(hood.setAngleCommand(Rotation2d.kZero));
