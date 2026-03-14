@@ -67,7 +67,12 @@ public class Intake extends SubsystemBase {
 
     @AutoLogOutput
     public double getIntakeVoltage() {
-        return intake.get() * intake.getBusVoltage();
+        return intake.getAppliedOutput() * intake.getBusVoltage();
+    }
+
+    @AutoLogOutput
+    public double getIntakeSpeed() {
+        return intakeEncoder.getVelocity();
     }
 
     public double getIntakeVelocity() {
