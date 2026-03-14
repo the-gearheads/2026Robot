@@ -192,7 +192,7 @@ public class Shooter extends SubsystemBase {
         new Mechanism(this::setKickerVoltage, null, this));
   }
 
-  public Command setVelocityTreeMapCommand(Swerve swerve) {
+  public Command setObjectiveVelocityCommand(Swerve swerve) {
         return this.run(() -> {
             this.setShooterVelocity(ShooterCalculations.getObjectiveShootVelocity(swerve));
         });

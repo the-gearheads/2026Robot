@@ -71,27 +71,23 @@ public class Intake extends SubsystemBase {
     }
 
     @AutoLogOutput
-    public double getIntakeSpeed() {
-        return intakeEncoder.getVelocity();
-    }
-
     public double getIntakeVelocity() {
         return intakeEncoder.getVelocity();
     }
 
-    public void setIntakeVelocity(double velocity) {
-        intakeController.setSetpoint(velocity, ControlType.kVelocity);
-    }
+    // public void setIntakeVelocity(double velocity) {
+    //     intakeController.setSetpoint(velocity, ControlType.kVelocity);
+    // }
 
-    public SysIdRoutine getIntakeSysid() {
-        return new SysIdRoutine(
-                new Config(Volts.of(.5).per(Second), Volts.of(2), null, (state) -> {
-                    Logger.recordOutput("Intake/intakeSysidTestState", state.toString());
-                }),
-                new Mechanism(this::setIntakeVoltage, null, this));
-    }
+    // public SysIdRoutine getIntakeSysid() {
+    //     return new SysIdRoutine(
+    //             new Config(Volts.of(.5).per(Second), Volts.of(2), null, (state) -> {
+    //                 Logger.recordOutput("Intake/intakeSysidTestState", state.toString());
+    //             }),
+    //             new Mechanism(this::setIntakeVoltage, null, this));
+    // }
 
-    public void stopIntake() {
+    public void stop() {
         intake.setVoltage(0);
     }
 

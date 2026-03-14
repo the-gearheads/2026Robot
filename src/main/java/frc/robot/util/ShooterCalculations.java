@@ -149,8 +149,10 @@ public class ShooterCalculations {
             double feedDistance = getFeedingDistance(robotPose);
             Logger.recordOutput("ShooterCalculations/FeedingDistance", feedDistance);
             Rotation2d feedingAngle = Rotation2d.fromRadians(shooterAngleFunction.get(feedDistance));
+            Logger.recordOutput("ShooterCalculations/ObjectiveHoodAngle", feedingAngle);
             return feedingAngle;
         } else {
+            Logger.recordOutput("ShooterCalculations/ObjectiveHoodAngle", hubAngle);
             return hubAngle;
         }
     }
@@ -166,8 +168,10 @@ public class ShooterCalculations {
             double feedDistance = getFeedingDistance(robotPose);
             Logger.recordOutput("ShooterCalculations/FeedingDistance", feedDistance);
             double feedingSpeed = shooterVelFunction.get(feedDistance);
+            Logger.recordOutput("ShooterCalculations/ObjectiveShooterVel", feedingSpeed);
             return feedingSpeed;
         } else {
+            Logger.recordOutput("ShooterCalculations/ObjectiveShooterVel", hubSpeed);
             return hubSpeed;
         }
     }
@@ -187,6 +191,7 @@ public class ShooterCalculations {
             targetAngle = hubAngle;
         }
         Rotation2d angle = targetAngle.minus(getShooterPosition(robotPose).getTranslation()).getAngle();
+        Logger.recordOutput("ShooterCalculations/OjectiveRobotYaw", angle);
         return angle;
     }
 

@@ -98,7 +98,6 @@ public class RobotContainer {
     
     NamedCommands.registerCommand("StartIntakeChomp", Commands.run(() -> {
     intake.setIntakeVoltage(12);
-    System.out.println("Awdased");
     }, intake));
     NamedCommands.registerCommand("StopIntakeChomp", Commands.run(() -> {
     intake.setIntakeVoltage(0);
@@ -130,9 +129,10 @@ public class RobotContainer {
     // hood.setDefaultCommand(new HoodNTControl(hood));
     // // deploy.setDefaultCommand(new DeployNTControl(deploy));
     // shooter.setDefaultCommand(new ShooterNTControl(shooter));
-    hood.setDefaultCommand(hood.setAngleTreeMapCommand(swerve));
+    hood.setDefaultCommand(hood.setObjectiveAngleCommand(swerve));
     shooter.setDefaultCommand(shooter.run(()->{shooter.setShooterVelocity(0);}));
     deploy.setDefaultCommand(deploy.holdDownCommand());
+    intake.setDefaultCommand(intake.run(()->{intake.stop();}));
 
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
@@ -180,7 +180,7 @@ public class RobotContainer {
 
     Controllers.driverController.getLeftPaddle().whileTrue(deploy.shimmy(intake));
     Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
-      intake.stopIntake();
+      intake.stop();
     }));
 
     Controllers.driverController.getRightPaddle().whileTrue(shooter.run(()->{
@@ -258,8 +258,8 @@ public class RobotContainer {
     // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
     // Controllers.driverController.getBBtn().onTrue(climber.climberDown());
 
-    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.setAngleTreeMapCommand(swerve));
-    Controllers.driverController.getRightTriggerBtn().whileTrue(shooter.setVelocityTreeMapCommand(swerve));
+    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.setObjectiveAngleCommand(swerve));
+    Controllers.driverController.getRightTriggerBtn().whileTrue(shooter.setObjectiveVelocityCommand(swerve));
   }
 
   public Command getAutonomousCommand() {
