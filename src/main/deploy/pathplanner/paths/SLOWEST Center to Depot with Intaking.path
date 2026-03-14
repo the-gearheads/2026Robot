@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6370247950383305,
-        "y": 4.038910176213799
+        "x": 3.6540178571428568,
+        "y": 7.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6370247950383305,
-        "y": 5.038910176213799
+        "x": 3.6540178571428568,
+        "y": 8.45
       },
       "isLocked": false,
       "linkedName": "Center Starting Forward Depot"
@@ -75,7 +75,7 @@
   "folder": "SLOWEST Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

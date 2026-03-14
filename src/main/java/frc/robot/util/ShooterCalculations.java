@@ -3,6 +3,7 @@ package frc.robot.util;
 
 import static frc.robot.constants.ShooterConstants.FLYWHEEL_TOLERANCE;
 import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_TOLERANCE;
+import static frc.robot.constants.ShooterConstants.HUB_ANGLE_ADJUSTMENT;
 import static frc.robot.constants.ShooterConstants.KICKER_TOLERANCE;
 import static frc.robot.constants.SwerveConstants.YAW_ALIGN_TOLERANCE;
 
@@ -109,7 +110,7 @@ public class ShooterCalculations {
 
     public static Rotation2d getHubHoodAngle(Swerve swerve) {
         double hubDistance = getHubDistance(swerve.getPose());
-        Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(hubDistance));
+        Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(hubDistance)).plus(HUB_ANGLE_ADJUSTMENT);
         Logger.recordOutput("ShooterCalculations/AutonAngle", hubAngle);
         return hubAngle;
     }
@@ -172,7 +173,7 @@ public class ShooterCalculations {
         Logger.recordOutput("ShooterConstants/inTrench", false);
 
         double hubDistance = getHubDistance(robotPose);
-        Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(hubDistance));
+        Rotation2d hubAngle = Rotation2d.fromRadians(shooterAngleFunction.get(hubDistance)).plus(HUB_ANGLE_ADJUSTMENT);
         if (ObjectiveTracker.getObjective(robotPose) == Objective.HUB) {
             return hubAngle;
         } else if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_LEFT

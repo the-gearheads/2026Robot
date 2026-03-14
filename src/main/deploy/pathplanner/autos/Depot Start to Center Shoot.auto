@@ -5,46 +5,46 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "SLOW Center to Depot with Intaking"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "SLOW Depot to Depot Trench Shoot"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "FireFromDepotTrench"
+                  "name": "DeployIntake"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Shimmy"
+                  "name": "StartIntakeChomp"
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 5.0
+                  "name": "HoodDown"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Works Depot to Center Pickup"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimShoot"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "SLOW Autons",
+  "folder": "New Autons Style",
   "choreoAuto": false
 }

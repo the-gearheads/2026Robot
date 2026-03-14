@@ -19,9 +19,9 @@ import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.controllers.Controllers;
 
-import static frc.robot.constants.IntakeConstants.DEPLOY_MIN_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_VELOCITY;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
@@ -98,12 +98,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("StartIntakeChomp", Commands.run(() -> {
     intake.setIntakeVoltage(12);
     }, intake));
+    NamedCommands.registerCommand("HoodDown", hood.setAngleCommand(Rotation2d.kZero));
     NamedCommands.registerCommand("StopIntakeChomp", Commands.run(() -> {
     intake.setIntakeVoltage(0);
     }, intake));
-    NamedCommands.registerCommand("DeployIntake", Commands.run(() -> {
-    deploy.setAngleCommand(DEPLOY_MIN_ANGLE);
-    }, deploy));
+    NamedCommands.registerCommand("DeployIntake", deploy.holdDownCommand());
     NamedCommands.registerCommand("STOP", Commands.run(() -> {
     swerve.stop();
     }, swerve));
@@ -205,6 +204,14 @@ public class RobotContainer {
       hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
 
     }, shooter, hood));
+
+    Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{
+      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(0.5));
+    }));
+
+    Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{
+      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(0.5));
+    }));
 
     Controllers.driverController.getPovDown().onTrue(hood.setAngleCommand(Rotation2d.kZero));
     
