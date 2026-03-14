@@ -254,10 +254,10 @@ public class ShooterCalculations {
 
     public static Rectangle2d[] getTrenchAvoidanceRectanlges(Pose2d pose, ChassisSpeeds fieldRelativeRobotSpeed) {
         Translation2d[] hubSideCorners = {
-            new Translation2d(4.63, 1.5),
-            new Translation2d(4.63, 6.68),
-            new Translation2d(11.918, 1.5),
-            new Translation2d(11.918, 6.68)
+            new Translation2d(4.63, 2.1),
+            new Translation2d(4.63, 6),
+            new Translation2d(11.918, 2.1),
+            new Translation2d(11.918, 6)
         };
 
         Translation2d[] WallSideCorners = {  // 0.3 is a tiny bit of tolerance in case localization is outside of the field

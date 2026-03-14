@@ -37,9 +37,9 @@ public class Teleop extends Command {
         rotSpeed *= SwerveConstants.MAX_ROBOT_TRANS_SPEED;
 
         if (Controllers.driverController.getRightPaddle().getAsBoolean()) {
-            swerve.driveAllianceRelative(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), swerve.getRotation()), ShooterCalculations.getHubYaw(swerve));
+            swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), ShooterCalculations.getHubYaw(swerve));
         } else {
-            swerve.driveAllianceRelative(ChassisSpeeds.fromFieldRelativeSpeeds(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), swerve.getRotation()));
+            swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed));
         }
     }
 

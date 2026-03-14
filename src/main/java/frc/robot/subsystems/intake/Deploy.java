@@ -63,7 +63,7 @@ public class Deploy extends SubsystemBase {
   void configure() {
     deployConfig.encoder.quadratureMeasurementPeriod(10);
     deployConfig.encoder.quadratureAverageDepth(2);
-    deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+    deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, DEPLOY_ENCODER_ID);
     deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
     deployConfig.idleMode(IdleMode.kBrake);
     deployConfig.disableVoltageCompensation();

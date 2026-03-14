@@ -68,7 +68,8 @@ public class Hood extends SubsystemBase {
     public void periodic() {
         if (!isManualMode) {
             lastSetpoint = profileSetpoint;
-            profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
+            profileSetpoint =
+             profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
             double ff = HOOD_FEEDFORWARD.calculateWithVelocities(profileSetpoint.position+HOOD_ANGLE_OFFSET.getRadians(), lastSetpoint.velocity, profileSetpoint.velocity);
             double pid = hoodPID.calculate(getAngle().getRadians(), profileSetpoint.position);
             hood.setVoltage(pid + ff);
