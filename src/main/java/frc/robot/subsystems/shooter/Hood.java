@@ -38,6 +38,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -176,13 +177,15 @@ public class Hood extends SubsystemBase {
         return run(() -> setVoltage(volts)).finallyDo(() -> setVoltage(0));
     }
 
-    public Command hoodHome (){  // bypasses limits 
-        return runEnd(() -> hood.setVoltage(-0.5), () -> {
-            hood.setVoltage(0);
-        }).withTimeout(1.5).andThen(() -> {
-            hood.setVoltage(0);
-            this.hoodEncoder.setPosition(0);
-        });
+    public Command hoodHome() { // bypasses limits
+        return this.run(()->{
+            this.isManualMode = true;
+            this.setVoltage(-1.5);
+        }).withTimeout(2).andThen(this.runEnd(()->{
+            this.targetAngle = getAngle();  // shouldn't need this but if manual mode breaks or something
+            this.isManualMode = true;
+            this.setVoltage(0);
+        }, ()->{this.hoodEncoder.setPosition(0); this.setAngle(Rotation2d.kZero);}));
     }
 
     public SysIdRoutine getSysIdRoutine() {

@@ -191,17 +191,6 @@ public class RobotContainer {
       shooter.setShooterVelocity(0);
     }));
 
-    // Controllers.driverController.getLeftPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(30)));
-    // Controllers.driverController.getRightPaddle().onTrue(hood.setAngleCommand(Rotation2d.fromDegrees(5)));
-    // Controllers.driverController.getBBtn().whileTrue(hood.run(()-> {hood.setAngle(Rotation2d.fromDegrees(20));}));
-    // Controllers.driverController.getRightBumper().onTrue(Commands.runOnce(() -> {
-    //   fuelSim.launchFuel(MetersPerSecond.of(shooter.getFlywheelVelocityRadPerSec() * ShooterConstants.FLYWHEEL_RADIUS),
-    //       hood.getAngle().getMeasure(),
-    //       Rotation2d.kZero.getMeasure(), Inches.of(22));
-    // }, shooter));
-
-    // Controllers.driverController.getRightTriggerBtn().whileTrue(hood.hoodManual(3));
-    // Controllers.driverController.getLeftTriggerBtn().whileTrue(hood.hoodManual(-3));
     Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
 
     // todo fix after merge
