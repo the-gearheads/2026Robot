@@ -272,6 +272,16 @@ public class RobotContainer {
     
     Controllers.driverController.getRightTriggerBtn().whileTrue(hood.setAngleFeed(swerve));
     Controllers.driverController.getRightTriggerBtn().whileTrue(shooter.setFeedVelocityCommand(swerve));
+    Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.run(()->{
+      intake.setIntakeVoltage(12);
+      spindexer.setVoltageMainSpinner(-12);
+      spindexer.setVoltageFeeder(12);
+    }));
+    Controllers.driverController.getRightTriggerBtn().onFalse(Commands.runOnce(()->{
+      intake.setIntakeVoltage(0);
+      spindexer.setVoltageMainSpinner(0);
+      spindexer.setVoltageFeeder(0);
+    }));
   }
 
   public Command getAutonomousCommand() {

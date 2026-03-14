@@ -7,7 +7,7 @@ import frc.robot.constants.MiscConstants;
 
 public enum Objective {
     HUB(AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d())),
-    FEED_OVER(AllianceFlipUtil.apply(MiscConstants.OVER_FEEDING_LOCATION)),
+    FEED_OVER(MiscConstants.OVER_FEEDING_LOCATION),
     FEED_LEFT(AllianceFlipUtil.apply(MiscConstants.LEFT_FEEDING_LOCATION)),
     FEED_RIGHT(AllianceFlipUtil.apply(MiscConstants.RIGHT_FEEDING_LOCATION));
 
