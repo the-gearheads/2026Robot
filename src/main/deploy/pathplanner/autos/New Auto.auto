@@ -1,0 +1,50 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DeployIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartIntakeChomp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "HoodDown"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Grab Depot Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimShoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "New Autons Style",
+  "choreoAuto": false
+}
