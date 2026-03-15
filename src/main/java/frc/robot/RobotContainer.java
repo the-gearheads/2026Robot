@@ -177,6 +177,21 @@ public class RobotContainer {
       shooter.setShooterVelocity(ShooterCalculations.getObjectiveShootVelocity(swerve));
     }));
 
+  Controllers.driverController.getRightPaddle().whileTrue(Commands.sequence(
+    Commands.waitUntil(()->{return ShooterCalculations.isReadyToShoot(swerve, hood, shooter);}),
+    Commands.run(()-> {
+      spindexer.setVoltageMainSpinner(-12);
+      spindexer.setVoltageFeeder(12);
+    })   
+    ));
+
+    Controllers.driverController.getRightPaddle().onFalse(
+      Commands.runOnce(()-> {
+        spindexer.setVoltageMainSpinner(0);
+        spindexer.setVoltageFeeder(0);
+      })   
+    );
+
     Controllers.driverController.getRightPaddle().whileFalse(shooter.run(()->{
       shooter.setShooterVelocity(0);
     }));
