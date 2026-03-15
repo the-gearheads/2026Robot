@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 4.06,
-        "y": 7.539
+        "x": 2.7643888888888895,
+        "y": 5.126377777777777
       },
       "prevControl": {
-        "x": 5.164547468171296,
-        "y": 7.644229152199073
+        "x": 3.868936357060186,
+        "y": 5.23160692997685
       },
       "nextControl": null,
       "isLocked": false,
@@ -77,7 +77,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -40.91438322002509
   },
   "reversed": false,
   "folder": "SLOW Paths",
