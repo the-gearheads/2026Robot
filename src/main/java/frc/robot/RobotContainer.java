@@ -182,7 +182,7 @@ public class RobotContainer {
     Commands.run(()-> {
       spindexer.setVoltageMainSpinner(-12);
       spindexer.setVoltageFeeder(12);
-    })   
+    }).alongWith(deploy.shimmy(intake))  
     ));
 
     Controllers.driverController.getRightPaddle().onFalse(
