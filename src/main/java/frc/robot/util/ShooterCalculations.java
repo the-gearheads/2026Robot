@@ -20,6 +20,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.shooter.Hood;
@@ -156,6 +158,11 @@ public class ShooterCalculations {
             targetAngle = Objective.FEED_OVER.aimingLocation;
         }
 
+        if (DriverStation.getAlliance().isPresent()) {
+            if (DriverStation.getAlliance().get() == Alliance.Red) {
+                targetAngle = AllianceFlipUtil.apply(targetAngle);
+            }
+        }
         Rotation2d angle = targetAngle.minus(getShooterPosition(robotPose).getTranslation()).getAngle();
         Logger.recordOutput("ShooterCalculations/FeederRobotYaw", angle);
         return angle;

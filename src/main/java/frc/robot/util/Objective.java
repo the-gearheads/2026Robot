@@ -8,8 +8,8 @@ import frc.robot.constants.MiscConstants;
 public enum Objective {
     HUB(AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d())),
     FEED_OVER(MiscConstants.OVER_FEEDING_LOCATION),
-    FEED_LEFT(AllianceFlipUtil.apply(MiscConstants.LEFT_FEEDING_LOCATION)),
-    FEED_RIGHT(AllianceFlipUtil.apply(MiscConstants.RIGHT_FEEDING_LOCATION));
+    FEED_LEFT(MiscConstants.LEFT_FEEDING_LOCATION),
+    FEED_RIGHT(MiscConstants.RIGHT_FEEDING_LOCATION);
 
     public final Translation2d aimingLocation;
     private Objective(Translation2d aimingLocation) {
