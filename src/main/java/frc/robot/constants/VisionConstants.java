@@ -12,7 +12,7 @@ import frc.robot.subsystems.vision.CameraIntrinsics;
 
 public class VisionConstants {
     
-    public static final String[] CAMERA_NAMES = {"CTHULHU (1)", "PEARL2 (1)", "ANNIE", "ALLAN"};
+    public static final String[] CAMERA_NAMES = {"CTHULHU", "PEARL2", "ANNIE", "ALLAN"};
 
     public static final boolean ENABLED = true;
     public static final boolean USE_CONSTRAINED_PNP = false;
