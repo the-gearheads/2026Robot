@@ -26,7 +26,7 @@ public class IntakeConstants {
     public static final float DEPLOY_ABS_ENC_VEL_FACTOR = (float)(DEPLOY_ABS_ENC_POS_FACTOR / 60.0);  // why tf does it want a float TODO: complain to rev
     public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.305;  // this must be in rotations
 
-    public static final double INTAKE_GEAR_RATIO = 1;
+    public static final double INTAKE_GEAR_RATIO = 16.0 / 11.0;
 
     public static final double DEPLOY_GEAR_RATIO = (74.0 + (2.0/3.0)) /1.0;  // placeholder
     public static final double DEPLOY_POS_FACTOR = (1/DEPLOY_GEAR_RATIO)*(2 * Math.PI);
