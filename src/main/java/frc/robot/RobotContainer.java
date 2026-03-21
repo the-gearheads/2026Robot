@@ -125,7 +125,7 @@ public class RobotContainer {
     }, spindexer));
 
     // hood.setDefaultCommand(new HoodNTControl(hood));
-    // // deploy.setDefaultCommand(new DeployNTControl(deploy));
+    // deploy.setDefaultCommand(new DeployNTControl(deploy));
     // shooter.setDefaultCommand(new ShooterNTControl(shooter));
     hood.setDefaultCommand(hood.setObjectiveAngleCommand(swerve));
     shooter.setDefaultCommand(shooter.run(()->{shooter.setShooterVelocity(0);}));
@@ -270,8 +270,11 @@ public class RobotContainer {
     // Controllers.driverController.getYBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
     // Controllers.driverController.getBBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
 
-    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
-    Controllers.driverController.getBBtn().onTrue(climber.climberDown());
+    // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
+    // Controllers.driverController.getBBtn().onTrue(climber.climberDown());
+    Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{
+      spindexer.runSpindexer(12);
+    }));
     // Controllers.driverController.getYBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()+Units.rotationsPerMinuteToRadiansPerSecond(25));}));
     // Controllers.driverController.getBBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()-Units.rotationsPerMinuteToRadiansPerSecond(25));}));
     // Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()+Units.degreesToRadians(0.5)));}));
