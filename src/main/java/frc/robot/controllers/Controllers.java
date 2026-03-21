@@ -16,7 +16,7 @@ public class Controllers {
   private static String[] lastControllerNames = new String[MAX_DRIVER_STATION_PORTS];
 
   public static DriverController driverController;
-  public static Macropad operatorController;
+  public static SegaController operatorController;
 
   /** Returns true if the connected controllers have changed since last called. */
   public static boolean didControllersChange() {
@@ -40,7 +40,7 @@ public class Controllers {
     String joyName;
 
     driverController = new DriverController(-1);
-    operatorController = new Macropad(-1);
+    operatorController = new SegaController(-1);
 
     for (int port = 0; port < MAX_DRIVER_STATION_PORTS; port++) {
       if (DriverStation.isJoystickConnected(port)) {
@@ -48,7 +48,7 @@ public class Controllers {
 
         if (!foundOperatorController && isOperatorControllerName(joyName)) {
           foundOperatorController = true;
-          operatorController = new Macropad(port);
+          operatorController = new SegaController(port);
         }
         // No filtering for now, just use the first
         else if (!foundDriveController) {

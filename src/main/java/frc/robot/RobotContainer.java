@@ -301,6 +301,18 @@ public class RobotContainer {
       spindexer.setVoltageMainSpinner(0);
       spindexer.setVoltageFeeder(0);
     }));
+    Controllers.operatorController.getAButton().onTrue(Commands.runOnce(()->{
+      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(0.5));
+    }));
+    Controllers.operatorController.getXButton().onTrue(Commands.runOnce(()->{
+      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(0.5));
+    }));
+    Controllers.operatorController.getBButton().onTrue(Commands.runOnce(()->{
+      ShooterConstants.SHOOTER_RPM_ADJUSTMENT = (ShooterConstants.SHOOTER_RPM_ADJUSTMENT - 50); 
+    }));
+       Controllers.operatorController.getYButton().onTrue(Commands.runOnce(()->{
+      ShooterConstants.SHOOTER_RPM_ADJUSTMENT = (ShooterConstants.SHOOTER_RPM_ADJUSTMENT + 50); 
+    }));
   }
 
   public Command getAutonomousCommand() {

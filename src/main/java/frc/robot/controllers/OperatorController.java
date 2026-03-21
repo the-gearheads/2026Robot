@@ -1,0 +1,23 @@
+package frc.robot.controllers;
+
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+public interface OperatorController {
+    
+    public default Trigger getAButton(){
+        return new Trigger(() ->false);
+    }
+    
+     public default Trigger getBButton(){
+        return new Trigger(() ->false);
+    }
+
+     public default Trigger getXButton(){
+        return new Trigger(() ->false);
+    }
+
+     public default Trigger getYButton(){
+        return new Trigger(() ->false);
+    }
+
+}
