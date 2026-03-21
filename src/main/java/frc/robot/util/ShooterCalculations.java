@@ -5,6 +5,7 @@ import static frc.robot.constants.ShooterConstants.FLYWHEEL_TOLERANCE;
 import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_TOLERANCE;
 import static frc.robot.constants.ShooterConstants.HUB_ANGLE_ADJUSTMENT;
 import static frc.robot.constants.ShooterConstants.KICKER_TOLERANCE;
+import static frc.robot.constants.ShooterConstants.SHOOTER_RPM_ADJUSTMENT;
 import static frc.robot.constants.SwerveConstants.YAW_ALIGN_TOLERANCE;
 
 import java.util.ArrayList;
@@ -199,7 +200,7 @@ public class ShooterCalculations {
     
     public static double getObjectiveShootVelocity(Swerve swerve) {
         Pose2d robotPose = swerve.getPose();
-        double hubSpeed = shooterVelFunction.get(getHubDistance(robotPose));
+        double hubSpeed = (shooterVelFunction.get(getHubDistance(robotPose)) + SHOOTER_RPM_ADJUSTMENT);
         if (ObjectiveTracker.getObjective(robotPose) == Objective.HUB) {
             return hubSpeed;
         } else if (ObjectiveTracker.getObjective(robotPose) == Objective.FEED_LEFT

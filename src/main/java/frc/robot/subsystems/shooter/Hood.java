@@ -15,6 +15,8 @@ import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
 import static frc.robot.constants.ShooterConstants.HOOD_PID;
+
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.swerve.Swerve;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -66,6 +68,7 @@ public class Hood extends SubsystemBase {
 
     @Override
     public void periodic() {
+
         if (!isManualMode) {
             lastSetpoint = profileSetpoint;
             profileSetpoint =
