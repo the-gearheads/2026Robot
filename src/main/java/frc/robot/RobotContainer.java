@@ -247,19 +247,20 @@ public class RobotContainer {
 
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
-    Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
-      //ShooterCalculations.HubDists.add(ShooterCalculations.getHubDistance(swerve.getPose()));
-      ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
-      ShooterCalculations.HoodAngles.add(hood.getAngle());
-      double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
-      double[] ShooterSpeedsArray = ShooterCalculations.ShooterSpeeds.stream().mapToDouble(Double::doubleValue).toArray();
-      double[] HoodAnglesArray = ShooterCalculations.HoodAngles.stream()
-                        .mapToDouble(r -> r.getRadians())
-                        .toArray();
-      Logger.recordOutput("ShooterCalculations/HubDistances", HubDistsArray);
-      Logger.recordOutput("ShooterCalculations/ShooterSpeeds", ShooterSpeedsArray);
-      Logger.recordOutput("ShooterCalculations/HoodAngles", HoodAnglesArray);
-    }));
+    // Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
+    //   //ShooterCalculations.HubDists.add(ShooterCalculations.getHubDistance(swerve.getPose()));
+    //   ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
+    //   ShooterCalculations.HoodAngles.add(hood.getAngle());
+    //   double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
+    //   double[] ShooterSpeedsArray = ShooterCalculations.ShooterSpeeds.stream().mapToDouble(Double::doubleValue).toArray();
+    //   double[] HoodAnglesArray = ShooterCalculations.HoodAngles.stream()
+    //                     .mapToDouble(r -> r.getRadians())
+    //                     .toArray();
+    //   Logger.recordOutput("ShooterCalculations/HubDistances", HubDistsArray);
+    //   Logger.recordOutput("ShooterCalculations/ShooterSpeeds", ShooterSpeedsArray);
+    //   Logger.recordOutput("ShooterCalculations/HoodAngles", HoodAnglesArray);
+    // }));
+    Controllers.driverController.getStartButton().whileTrue(intake.run(()->{intake.setIntakeVoltage(-12);}));
    // Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
     //  intake.setDeployVoltage(2);
     //}).finallyDo(() ->{intake.setDeployVoltage(0);}));
