@@ -2,12 +2,13 @@ package frc.robot.subsystems.shooter;
 
 
 import static frc.robot.constants.ShooterConstants.HOOD_POS_FACTOR;
+import static frc.robot.constants.ShooterConstants.HOOD_UP_KS;
 import static frc.robot.constants.ShooterConstants.HOOD_VEL_FACTOR;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_OFFSET;
 import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_TOLERANCE;
 import static frc.robot.constants.ShooterConstants.HOOD_CONSTRAINTS;
+import static frc.robot.constants.ShooterConstants.HOOD_DOWN_KS;
 import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
@@ -37,6 +38,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -60,17 +62,32 @@ public class Hood extends SubsystemBase {
     boolean isManualMode = false;
     public Hood() {
         configure();
+        SmartDashboard.putNumber("Hood/FF/Kv", HOOD_FEEDFORWARD.getKv());
+        SmartDashboard.putNumber("Hood/FF/Ka", HOOD_FEEDFORWARD.getKa());
+        // SmartDashboard.putNumber("Hood/PID/I", HOOD_PID[1]);
+        // SmartDashboard.putNumber("Hood/PID/D", HOOD_PID[2]);
         hoodEncoder.setPosition(0);
         profileSetpoint = new State(getAngle().getRadians(), 0);
     }
 
     @Override
     public void periodic() {
+        // hoodPID.setP(SmartDashboard.getNumber("Hood/PID/P", HOOD_PID[0]));
+        // hoodPID.setI(SmartDashboard.getNumber("Hood/PID/I", HOOD_PID[1]));
+        // hoodPID.setD(SmartDashboard.getNumber("Hood/PID/D", HOOD_PID[2]));
         if (!isManualMode) {
             lastSetpoint = profileSetpoint;
+            HOOD_FEEDFORWARD.setKv(SmartDashboard.getNumber("Hood/FF/Kv", HOOD_FEEDFORWARD.getKv()));
+            HOOD_FEEDFORWARD.setKa(SmartDashboard.getNumber("Hood/FF/Ka", HOOD_FEEDFORWARD.getKa()));
+            if(getAngle().getRadians() > targetAngle.getRadians()) {
+                HOOD_FEEDFORWARD.setKs(HOOD_DOWN_KS);
+            } else {
+                HOOD_FEEDFORWARD.setKs(HOOD_UP_KS);
+            }
+
             profileSetpoint =
              profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
-            double ff = HOOD_FEEDFORWARD.calculateWithVelocities(profileSetpoint.position+HOOD_ANGLE_OFFSET.getRadians(), lastSetpoint.velocity, profileSetpoint.velocity);
+            double ff = HOOD_FEEDFORWARD.calculateWithVelocities(lastSetpoint.velocity, profileSetpoint.velocity);
             double pid = hoodPID.calculate(getAngle().getRadians(), profileSetpoint.position);
             hood.setVoltage(pid + ff);
             // hoodController.setSetpoint(targetAngle.getRadians(), ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
@@ -101,6 +118,9 @@ public class Hood extends SubsystemBase {
         // hoodConfig.closedLoop.feedForward.kCosRatio(idek);
         hoodConfig.closedLoop.outputRange(-1, 1);
 
+        hoodConfig.signals.primaryEncoderPositionPeriodMs(10);
+        hoodConfig.signals.primaryEncoderVelocityPeriodMs(10);
+
         hoodConfig.encoder.positionConversionFactor(HOOD_POS_FACTOR);  
         hoodConfig.encoder.velocityConversionFactor(HOOD_VEL_FACTOR);
     
@@ -129,6 +149,13 @@ public class Hood extends SubsystemBase {
         }
         targetAngle = angle;
         Logger.recordOutput("Hood/LastGoalAngle", angle);
+    }
+
+    public Command NTVoltageCommand() {
+        SmartDashboard.putNumber("Hood/manVoltage", 0);
+        return this.run(()->{
+            this.setVoltage(SmartDashboard.getNumber("Hood/manVoltage", 0));
+        });
     }
 
     public Command setAngleCommand(Rotation2d angle) {
@@ -189,7 +216,7 @@ public class Hood extends SubsystemBase {
     }
 
     public SysIdRoutine getSysIdRoutine() {
-        return new SysIdRoutine(new Config(Volts.of(.35).per(Second), Volts.of(2), null, (state)->{Logger.recordOutput("Hood/SysidTestState", state.toString());}),
+        return new SysIdRoutine(new Config(Volts.of(.35).per(Second), Volts.of(1), null, (state)->{Logger.recordOutput("Hood/SysidTestState", state.toString());}),
             new Mechanism(this::setVoltage, null, this));
     }
 

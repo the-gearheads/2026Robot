@@ -19,6 +19,7 @@ import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
+import frc.robot.commands.NTControl.HoodNTControl;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.controllers.Controllers;
 
@@ -28,7 +29,6 @@ import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_VELOCITY;
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
 
-import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -124,10 +124,10 @@ public class RobotContainer {
     spindexer.setVoltageFeeder(0);
     }, spindexer));
 
-    // hood.setDefaultCommand(new HoodNTControl(hood));
+    hood.setDefaultCommand(new HoodNTControl(hood));
     // deploy.setDefaultCommand(new DeployNTControl(deploy));
     // shooter.setDefaultCommand(new ShooterNTControl(shooter));
-    hood.setDefaultCommand(hood.setObjectiveAngleCommand(swerve));
+    // hood.setDefaultCommand(hood.setObjectiveAngleCommand(swerve));
     shooter.setDefaultCommand(shooter.run(()->{shooter.setShooterVelocity(0);}));
     deploy.setDefaultCommand(deploy.holdDownCommand());
     intake.setDefaultCommand(intake.run(()->{intake.stop();}));
@@ -260,7 +260,9 @@ public class RobotContainer {
     //   Logger.recordOutput("ShooterCalculations/ShooterSpeeds", ShooterSpeedsArray);
     //   Logger.recordOutput("ShooterCalculations/HoodAngles", HoodAnglesArray);
     // }));
-    Controllers.driverController.getStartButton().whileTrue(intake.run(()->{intake.setIntakeVoltage(-12);}));
+    Controllers.driverController.getStartButton().whileTrue(Commands.run(() -> {
+      intake.setIntakeVoltage(-12);
+    }));
    // Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
     //  intake.setDeployVoltage(2);
     //}).finallyDo(() ->{intake.setDeployVoltage(0);}));
@@ -306,7 +308,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
     // return sysidPicker.get();
-    // return Commands.run(()->{hood.setAngle(Rotation2d.fromDegrees(20));});
+    // return hood.NTVoltageCommand();
     // return deploy.shimmy(intake);
     //return Swerve.wheelRadiusCharacterization(swerve);
   }
