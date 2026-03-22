@@ -37,20 +37,20 @@ public class ShooterConstants {
     public static final double[] KICKER_PID = {0.001, 0, 0};
     public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017501, 0.00038719);
 
-    // public static final double[] HOOD_PID = {0.14218, 0, 0};
-    public static final double[] HOOD_PID = {0, 0, 0};
+    public static final double[] HOOD_PID = {20.0, 0.8, 0};
+    public static final double HOOD_I_ZONE = Units.degreesToRadians(1.5);
+    public static final double HOOD_MAX_I_ACCUM = 0.5;  // volts max from integrator
     public static final double HOOD_UP_KS = 0.375;  // volts to make a continous motion without stopping
     public static final double HOOD_DOWN_KS = 0.315;
 
-    public static final SimpleMotorFeedforward HOOD_FEEDFORWARD = new SimpleMotorFeedforward(HOOD_UP_KS, 0, 0);  // 0.75006, 0.022405
-    // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0); 
+    public static final SimpleMotorFeedforward HOOD_FEEDFORWARD = new SimpleMotorFeedforward(0, 0.75, 0.022);
     public static final Constraints HOOD_CONSTRAINTS = new Constraints(
         Units.degreesToRadians(100), // per second; max vel
         Units.degreesToRadians(100)  //  per sec^2; max accel
     );
 
-    // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);  // 0.75006
-    public static final Rotation2d HOOD_ANGLE_OFFSET = Rotation2d.fromRadians(-1.59);
+    // public static final Rotation2d HOOD_ANGLE_OFFSET = Rotation2d.fromRadians(-1.59);
+
     
     public static final double HOOD_LENGTH_METERS = Units.inchesToMeters(8.07); // placeholder; from pivot point to out edge, for sim
     public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);  // hood 0 is 7.5 deg up

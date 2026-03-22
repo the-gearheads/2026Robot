@@ -10,7 +10,9 @@ import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_TOLERANCE;
 import static frc.robot.constants.ShooterConstants.HOOD_CONSTRAINTS;
 import static frc.robot.constants.ShooterConstants.HOOD_DOWN_KS;
 import static frc.robot.constants.ShooterConstants.HOOD_FEEDFORWARD;
+import static frc.robot.constants.ShooterConstants.HOOD_I_ZONE;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_ANGLE;
+import static frc.robot.constants.ShooterConstants.HOOD_MAX_I_ACCUM;
 import static frc.robot.constants.ShooterConstants.HOOD_MAX_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
@@ -39,6 +41,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,43 +61,54 @@ public class Hood extends SubsystemBase {
     TrapezoidProfile.State profileSetpoint;
     TrapezoidProfile.State lastSetpoint;
 
-    PIDController hoodPID = new PIDController(HOOD_PID[0], HOOD_PID[1], HOOD_PID[2]);
+    PIDController hoodPID;
     
     @AutoLogOutput
     boolean isManualMode = false;
     public Hood() {
         configure();
+        hoodPID = new PIDController(HOOD_PID[0], HOOD_PID[1], HOOD_PID[2]);
+        hoodPID.setIZone(HOOD_I_ZONE);
+        hoodPID.setIntegratorRange(-HOOD_MAX_I_ACCUM, HOOD_MAX_I_ACCUM);
+
         SmartDashboard.putNumber("Hood/FF/Kv", HOOD_FEEDFORWARD.getKv());
         SmartDashboard.putNumber("Hood/FF/Ka", HOOD_FEEDFORWARD.getKa());
-        // SmartDashboard.putNumber("Hood/PID/I", HOOD_PID[1]);
-        // SmartDashboard.putNumber("Hood/PID/D", HOOD_PID[2]);
+        SmartDashboard.putNumber("Hood/PID/P", HOOD_PID[0]);
+        SmartDashboard.putNumber("Hood/PID/I", HOOD_PID[1]);
+        SmartDashboard.putNumber("Hood/PID/D", HOOD_PID[2]);
+
         hoodEncoder.setPosition(0);
         profileSetpoint = new State(getAngle().getRadians(), 0);
     }
 
     @Override
     public void periodic() {
-        // hoodPID.setP(SmartDashboard.getNumber("Hood/PID/P", HOOD_PID[0]));
-        // hoodPID.setI(SmartDashboard.getNumber("Hood/PID/I", HOOD_PID[1]));
-        // hoodPID.setD(SmartDashboard.getNumber("Hood/PID/D", HOOD_PID[2]));
+        HOOD_FEEDFORWARD.setKv(SmartDashboard.getNumber("Hood/FF/Kv", HOOD_FEEDFORWARD.getKv()));
+        HOOD_FEEDFORWARD.setKa(SmartDashboard.getNumber("Hood/FF/Ka", HOOD_FEEDFORWARD.getKa()));
+        hoodPID.setP(SmartDashboard.getNumber("Hood/PID/P", HOOD_PID[0]));
+        hoodPID.setI(SmartDashboard.getNumber("Hood/PID/I", HOOD_PID[1]));
+        hoodPID.setD(SmartDashboard.getNumber("Hood/PID/D", HOOD_PID[2]));
+
         if (!isManualMode) {
             lastSetpoint = profileSetpoint;
-            HOOD_FEEDFORWARD.setKv(SmartDashboard.getNumber("Hood/FF/Kv", HOOD_FEEDFORWARD.getKv()));
-            HOOD_FEEDFORWARD.setKa(SmartDashboard.getNumber("Hood/FF/Ka", HOOD_FEEDFORWARD.getKa()));
-            if(getAngle().getRadians() > targetAngle.getRadians()) {
-                HOOD_FEEDFORWARD.setKs(HOOD_DOWN_KS);
-            } else {
-                HOOD_FEEDFORWARD.setKs(HOOD_UP_KS);
+
+            profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
+
+            double truePosError = targetAngle.getRadians() - getAngle().getRadians();  // because its only used for applying ks, should use targetAngle not profileSetpoint
+            double ff = HOOD_FEEDFORWARD.calculateWithVelocities(lastSetpoint.velocity, profileSetpoint.velocity);
+
+            // Apply kS whenever meaningfully off target - during AND after the profile
+            if (Math.abs(truePosError) > HOOD_ANGLE_TOLERANCE.getRadians()) {
+                ff += (truePosError > 0 ? HOOD_UP_KS : HOOD_DOWN_KS);
             }
 
-            profileSetpoint =
-             profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), 0));
-            double ff = HOOD_FEEDFORWARD.calculateWithVelocities(lastSetpoint.velocity, profileSetpoint.velocity);
             double pid = hoodPID.calculate(getAngle().getRadians(), profileSetpoint.position);
             hood.setVoltage(pid + ff);
-            // hoodController.setSetpoint(targetAngle.getRadians(), ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
+
             Logger.recordOutput("Hood/ff", ff);
-            Logger.recordOutput("Hood/currentSetpoint", profileSetpoint);
+            Logger.recordOutput("Hood/pid", pid);
+            Logger.recordOutput("Hood/posErrorDeg", Rotation2d.fromRadians(truePosError));
+
         } else {
             profileSetpoint = new State(getAngle().getRadians(), getVelocity());
         }
@@ -110,14 +124,8 @@ public class Hood extends SubsystemBase {
         hoodConfig.inverted(false);
         hoodConfig.idleMode(IdleMode.kBrake);
         hoodConfig.voltageCompensation(12);
-        // hoodConfig.closedLoop.pid(HOOD_PID[0] / 12.0, HOOD_PID[1] / 12.0, HOOD_PID[2] / 12.0, ClosedLoopSlot.kSlot0);
+
         hoodConfig.closedLoop.pid(0, 0, 0, ClosedLoopSlot.kSlot0);
-        // hoodConfig.closedLoop.feedForward.kS(HOOD_FEEDFORWARD.getKs(), ClosedLoopSlot.kSlot0);
-        // hoodConfig.closedLoop.feedForward.kV(HOOD_FEEDFORWARD.getKv(), ClosedLoopSlot.kSlot0);
-        // hoodConfig.closedLoop.feedForward.kA(HOOD_FEEDFORWARD.getKa(), ClosedLoopSlot.kSlot0);
-        // hoodConfig.closedLoop.feedForward.kG(HOOD_FEEDFORWARD.getKg(), ClosedLoopSlot.kSlot0);
-        // hoodConfig.closedLoop.feedForward.kCos(HOOD_FEEDFORWARD.getKg(), ClosedLoopSlot.kSlot0);
-        // hoodConfig.closedLoop.feedForward.kCosRatio(idek);
         hoodConfig.closedLoop.outputRange(-1, 1);
 
         hoodConfig.signals.primaryEncoderPositionPeriodMs(10);
