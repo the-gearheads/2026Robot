@@ -1,6 +1,5 @@
 package frc.robot.constants;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -39,12 +38,15 @@ public class ShooterConstants {
     public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017501, 0.00038719);
 
     // public static final double[] HOOD_PID = {0.14218, 0, 0};
-    public static final double[] HOOD_PID = {20, 0, 0};
-    public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0.19535 + 0.14086, 0, 0.75006, 0.019405); 
+    public static final double[] HOOD_PID = {0, 0, 0};
+    public static final double HOOD_UP_KS = 0.375;  // volts to make a continous motion without stopping
+    public static final double HOOD_DOWN_KS = 0.315;
+
+    public static final SimpleMotorFeedforward HOOD_FEEDFORWARD = new SimpleMotorFeedforward(HOOD_UP_KS, 0, 0);  // 0.75006, 0.022405
     // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0); 
     public static final Constraints HOOD_CONSTRAINTS = new Constraints(
-        Units.degreesToRadians(1500), // per second; max vel
-        Units.degreesToRadians(2000)  //  per sec^2; max accel
+        Units.degreesToRadians(100), // per second; max vel
+        Units.degreesToRadians(100)  //  per sec^2; max accel
     );
 
     // public static final ArmFeedforward HOOD_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);  // 0.75006
