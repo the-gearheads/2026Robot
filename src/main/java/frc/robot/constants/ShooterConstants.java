@@ -37,26 +37,26 @@ public class ShooterConstants {
     public static final double[] KICKER_PID = {0.001, 0, 0};
     public static final SimpleMotorFeedforward KICKER_FEEDFORWARD = new SimpleMotorFeedforward(0.18189, 0.017501, 0.00038719);
 
-    public static final double[] HOOD_PID = {20.0, 0.8, 0};
+    public static final double[] HOOD_PID = {12.0, 0, 0.1};
     public static final double HOOD_I_ZONE = Units.degreesToRadians(1.5);
     public static final double HOOD_MAX_I_ACCUM = 0.5;  // volts max from integrator
-    public static final double HOOD_UP_KS = 0.375;  // volts to make a continous motion without stopping
-    public static final double HOOD_DOWN_KS = 0.315;
+    // public static final double HOOD_UP_KS = 0.255;  // volts to make a continous motion without stopping
+    public static final double HOOD_UP_KS = 0.2;  // volts to make a continous motion without stopping
+    public static final double HOOD_DOWN_KS = -0.18;
 
     public static final SimpleMotorFeedforward HOOD_FEEDFORWARD = new SimpleMotorFeedforward(0, 0.75, 0.022);
     public static final Constraints HOOD_CONSTRAINTS = new Constraints(
-        Units.degreesToRadians(100), // per second; max vel
-        Units.degreesToRadians(100)  //  per sec^2; max accel
+        Units.degreesToRadians(2000), // per second; max vel
+        Units.degreesToRadians(3000)  //  per sec^2; max accel
     );
 
     // public static final Rotation2d HOOD_ANGLE_OFFSET = Rotation2d.fromRadians(-1.59);
-
     
     public static final double HOOD_LENGTH_METERS = Units.inchesToMeters(8.07); // placeholder; from pivot point to out edge, for sim
     public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);  // hood 0 is 7.5 deg up
     public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(47);
 
-    public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(0.05);
+    public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(0.1);
 
     public static final double HOOD_MIN_SYSID_ANGLE = Units.degreesToRadians(5);  // more conservative so sysid doesn't break anything
     public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(45);

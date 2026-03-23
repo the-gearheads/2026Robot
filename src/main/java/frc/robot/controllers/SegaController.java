@@ -5,27 +5,45 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class SegaController implements OperatorController{
     Joystick joy;
+
     public SegaController(int id) {
+        if (id == -1) {
+            this.joy = null;
+            return;
+        }
         joy = new Joystick(id);
     }
 
+    private boolean isNull() {
+        return joy == null;
+    }
+
+    @SuppressWarnings("unused")
+    private Trigger emptyTrigger() {
+        return new Trigger(() -> false);
+    }
+
     public Trigger getAButton() {
-        return new Trigger(()-> joy.getRawButton(1));
-    }
-
-    
-    public Trigger getBButton() {
-        return new Trigger(()-> joy.getRawButton(0));
-    }
-
-    
-    public Trigger getYButton() {
+        if(isNull()) return emptyTrigger();
         return new Trigger(()-> joy.getRawButton(2));
     }
 
     
-    public Trigger getXButton() {
+    public Trigger getBButton() {
+        if(isNull()) return emptyTrigger();
+        return new Trigger(()-> joy.getRawButton(1));
+    }
+
+    
+    public Trigger getYButton() {
+        if(isNull()) return emptyTrigger();
         return new Trigger(()-> joy.getRawButton(3));
+    }
+
+    
+    public Trigger getXButton() {
+        if(isNull()) return emptyTrigger();
+        return new Trigger(()-> joy.getRawButton(4));
     }
 
 }

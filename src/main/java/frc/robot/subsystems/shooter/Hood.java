@@ -19,7 +19,6 @@ import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
 import static frc.robot.constants.ShooterConstants.HOOD_PID;
 
-import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.swerve.Swerve;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -41,10 +40,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -99,15 +98,22 @@ public class Hood extends SubsystemBase {
 
             // Apply kS whenever meaningfully off target - during AND after the profile
             if (Math.abs(truePosError) > HOOD_ANGLE_TOLERANCE.getRadians()) {
-                ff += (truePosError > 0 ? HOOD_UP_KS : HOOD_DOWN_KS);
+                // if (Math.abs(truePosError) < HOOD_ANGLE_TOLERANCE.getRadians()*1.5) {
+                //     ff += (truePosError > 0 ? HOOD_UP_KS/2.0 : HOOD_DOWN_KS/2.0);
+                //     Logger.recordOutput("Hood/currentKs", (truePosError > 0 ? HOOD_UP_KS/2.0 : HOOD_DOWN_KS/2.0));
+                // } else {
+                    ff += (truePosError > 0 ? HOOD_UP_KS : HOOD_DOWN_KS);
+                    Logger.recordOutput("Hood/currentKs", (truePosError > 0 ? HOOD_UP_KS : HOOD_DOWN_KS));
+                // }
             }
 
             double pid = hoodPID.calculate(getAngle().getRadians(), profileSetpoint.position);
             hood.setVoltage(pid + ff);
 
+            Logger.recordOutput("Hood/profileSetpoint", profileSetpoint);
             Logger.recordOutput("Hood/ff", ff);
             Logger.recordOutput("Hood/pid", pid);
-            Logger.recordOutput("Hood/posErrorDeg", Rotation2d.fromRadians(truePosError));
+            Logger.recordOutput("Hood/posError", Rotation2d.fromRadians(truePosError));
 
         } else {
             profileSetpoint = new State(getAngle().getRadians(), getVelocity());
@@ -201,7 +207,7 @@ public class Hood extends SubsystemBase {
     }
 
     @AutoLogOutput
-    public double getSetpoint() {
+    public double getMotorControllerSetpoint() {
         return hoodController.getSetpoint();
     }
 
@@ -215,14 +221,34 @@ public class Hood extends SubsystemBase {
     }
 
     public Command hoodHome() { // bypasses limits
-        return this.run(()->{
+        Command stage1 = this.run(()->{
             this.isManualMode = true;
             this.hood.setVoltage(-1.5);
-        }).withTimeout(2).andThen(this.runEnd(()->{
             this.targetAngle = getAngle();  // shouldn't need this but if manual mode breaks or something
+        }).finallyDo(()->{
+            this.hood.setVoltage(0);
+        }).withTimeout(2);
+
+        Command dwell = this.run(()->{
+            // just in case, theoretically should not be needed
             this.isManualMode = true;
             this.hood.setVoltage(0);
-        }, ()->{this.hoodEncoder.setPosition(0); this.setAngle(Rotation2d.kZero);}));
+        }).withTimeout(0.2);
+
+        Command stage2 = this.runOnce(()->{
+            this.hoodEncoder.setPosition(0);
+            this.targetAngle = Rotation2d.kZero;
+            this.setAngle(Rotation2d.kZero);
+            profileSetpoint = new State(0, 0);
+            lastSetpoint = new State(0, 0);
+            this.isManualMode = false;
+        });
+
+        return Commands.sequence(
+            stage1,
+            dwell,
+            stage2
+        );
     }
 
     public SysIdRoutine getSysIdRoutine() {

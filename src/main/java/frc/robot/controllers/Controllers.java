@@ -11,7 +11,8 @@ public class Controllers {
   private static final int MAX_DRIVER_STATION_PORTS = DriverStation.kJoystickPorts; 
   private static final String[] OPERATOR_CONTROLLER_NAMES = {
     "CircuitPython HID",
-    "Keyboard 1"
+    "Keyboard 1",
+    "USB Gamepad"
   };
   private static String[] lastControllerNames = new String[MAX_DRIVER_STATION_PORTS];
 
