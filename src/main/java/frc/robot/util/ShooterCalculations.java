@@ -243,7 +243,7 @@ public class ShooterCalculations {
         return feedPosition.getDistance(getShooterPosition(robotPose).getTranslation());
     }
     
-    private static double getHubDistance(Pose2d robotPose) { // TODO RENAME TO getObjectiveDistance
+    public static double getHubDistance(Pose2d robotPose) { // TODO RENAME TO getObjectiveDistance
         Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
         return hubPosition.getDistance(getShooterPosition(robotPose).getTranslation());
     } 

@@ -32,10 +32,10 @@ public class VisionConstants {
 
     public static final PoseStrategy[] INITIAL_CAMERA_STRATEGIES = {PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR};
     public static final Transform3d[] CAMERA_TRANSFORMS = {
-        new Transform3d(Units.inchesToMeters(-13.934), Units.inchesToMeters(11.52), Units.inchesToMeters(9.0), new Rotation3d(0, 23*Math.PI/12 , Math.PI)), // back left
-        new Transform3d(Units.inchesToMeters(-13.958), Units.inchesToMeters(-11.576), Units.inchesToMeters(9.25), new Rotation3d(0, 23*Math.PI/12 , 13*Math.PI/9)), // back  right
-        new Transform3d(Units.inchesToMeters(14.19), Units.inchesToMeters(-11.536), Units.inchesToMeters(9.0), new Rotation3d(0, 17*Math.PI/9,0)), // front right
-        new Transform3d(Units.inchesToMeters(13.887), Units.inchesToMeters(11.6), Units.inchesToMeters(9.25), new Rotation3d(0, 35*Math.PI/18, 4*Math.PI/9)) // front left
+        new Transform3d(Units.inchesToMeters(-13.934), Units.inchesToMeters(11.52), Units.inchesToMeters(9.0), new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(180))), // back left
+        new Transform3d(Units.inchesToMeters(-13.958), Units.inchesToMeters(-11.576), Units.inchesToMeters(9.25), new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(-100))), // back  right
+        new Transform3d(Units.inchesToMeters(14.19), Units.inchesToMeters(-11.536), Units.inchesToMeters(9.0), new Rotation3d(0, Units.degreesToRadians(-20),0)), // front right
+        new Transform3d(Units.inchesToMeters(13.887), Units.inchesToMeters(11.6), Units.inchesToMeters(9.25), new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(80))) // front left
     };
 
     // maybe intrinsics in here sometime

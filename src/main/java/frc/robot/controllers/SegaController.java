@@ -46,4 +46,14 @@ public class SegaController implements OperatorController{
         return new Trigger(()-> joy.getRawButton(4));
     }
 
+    public Trigger getLeftBumper() {
+        if(isNull()) return emptyTrigger();
+        return new Trigger(()-> joy.getRawButton(7));
+    }
+
+    public Trigger getRightBumper() {
+        if(isNull()) return emptyTrigger();
+        return new Trigger(()-> joy.getRawButton(8));
+    }
+
 }

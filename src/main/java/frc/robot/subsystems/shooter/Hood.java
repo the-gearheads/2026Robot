@@ -36,11 +36,11 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -48,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
+import frc.robot.util.PIDControllerCustomPeriod;
 import frc.robot.util.ShooterCalculations;
 
 public class Hood extends SubsystemBase {
@@ -60,13 +61,15 @@ public class Hood extends SubsystemBase {
     TrapezoidProfile.State profileSetpoint;
     TrapezoidProfile.State lastSetpoint;
 
-    PIDController hoodPID;
+    PIDControllerCustomPeriod hoodPID;
+
+    double lastPeriod = Timer.getFPGATimestamp();
     
     @AutoLogOutput
     boolean isManualMode = false;
     public Hood() {
         configure();
-        hoodPID = new PIDController(HOOD_PID[0], HOOD_PID[1], HOOD_PID[2]);
+        hoodPID = new PIDControllerCustomPeriod(HOOD_PID[0], HOOD_PID[1], HOOD_PID[2]);
         hoodPID.setIZone(HOOD_I_ZONE);
         hoodPID.setIntegratorRange(-HOOD_MAX_I_ACCUM, HOOD_MAX_I_ACCUM);
 
@@ -87,6 +90,7 @@ public class Hood extends SubsystemBase {
         hoodPID.setP(SmartDashboard.getNumber("Hood/PID/P", HOOD_PID[0]));
         hoodPID.setI(SmartDashboard.getNumber("Hood/PID/I", HOOD_PID[1]));
         hoodPID.setD(SmartDashboard.getNumber("Hood/PID/D", HOOD_PID[2]));
+        hoodPID.setPeriod(Math.max(Timer.getFPGATimestamp() - lastPeriod, 0.02));
 
         if (!isManualMode) {
             lastSetpoint = profileSetpoint;
@@ -118,6 +122,7 @@ public class Hood extends SubsystemBase {
         } else {
             profileSetpoint = new State(getAngle().getRadians(), getVelocity());
         }
+        lastPeriod = Timer.getFPGATimestamp();
     }
 
     

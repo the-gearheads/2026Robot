@@ -20,6 +20,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
 import frc.robot.commands.NTControl.HoodNTControl;
+import frc.robot.commands.NTControl.ShooterNTControl;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.controllers.Controllers;
 
@@ -27,6 +28,9 @@ import static frc.robot.constants.MiscConstants.isReal;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_VELOCITY;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_VELOCITY;
+
+import org.littletonrobotics.junction.Logger;
+
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
 
 
@@ -126,9 +130,9 @@ public class RobotContainer {
 
     hood.setDefaultCommand(new HoodNTControl(hood));
     // deploy.setDefaultCommand(new DeployNTControl(deploy));
-    // shooter.setDefaultCommand(new ShooterNTControl(shooter));
+    shooter.setDefaultCommand(new ShooterNTControl(shooter));
     // hood.setDefaultCommand(hood.setObjectiveAngleCommand(swerve));
-    shooter.setDefaultCommand(shooter.run(()->{shooter.setShooterVelocity(0);}));
+    // shooter.setDefaultCommand(shooter.run(()->{shooter.setShooterVelocity(0);}));
     deploy.setDefaultCommand(deploy.holdDownCommand());
     intake.setDefaultCommand(intake.run(()->{intake.stop();}));
 
@@ -173,28 +177,28 @@ public class RobotContainer {
       intake.stop();
     }));
 
-    Controllers.driverController.getRightPaddle().whileTrue(shooter.run(()->{
-      shooter.setShooterVelocity(ShooterCalculations.getObjectiveShootVelocity(swerve));
-    }));
+  //   Controllers.driverController.getRightPaddle().whileTrue(shooter.run(()->{
+  //     shooter.setShooterVelocity(ShooterCalculations.getObjectiveShootVelocity(swerve));
+  //   }));
 
-  Controllers.driverController.getRightPaddle().whileTrue(Commands.sequence(
-    Commands.waitUntil(()->{return ShooterCalculations.isReadyToShoot(swerve, hood, shooter);}),
-    Commands.run(()-> {
-      spindexer.setVoltageMainSpinner(-12);
-      spindexer.setVoltageFeeder(12);
-    }).alongWith(deploy.shimmy(intake))  
-    ));
+  // Controllers.driverController.getRightPaddle().whileTrue(Commands.sequence(
+  //   Commands.waitUntil(()->{return ShooterCalculations.isReadyToShoot(swerve, hood, shooter);}),
+  //   Commands.run(()-> {
+  //     spindexer.setVoltageMainSpinner(-12);
+  //     spindexer.setVoltageFeeder(12);
+  //   }).alongWith(deploy.shimmy(intake))  
+  //   ));
 
-    Controllers.driverController.getRightPaddle().onFalse(
-      Commands.runOnce(()-> {
-        spindexer.setVoltageMainSpinner(0);
-        spindexer.setVoltageFeeder(0);
-      })   
-    );
+  //   Controllers.driverController.getRightPaddle().onFalse(
+  //     Commands.runOnce(()-> {
+  //       spindexer.setVoltageMainSpinner(0);
+  //       spindexer.setVoltageFeeder(0);
+  //     })   
+  //   );
 
-    Controllers.driverController.getRightPaddle().whileFalse(shooter.run(()->{
-      shooter.setShooterVelocity(0);
-    }));
+  //   Controllers.driverController.getRightPaddle().whileFalse(shooter.run(()->{
+  //     shooter.setShooterVelocity(0);
+  //   }));
 
     Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
 
@@ -248,22 +252,22 @@ public class RobotContainer {
 
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
-    // Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
-    //   //ShooterCalculations.HubDists.add(ShooterCalculations.getHubDistance(swerve.getPose()));
-    //   ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
-    //   ShooterCalculations.HoodAngles.add(hood.getAngle());
-    //   double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
-    //   double[] ShooterSpeedsArray = ShooterCalculations.ShooterSpeeds.stream().mapToDouble(Double::doubleValue).toArray();
-    //   double[] HoodAnglesArray = ShooterCalculations.HoodAngles.stream()
-    //                     .mapToDouble(r -> r.getRadians())
-    //                     .toArray();
-    //   Logger.recordOutput("ShooterCalculations/HubDistances", HubDistsArray);
-    //   Logger.recordOutput("ShooterCalculations/ShooterSpeeds", ShooterSpeedsArray);
-    //   Logger.recordOutput("ShooterCalculations/HoodAngles", HoodAnglesArray);
-    // }));
-    Controllers.driverController.getStartButton().whileTrue(Commands.run(() -> {
-      intake.setIntakeVoltage(-12);
+    Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
+      ShooterCalculations.HubDists.add(ShooterCalculations.getHubDistance(swerve.getPose()));
+      ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
+      ShooterCalculations.HoodAngles.add(hood.getAngle());
+      double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
+      double[] ShooterSpeedsArray = ShooterCalculations.ShooterSpeeds.stream().mapToDouble(Double::doubleValue).toArray();
+      double[] HoodAnglesArray = ShooterCalculations.HoodAngles.stream()
+                        .mapToDouble(r -> r.getRadians())
+                        .toArray();
+      Logger.recordOutput("ShooterCalculations/HubDistances", HubDistsArray);
+      Logger.recordOutput("ShooterCalculations/ShooterSpeeds", ShooterSpeedsArray);
+      Logger.recordOutput("ShooterCalculations/HoodAngles", HoodAnglesArray);
     }));
+    // Controllers.driverController.getStartButton().whileTrue(Commands.run(() -> {
+    //   intake.setIntakeVoltage(-12);
+    // }));
    // Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
     //  intake.setDeployVoltage(2);
     //}).finallyDo(() ->{intake.setDeployVoltage(0);}));
@@ -274,11 +278,11 @@ public class RobotContainer {
     // Controllers.driverController.getYBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
     // Controllers.driverController.getBBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
 
-    // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
-    // Controllers.driverController.getBBtn().onTrue(climber.climberDown());
-    Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{
-      spindexer.runSpindexer(12);
-    }));
+    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
+    Controllers.driverController.getBBtn().onTrue(climber.climberDown());
+    // Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{
+    //   spindexer.runSpindexer(12);
+    // }));
     // Controllers.driverController.getYBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()+Units.rotationsPerMinuteToRadiansPerSecond(25));}));
     // Controllers.driverController.getBBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()-Units.rotationsPerMinuteToRadiansPerSecond(25));}));
     // Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()+Units.degreesToRadians(0.5)));}));
@@ -318,6 +322,9 @@ public class RobotContainer {
        Controllers.operatorController.getYButton().onTrue(Commands.runOnce(()->{
       ShooterConstants.SHOOTER_RPM_ADJUSTMENT = (ShooterConstants.SHOOTER_RPM_ADJUSTMENT + 50); 
     }));
+
+    Controllers.operatorController.getRightBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
+    Controllers.operatorController.getLeftBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
   }
 
   public Command getAutonomousCommand() {
