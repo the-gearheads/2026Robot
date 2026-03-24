@@ -203,17 +203,18 @@ public class RobotContainer {
     // Controllers.driverController.getPovDown().onTrue(Commands.run(()->{intake.setAngle(Rotation2d.fromDegrees(0));}).until(()->{return intake.atAngle(Rotation2d.fromDegrees(0));}));
     // Controllers.driverController.getPovUp().onTrue(Commands.run(()->{intake.setAngle(DEPLOY_MAX_ANGLE);}).until(()->{return intake.atAngle(DEPLOY_MAX_ANGLE);}));
         
-    Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-      spindexer.setVoltageMainSpinner(-12);
-    }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
+    // Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
+    //   spindexer.setVoltageMainSpinner(-12);
+    // }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
 
-    Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-      spindexer.setVoltageFeeder(12);
-    }));
-    Controllers.driverController.getXBtn().whileFalse(Commands.run(() -> {
-      spindexer.setVoltageFeeder(0);
-    }));
+    // Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
+    //   spindexer.setVoltageFeeder(12);
+    // }));
+    // Controllers.driverController.getXBtn().whileFalse(Commands.run(() -> {
+    //   spindexer.setVoltageFeeder(0);
+    // }));
 
+    Controllers.driverController.getXBtn().whileTrue(spindexer.runWhenReady());
     Controllers.driverController.getXBtn().whileTrue(deploy.shimmy(intake));
 
     Controllers.driverController.getPovUp().whileTrue(Commands.run(()->{
@@ -303,6 +304,7 @@ public class RobotContainer {
       spindexer.setVoltageMainSpinner(0);
       spindexer.setVoltageFeeder(0);
     }));
+
     Controllers.operatorController.getAButton().onTrue(Commands.runOnce(()->{
       ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(0.5));
     }));

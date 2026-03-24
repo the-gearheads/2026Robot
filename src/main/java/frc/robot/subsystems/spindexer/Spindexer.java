@@ -19,8 +19,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -74,6 +76,7 @@ public class Spindexer extends SubsystemBase {
     
     public void setFeederSpeed(double velocity) {
         double ff = SpindexerConstants.FEEDER_FEEDFORWARD.calculate(velocity);
+        Logger.recordOutput("Spindexer/Feederff", ff);
         feederController.setSetpoint(velocity, ControlType.kVelocity, ClosedLoopSlot.kSlot0, ff);
     }
     
@@ -85,6 +88,11 @@ public class Spindexer extends SubsystemBase {
     @AutoLogOutput
     public double getFeederVelocity() {
         return feederEncoder.getVelocity();
+    }
+
+    @AutoLogOutput
+    public boolean feederAtSpeed() {
+        return MathUtil.isNear(getFeederSetpoint(), getFeederVelocity(), SpindexerConstants.FEEDER_SPEED_TOLERANCE);
     }
 
     @AutoLogOutput
@@ -102,6 +110,15 @@ public class Spindexer extends SubsystemBase {
             setVoltageMainSpinner(-volts);
             setVoltageFeeder(volts);
         }).finallyDo(() -> {
+            setVoltageMainSpinner(0);
+            setVoltageFeeder(0);
+        });
+    }
+
+    public Command runWhenReady() {
+        return this.run(() -> {
+            setFeederSpeed(SpindexerConstants.FEED_VELOCITY);
+        }).alongWith(Commands.waitUntil(this::feederAtSpeed).andThen(this.run(()->{setVoltageMainSpinner(-12);}))).finallyDo(() -> {
             setVoltageMainSpinner(0);
             setVoltageFeeder(0);
         });
