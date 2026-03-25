@@ -73,11 +73,11 @@ public class Hood extends SubsystemBase {
         hoodPID.setIZone(HOOD_I_ZONE);
         hoodPID.setIntegratorRange(-HOOD_MAX_I_ACCUM, HOOD_MAX_I_ACCUM);
 
-        SmartDashboard.putNumber("Hood/FF/Kv", HOOD_FEEDFORWARD.getKv());
-        SmartDashboard.putNumber("Hood/FF/Ka", HOOD_FEEDFORWARD.getKa());
-        SmartDashboard.putNumber("Hood/PID/P", HOOD_PID[0]);
-        SmartDashboard.putNumber("Hood/PID/I", HOOD_PID[1]);
-        SmartDashboard.putNumber("Hood/PID/D", HOOD_PID[2]);
+        //SmartDashboard.putNumber("Hood/FF/Kv", HOOD_FEEDFORWARD.getKv());
+        //SmartDashboard.putNumber("Hood/FF/Ka", HOOD_FEEDFORWARD.getKa());
+        //SmartDashboard.putNumber("Hood/PID/P", HOOD_PID[0]);
+        //SmartDashboard.putNumber("Hood/PID/I", HOOD_PID[1]);
+        //SmartDashboard.putNumber("Hood/PID/D", HOOD_PID[2]);
 
         hoodEncoder.setPosition(0);
         profileSetpoint = new State(getAngle().getRadians(), 0);
@@ -85,11 +85,11 @@ public class Hood extends SubsystemBase {
 
     @Override
     public void periodic() {
-        HOOD_FEEDFORWARD.setKv(SmartDashboard.getNumber("Hood/FF/Kv", HOOD_FEEDFORWARD.getKv()));
-        HOOD_FEEDFORWARD.setKa(SmartDashboard.getNumber("Hood/FF/Ka", HOOD_FEEDFORWARD.getKa()));
-        hoodPID.setP(SmartDashboard.getNumber("Hood/PID/P", HOOD_PID[0]));
-        hoodPID.setI(SmartDashboard.getNumber("Hood/PID/I", HOOD_PID[1]));
-        hoodPID.setD(SmartDashboard.getNumber("Hood/PID/D", HOOD_PID[2]));
+        //HOOD_FEEDFORWARD.setKv(SmartDashboard.getNumber("Hood/FF/Kv", HOOD_FEEDFORWARD.getKv()));
+        //HOOD_FEEDFORWARD.setKa(SmartDashboard.getNumber("Hood/FF/Ka", HOOD_FEEDFORWARD.getKa()));
+        //hoodPID.setP(SmartDashboard.getNumber("Hood/PID/P", HOOD_PID[0]));
+        //hoodPID.setI(SmartDashboard.getNumber("Hood/PID/I", HOOD_PID[1]));
+        //hoodPID.setD(SmartDashboard.getNumber("Hood/PID/D", HOOD_PID[2]));
         hoodPID.setPeriod(Math.max(Timer.getFPGATimestamp() - lastPeriod, 0.02));
 
         if (!isManualMode) {
