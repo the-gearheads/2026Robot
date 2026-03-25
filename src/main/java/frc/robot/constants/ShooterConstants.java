@@ -63,16 +63,12 @@ public class ShooterConstants {
 
     public static final double FLYWHEEL_RADIUS = Units.inchesToMeters(3);  // i mean its not, but it is, but its not
 
-    // public static final double[] SHOOT_DISTANCES = {1.248, 1.666, 2.070, 2.382, 2.710, 3.157, 3.632, 4.226, 4.637, 5.430, 4.943, };  // in meters
-    // public static final double[] SHOOT_ANGLES = {0.049, 0.1, 0.145, 0.154, 0.206, 0.224, 0.258, 0.347, 0.381, 0.436, 0.383};  // in Radians
-    // public static final double[] SHOOT_SPEEDS = {215.141, 218.428, 226.646, 238.589, 245.985, 262.420, 247.574, 272.172, 278.637, 312.439, 299.838};  // in Radians/Sec
-
-    public static final double[] SHOOT_DISTANCES = {1.248,   1.666,   2.070,   2.382,   2.710,   3.157,   3.695, 3.909,    4.226,   4.637,   5.430,   4.943,   3.632};  // in meters
-    public static final double[] SHOOT_ANGLES =    {0.049,   0.1,     0.145,   0.154,   0.206,   0.224,   0.314, 0.340,    0.347,   0.381,   0.436,   0.383,   0.258};  // in Radians
-    public static final double[] SHOOT_SPEEDS =    {215.141, 218.428, 226.646, 238.589, 245.985, 247.574, 267.03, 268.666, 272.172, 278.637, 312.439, 299.838, 262.420};  // in Radians/Sec
-    // public static final double[] SHOOT_DISTANCES = {1.248, 1.666, 2.070, 2.382, 2.710, 3.157, 4.226, 4.637, 5.430, 4.943};  // in meters
-    // public static final double[] SHOOT_ANGLES = {0.049, 0.1, 0.145, 0.154, 0.206, 0.210, 0.307, 0.381, 0.436, 0.383};  // in Radians
-    // public static final double[] SHOOT_SPEEDS = {215.141, 218.428, 226.646, 238.589, 245.985, 247.574, 272.172, 278.637, 312.439, 299.838};  // in Radians/Sec
+    // 24 data points
+    public static final double[] SHOOT_DISTANCES = { 1.227,   1.392,   1.564,   1.688,   1.858,   2.008,   2.215,   2.420,   2.621,   2.819,   2.979,   3.191,   3.404,   3.611,   3.859,   4.062,   4.304,   4.498,   4.547,   4.762,   5.018,   5.247,   5.447,   5.681,   5.865   }; // Meters
+    public static final double[] SHOOT_ANGLES    = { 0.016,   0.034,   0.055,   0.077,   0.104,   0.121,   0.156,   0.165,   0.184,   0.201,   0.208,   0.225,   0.237,   0.252,   0.269,   0.296,   0.312,   0.318,   0.314,   0.313,   0.314,   0.330,   0.348,   0.347,   0.356   }; // Radians
+    public static final double[] SHOOT_SPEEDS    = { 231.467, 232.617, 231.850, 234.425, 234.480, 230.645, 232.782, 244.013, 252.669, 256.339, 265.324, 270.638, 268.611, 275.404, 280.773, 280.719, 289.320, 306.522, 315.891, 316.055, 325.642, 332.983, 338.955, 347.666, 362.458 }; // Rad/Sec
+    // public static final double[] SHOOT_TOFS      = { 1.13888, 1.18095, 1.17708, 1.18750, 1.15555, 1.18541, VID27??, 1.13500, 0729BAD, 0730BAD, 1.21333, 1.25000, 1.27569, 1.26500, 1.31166, 1.29583, 1.24861, 1.23500, 1.23611, 1.25750, 1.31833, 1.37777, 1.37833, 1.40972, 1.43263 };
+    public static final double[] SHOOT_TOFS      = { 1.13888, 1.18095, 1.17708, 1.18750, 1.15555, 1.18541, 1.15   , 1.13500, 1.15, 1.18, 1.21333, 1.25000, 1.27569, 1.26500, 1.31166, 1.29583, 1.24861, 1.23500, 1.23611, 1.25750, 1.31833, 1.37777, 1.37833, 1.40972, 1.43263 };
 
     public static final double MAX_KICKER_SPEED = KICKER_FEEDFORWARD.maxAchievableVelocity(12, 0);
     public static final double MAX_EFFECTIVE_FLYWHEEL_SPEED = (MAX_KICKER_SPEED * EFFECTIVE_KICKER_DIAMETER) / (EFFECTIVE_FLYWHEEL_DIAMETER * KICKER_SURFACE_SPEED_RATIO);  // in order to maintain the surface speed ratio, the flywheel can't go faster than this speed or the kicker will be commanded to go faster than its max speed
