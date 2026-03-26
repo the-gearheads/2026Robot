@@ -18,9 +18,12 @@ import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.FieldConstants;
@@ -52,6 +55,7 @@ public class ShooterCalculations {
     
     static InterpolatingDoubleTreeMap shooterAngleFunction = initAngleMap();
     static InterpolatingDoubleTreeMap shooterVelFunction = initShooterVelMap();
+    static InterpolatingDoubleTreeMap shooterToFFunction = initShooterToFMap();
     public static ArrayList<Double> HubDists = new ArrayList<>();
     public static ArrayList<Double> ShooterSpeeds = new ArrayList<>();
     public static ArrayList<Rotation2d> HoodAngles = new ArrayList<>();
@@ -75,6 +79,55 @@ public class ShooterCalculations {
 
         return map;
     }
+
+    private static InterpolatingDoubleTreeMap initShooterToFMap() {
+        InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+        
+        for(int i=0; i<ShooterConstants.SHOOT_TOFS.length; i++) {
+            map.put(ShooterConstants.SHOOT_DISTANCES[i], ShooterConstants.SHOOT_TOFS[i]);
+        }
+
+        return map;
+    }
+
+    //  public record ShotData(double Speed, Rotation2d Angle, Translation2d target) {
+    //     public ShotData(double Speed, Rotation2d Angle, Translation2d target) {
+    //          public ShotData(double Speed, Rotation2d Angle, Translation2d target) {
+    //         this(Speed, Angle, target);
+    //     }
+
+    //     public ShotData(AngularVelocity exitVelocity, Angle hoodAngle) {
+    //         this(exitVelocity, hoodAngle, FieldConstants.HUB_BLUE);
+    //     }
+
+    //     public ShotData(double exitVelocity, double hoodAngle) {
+    //         this(exitVelocity, hoodAngle, FieldConstants.HUB_BLUE);
+    //     }
+
+    //     public LinearVelocity getLinearExitVelocity() {
+    //         return angularToLinearVelocity(RadiansPerSecond.of(this.exitVelocity), FLYWHEEL_RADIUS);
+    //     }
+
+    //     public AngularVelocity getAngularExitVelocity() {
+    //         return RadiansPerSecond.of(this.exitVelocity);
+    //     }
+
+    //     public Angle getHoodAngle() {
+    //         return Radians.of(this.hoodAngle);
+    //     }
+
+    //     public Translation3d getTarget() {
+    //         return this.target;
+    //     }
+
+    //     public static ShotData interpolate(ShotData start, ShotData end, double t) {
+    //         return new ShotData(
+    //                 MathUtil.interpolate(start.exitVelocity, end.exitVelocity, t),
+    //                 MathUtil.interpolate(start.hoodAngle, end.hoodAngle, t),
+    //                 end.target);
+    //     }
+    //     }
+
 
 
     /**
@@ -243,10 +296,50 @@ public class ShooterCalculations {
         return feedPosition.getDistance(getShooterPosition(robotPose).getTranslation());
     }
     
-    public static double getHubDistance(Pose2d robotPose) { // TODO RENAME TO getObjectiveDistance
+    public static double getHubDistance(Pose2d robotPose) { // fuck that other comment its hub distance
         Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
         return hubPosition.getDistance(getShooterPosition(robotPose).getTranslation());
-    } 
+    }
+
+    // TIME OF FLIGHT AND STOM CODE HERE ----
+    private static Translation2d getAdjustedHubPose(Swerve swerve) {
+        Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
+
+        // uhh hub speed is like. getHubDistance/ToF
+    }
+
+    private static double getHubTimeOfFlight(double distanceToHub) {
+        return shooterToFFunction.get(distanceToHub).doubleValue();
+    }
+
+    public static double getDistanceToTarget(Pose2d robotPose, Translation2d target) {
+        return target.getDistance(getShooterPosition(robotPose).getTranslation());
+    }
+
+    // public static ShotData iterativeMovingShot(
+    //         Pose2d robot, ChassisSpeeds fieldSpeeds, Translation3d target, int iterations) {
+    //     // Perform initial estimation (assuming unmoving robot) to get time of flight estimate
+    //     ShotData shot = calculateHubShot(robot, target, target);
+    //     double distance = getDistanceToTarget(robot, target.toTranslation2d());
+    //     double timeOfFlight = getHubTimeOfFlight(getDistanceToTarget(robot, target.toTranslation2d()));
+    //     Translation3d predictedTarget = target;
+
+    //     // Iterate the process, getting better time of flight estimations and updating the predicted target accordingly
+    //     for (int i = 0; i < iterations; i++) {
+    //         predictedTarget = predictTargetPos(target, fieldSpeeds, timeOfFlight);
+    //         timeOfFlight = getHubTimeOfFlight(getDistanceToTarget(robot, predictedTarget.toTranslation2d()));
+    //     }
+    //     return shot;
+    // }
+    
+    // Move a target a set time in the future along a velocity defined by fieldSpeeds
+    public static Translation3d predictTargetPos(Translation3d target, ChassisSpeeds fieldSpeeds, double tofSeconds) {
+        double predictedX = target.getX() - fieldSpeeds.vxMetersPerSecond * tofSeconds;
+        double predictedY = target.getY() - fieldSpeeds.vyMetersPerSecond * tofSeconds;
+
+        return new Translation3d(predictedX, predictedY, target.getZ());
+    }
+    // END SOTM CODE -----------
 
     /**
      *  IF YOU'RE CALLING THIS, YOU'RE PROBABLY DOING SOMETHING WRONG AND IT'S ALREADY BEEN CALLED FURTHER DOWN THE LINE

@@ -18,7 +18,6 @@ public class Macropad {
     return joy == null;
   }
 
-  @SuppressWarnings("unused")
   private Trigger emptyTrigger() {
     return new Trigger(() -> false);
   }
