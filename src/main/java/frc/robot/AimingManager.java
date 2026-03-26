@@ -1,6 +1,10 @@
 package frc.robot;
 
 import static frc.robot.constants.MiscConstants.SOTM_ITERATIONS;
+import static frc.robot.constants.ShooterConstants.FLYWHEEL_VEL_FACTOR;
+import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_ADJUSTMENT;
+import static frc.robot.constants.ShooterConstants.HOOD_DOWN_KS;
+import static frc.robot.constants.ShooterConstants.SHOOTER_VEL_ADJUSTMENT;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -33,13 +37,13 @@ public class AimingManager {
         ShotData feedStillShot = ShooterCalculations.calculateStillShot(robotPose, feedTarget);
 
         if (ObjectiveTarget != ObjectiveTracker.HUB) {
-            latestShot = USE_SOTM ? feedSotmShot : feedStillShot;
+            latestShot = applySafeties(USE_SOTM ? feedSotmShot : feedStillShot, robotPose, fieldRelSpeeds);
         } else {
-            latestShot = USE_SOTM ? hubSotmShot : hubStillShot;
+            latestShot = applySafeties(USE_SOTM ? hubSotmShot : hubStillShot, robotPose, fieldRelSpeeds);
         }
 
-        lastestHubShot = USE_SOTM ? hubSotmShot : hubStillShot;
-        latestFeedShot = USE_SOTM ? feedSotmShot : feedStillShot;
+        lastestHubShot = applySafeties(USE_SOTM ? hubSotmShot : hubStillShot, robotPose, fieldRelSpeeds);
+        latestFeedShot = applySafeties(USE_SOTM ? feedSotmShot : feedStillShot, robotPose, fieldRelSpeeds);
 
         Logger.recordOutput("AimingManager/targetPosition", ObjectiveTarget.getFieldPosition());
         Logger.recordOutput("AimingManager/latestShot", latestShot);
@@ -48,4 +52,15 @@ public class AimingManager {
         Logger.recordOutput("AimingManager/feedSotmShot", feedSotmShot);
         Logger.recordOutput("AimingManager/feedStillShot", feedStillShot);
     }
+
+    private static ShotData applySafeties(ShotData baseShot, Pose2d robotPose, ChassisSpeeds fieldRelSpeeds) {
+        ShotData trenchAvoidanceShot = ShooterCalculations.applyTrenchAvoidance(baseShot, robotPose, fieldRelSpeeds);
+        return new ShotData(
+            trenchAvoidanceShot.flywheelVel() + SHOOTER_VEL_ADJUSTMENT,
+            trenchAvoidanceShot.hoodAngle().plus(HOOD_ANGLE_ADJUSTMENT),
+            trenchAvoidanceShot.timeOfFlight(),
+            trenchAvoidanceShot.target(),
+            trenchAvoidanceShot.aimingTarget()
+        );
+    } 
 }

@@ -1,6 +1,6 @@
 package frc.robot.util.targets;
 
-import static frc.robot.constants.ShooterConstants.HUB_ANGLE_ADJUSTMENT;
+import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_ADJUSTMENT;
 
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,7 +35,7 @@ public class HubTarget implements AimingTarget {
 
     @Override
     public Rotation2d getHoodAngle(double distanceMeters) {
-        Rotation2d angle = Rotation2d.fromRadians(shooterAngleFunction.get(distanceMeters)).plus(HUB_ANGLE_ADJUSTMENT);
+        Rotation2d angle = Rotation2d.fromRadians(shooterAngleFunction.get(distanceMeters)).plus(HOOD_ANGLE_ADJUSTMENT);
         return angle;
     }
 

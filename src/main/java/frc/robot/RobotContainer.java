@@ -196,11 +196,11 @@ public class RobotContainer {
     }, shooter, hood));
 
     Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{
-      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(0.5));
+      ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(0.5));
     }));
 
     Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{
-      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(0.5));
+      ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(0.5));
     }));
 
     Controllers.driverController.getPovDown().onTrue(hood.setAngleCommand(Rotation2d.kZero));
@@ -278,17 +278,17 @@ public class RobotContainer {
     }));
 
     Controllers.operatorController.getAButton().onTrue(Commands.runOnce(()->{
-      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(0.5));
+      ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(1));
     }));
 
     Controllers.operatorController.getXButton().onTrue(Commands.runOnce(()->{
-      ShooterConstants.HUB_ANGLE_ADJUSTMENT = ShooterConstants.HUB_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(0.5));
+      ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(1));
     }));
     Controllers.operatorController.getBButton().onTrue(Commands.runOnce(()->{
-      ShooterConstants.SHOOTER_RPM_ADJUSTMENT = (ShooterConstants.SHOOTER_RPM_ADJUSTMENT - 50); 
+      ShooterConstants.SHOOTER_VEL_ADJUSTMENT = (ShooterConstants.SHOOTER_VEL_ADJUSTMENT - 50); 
     }));
        Controllers.operatorController.getYButton().onTrue(Commands.runOnce(()->{
-      ShooterConstants.SHOOTER_RPM_ADJUSTMENT = (ShooterConstants.SHOOTER_RPM_ADJUSTMENT + 50); 
+      ShooterConstants.SHOOTER_VEL_ADJUSTMENT = (ShooterConstants.SHOOTER_VEL_ADJUSTMENT + 50); 
     }));
 
     Controllers.operatorController.getRightBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
