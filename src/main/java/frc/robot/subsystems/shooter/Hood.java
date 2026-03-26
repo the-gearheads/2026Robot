@@ -50,7 +50,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.util.PIDControllerCustomPeriod;
-import frc.robot.util.ShooterCalculations;
 
 public class Hood extends SubsystemBase {
     SparkFlex hood = new SparkFlex(HOOD_MOTOR_ID, MotorType.kBrushless);

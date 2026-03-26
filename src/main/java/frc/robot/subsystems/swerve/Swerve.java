@@ -45,7 +45,6 @@ import frc.robot.subsystems.swerve.gyro.Gyro;
 import frc.robot.subsystems.swerve.gyro.GyroRedux;
 import frc.robot.subsystems.swerve.gyro.GyroSim;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.util.ShooterCalculations;
 
 public class Swerve extends SubsystemBase {
 

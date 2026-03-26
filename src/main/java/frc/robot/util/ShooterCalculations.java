@@ -1,12 +1,7 @@
 package frc.robot.util;
 
 
-import static frc.robot.constants.ShooterConstants.FLYWHEEL_TOLERANCE;
-import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_TOLERANCE;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
-import static frc.robot.constants.ShooterConstants.HUB_ANGLE_ADJUSTMENT;
-import static frc.robot.constants.ShooterConstants.KICKER_TOLERANCE;
-import static frc.robot.constants.ShooterConstants.SHOOTER_RPM_ADJUSTMENT;
 import static frc.robot.constants.SwerveConstants.YAW_ALIGN_TOLERANCE;
 
 import java.util.ArrayList;
@@ -19,18 +14,13 @@ import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.AimingManager;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.targets.VirtualTarget;
 
 public class ShooterCalculations {

@@ -6,7 +6,6 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.util.AimingTarget;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
