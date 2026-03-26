@@ -17,6 +17,8 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.util.AimingTarget;
+import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
 import frc.robot.constants.ShooterConstants;
@@ -24,6 +26,7 @@ import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.MiscConstants.isReal;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_VELOCITY;
+import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_VELOCITY;
 
@@ -57,6 +60,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   private final Deploy deploy;
 
+  public static AimingTarget override = null;
   public static final boolean deathMode = true;
 
   // public FuelSim fuelSim = new FuelSim("FuelSim"); // creates a new fuelSim of FuelSim
@@ -86,52 +90,23 @@ public class RobotContainer {
       deploy = new Deploy();
     }
 
+
     NamedCommands.registerCommand("aimShoot", Commands.parallel(
-      hood.setAngleHub(swerve),
-      shooter.setHubVelocityCommand(swerve),
-      deploy.shimmy(intake),
-      swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getHubYaw(swerve));}),
+    hood.setAngleHub(swerve),
+    shooter.setHubVelocityCommand(swerve),
+    swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.lastestHubShot.aimingTarget()));}),
       new SequentialCommandGroup(
-        Commands.waitUntil(() -> {return ShooterCalculations.hubShootReady(swerve, hood, shooter);}).withTimeout(5),
+        Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);}).withTimeout(5),
         spindexer.runSpindexer(12)
       )
     ));
     
-    NamedCommands.registerCommand("StartIntakeChomp", Commands.run(() -> {
-    intake.setIntakeVoltage(12);
-    }, intake));
-    NamedCommands.registerCommand("HoodDown", hood.setAngleCommand(Rotation2d.kZero));
-    NamedCommands.registerCommand("StopIntakeChomp", Commands.run(() -> {
-    intake.setIntakeVoltage(0);
-    }, intake));
-    NamedCommands.registerCommand("DeployIntake", deploy.holdDownCommand());
-    NamedCommands.registerCommand("STOP", Commands.run(() -> {
-    swerve.stop();
-    }, swerve));
-    NamedCommands.registerCommand("FireFromDepotTrench", Commands.run(() -> {
-    shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(DEPOT_TRENCH_SHOOT_VELOCITY));
-    hood.setAngle(DEPOT_TRENCH_SHOOT_ANGLE);
-    }, shooter, hood));
-    NamedCommands.registerCommand("FireFromHPTrench", Commands.run(() -> {
-    shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(HP_TRENCH_SHOOT_VELOCITY));
-    hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
-    }, shooter, hood));
-    NamedCommands.registerCommand("Shimmy", deploy.shimmy(intake));
-    NamedCommands.registerCommand("StartSpindexFeed", Commands.run(() ->{
-    spindexer.setVoltageMainSpinner(-12);
-    spindexer.setVoltageFeeder(12);
-    }, spindexer));
-    NamedCommands.registerCommand("StopSpindexFeed", Commands.run(() ->{
-    spindexer.setVoltageMainSpinner(0);
-    spindexer.setVoltageFeeder(0);
-    }, spindexer));
-    NamedCommands.registerCommand("ClimbUp", climber.climberUp());
-    NamedCommands.registerCommand("ClimbDown", climber.climberDown());
+    initializeNamedCommands();
 
     // hood.setDefaultCommand(new HoodNTControl(hood));
     // deploy.setDefaultCommand(new DeployNTControl(deploy));
     // shooter.setDefaultCommand(new ShooterNTControl(shooter));
-    hood.setDefaultCommand(hood.setObjectiveAngleCommand(swerve));
+    hood.setDefaultCommand(hood.setAngleCommand(HOOD_MIN_ANGLE));
     shooter.setDefaultCommand(shooter.run(()->{shooter.setShooterVelocity(0);}));
     deploy.setDefaultCommand(deploy.holdDownCommand());
     intake.setDefaultCommand(intake.run(()->{intake.stop();}));
@@ -177,9 +152,6 @@ public class RobotContainer {
       intake.stop();
     }));
 
-  //   Controllers.driverController.getRightPaddle().whileTrue(shooter.run(()->{
-  //     shooter.setShooterVelocity(ShooterCalculations.getObjectiveShootVelocity(swerve));
-  //   }));
 
   // Controllers.driverController.getRightPaddle().whileTrue(Commands.sequence(
   //   Commands.waitUntil(()->{return ShooterCalculations.isReadyToShoot(swerve, hood, shooter);}),
@@ -195,10 +167,6 @@ public class RobotContainer {
   //       spindexer.setVoltageFeeder(0);
   //     })   
   //   );
-
-  //   Controllers.driverController.getRightPaddle().whileFalse(shooter.run(()->{
-  //     shooter.setShooterVelocity(0);
-  //   }));
 
     Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
 
@@ -253,7 +221,7 @@ public class RobotContainer {
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
     Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
-      ShooterCalculations.HubDists.add(ShooterCalculations.getHubDistance(swerve.getPose()));
+      ShooterCalculations.HubDists.add(ShooterCalculations.getDistanceToTarget(swerve.getPose(), ObjectiveTracker.HUB.getFieldPosition()));
       ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
       ShooterCalculations.HoodAngles.add(hood.getAngle());
       double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
@@ -288,13 +256,13 @@ public class RobotContainer {
     // Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()+Units.degreesToRadians(0.5)));}));
     // Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()-Units.degreesToRadians(0.5)));}));
 
-    Controllers.driverController.getRightBumper().whileTrue(shooter.run(()->{
-      shooter.setShooterVelocity(ShooterCalculations.getHubVelocity(swerve));
-    }));
+    // Controllers.driverController.getRightBumper().whileTrue(shooter.run(()->{
+    //   shooter.setShooterVelocity(ShooterCalculations.getHubVelocity(swerve));
+    // }));
 
-    Controllers.driverController.getRightBumper().whileFalse(shooter.run(()->{
-      shooter.setShooterVelocity(0);
-    }));
+    // Controllers.driverController.getRightBumper().whileFalse(shooter.run(()->{
+    //   shooter.setShooterVelocity(0);
+    // }));
     
     Controllers.driverController.getRightTriggerBtn().whileTrue(hood.setAngleFeed(swerve));
     Controllers.driverController.getRightTriggerBtn().whileTrue(shooter.setFeedVelocityCommand(swerve));
@@ -335,15 +303,41 @@ public class RobotContainer {
     //return Swerve.wheelRadiusCharacterization(swerve);
   }
 
-  // private void configureFuelSim() {
-  //   fuelSim.spawnStartingFuel();
+  public void updateAimingManager() {
+    ShooterCalculations.log(swerve.getPose());
+    AimingManager.update(swerve.getPose(), swerve.getFieldRelativeSpeeds());
+  }
 
-  //   fuelSim.registerRobot(RobotContants.ROBOT_WIDTH,  // from left to right
-  //       RobotContants.ROBOT_LENGTH, // from front to back
-  //       RobotContants.ROBOT_BUMPER_HEIGHT,// from floor to top of bumpers
-  //       swerve::getPose, // Supplier<Pose2d> of robot pose
-  //       swerve::getFieldRelativeSpeeds); // Supplier<ChassisSpeeds> of field-centric chassis speeds
-    
-  //   fuelSim.start();
-  // }
+  private void initializeNamedCommands() {
+    NamedCommands.registerCommand("StartIntakeChomp", Commands.run(() -> {
+      intake.setIntakeVoltage(12);
+    }, intake));
+    NamedCommands.registerCommand("HoodDown", hood.setAngleCommand(Rotation2d.kZero));
+    NamedCommands.registerCommand("StopIntakeChomp", Commands.run(() -> {
+      intake.setIntakeVoltage(0);
+    }, intake));
+    NamedCommands.registerCommand("DeployIntake", deploy.holdDownCommand());
+    NamedCommands.registerCommand("STOP", Commands.run(() -> {
+      swerve.stop();
+    }, swerve));
+    NamedCommands.registerCommand("FireFromDepotTrench", Commands.run(() -> {
+      shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(DEPOT_TRENCH_SHOOT_VELOCITY));
+      hood.setAngle(DEPOT_TRENCH_SHOOT_ANGLE);
+    }, shooter, hood));
+    NamedCommands.registerCommand("FireFromHPTrench", Commands.run(() -> {
+      shooter.setShooterVelocity(Units.rotationsPerMinuteToRadiansPerSecond(HP_TRENCH_SHOOT_VELOCITY));
+      hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
+    }, shooter, hood));
+    NamedCommands.registerCommand("Shimmy", deploy.shimmy(intake));
+    NamedCommands.registerCommand("StartSpindexFeed", Commands.run(() -> {
+      spindexer.setVoltageMainSpinner(-12);
+      spindexer.setVoltageFeeder(12);
+    }, spindexer));
+    NamedCommands.registerCommand("StopSpindexFeed", Commands.run(() -> {
+      spindexer.setVoltageMainSpinner(0);
+      spindexer.setVoltageFeeder(0);
+    }, spindexer));
+    NamedCommands.registerCommand("ClimbUp", climber.climberUp());
+    NamedCommands.registerCommand("ClimbDown", climber.climberDown());
+  }
 }

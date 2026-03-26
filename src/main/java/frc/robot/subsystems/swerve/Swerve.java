@@ -156,9 +156,6 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    ShooterCalculations.getTrenchAvoidanceRectanlges(getPose(), getFieldRelativeSpeeds());
-
-
     double rotationSpeed = getRobotRelativeSpeeds().omegaRadiansPerSecond;
     if(gyro instanceof GyroSim) {
       ((GyroSim) gyro).setVelocityYaw(rotationSpeed);
@@ -308,7 +305,6 @@ public class Swerve extends SubsystemBase {
   long odomTwistTime = 0;
 
   public void periodic() {
-    ShooterCalculations.log(getPose());
     // gyro.log();
 
     for (SwerveModule module : modules) {

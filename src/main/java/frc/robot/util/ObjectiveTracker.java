@@ -11,8 +11,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.FieldConstants;
+import frc.robot.constants.MiscConstants;
+import frc.robot.util.targets.FeederTarget;
+import frc.robot.util.targets.HubTarget;
 
 public class ObjectiveTracker {
+    public static final HubTarget HUB = new HubTarget();
+    public static final FeederTarget FEED_LEFT = new FeederTarget(MiscConstants.LEFT_FEEDING_LOCATION);
+    public static final FeederTarget FEED_RIGHT = new FeederTarget(MiscConstants.RIGHT_FEEDING_LOCATION);
+    
     // takes in swerve, looks at hub status and robot position and velocity, maybe also considers Time of Flight for the balls
     // from there has a function to return what Objective we are aiming towards
     @AutoLogOutput
@@ -32,18 +39,18 @@ public class ObjectiveTracker {
     }
 
     @AutoLogOutput
-    public static Objective getFeedingObjective(Pose2d robotPose) {
+    public static AimingTarget getFeedingObjective(Pose2d robotPose) {
         if(AllianceFlipUtil.applyY(robotPose.getY()) < FieldConstants.fieldWidth/2.0) {
-            return Objective.FEED_RIGHT;
+            return FEED_RIGHT;
         } else {
-            return Objective.FEED_LEFT;
+            return FEED_LEFT;
         }
     }
 
     @AutoLogOutput
-    public static Objective getObjective(Pose2d robotPose) {
+    public static AimingTarget getObjective(Pose2d robotPose) {
         if (HubTracker.isAllianceHubActive() && inAllianceZone(robotPose)) {
-            return Objective.HUB;
+            return HUB;
         } else {
             return getFeedingObjective(robotPose);
         }
@@ -52,7 +59,7 @@ public class ObjectiveTracker {
     public static void log(Pose2d robotPose) {
         Logger.recordOutput("ObjectiveTracker/inAllianceZone", inAllianceZone(robotPose));
         Logger.recordOutput("ObjectiveTracker/ActiveAlliance", HubTracker.getActiveAlliance());
-        Logger.recordOutput("ObjectiveTracker/Objective", getObjective(robotPose));
-        Logger.recordOutput("ObjectiveTracker/FeedingObjective", getFeedingObjective(robotPose));
+        Logger.recordOutput("ObjectiveTracker/Objective", getObjective(robotPose).getFieldPosition());
+        Logger.recordOutput("ObjectiveTracker/FeedingObjective", getFeedingObjective(robotPose).getFieldPosition());
     }
 }

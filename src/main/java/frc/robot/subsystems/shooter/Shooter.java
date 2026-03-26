@@ -17,6 +17,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.MathUsageId;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.util.ShooterCalculations;
+import frc.robot.AimingManager;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.swerve.Swerve;
 
 public class Shooter extends SubsystemBase {
@@ -127,7 +131,7 @@ public class Shooter extends SubsystemBase {
 
   public void setShooterVelocity(double velocity) {
     setFlywheelVelocity(velocity);
-    setKickerVelocity(ShooterCalculations.getKickerSpeed(velocity));
+    setKickerVelocity(this.getKickerSpeed(velocity));
   }
 
   private void setFlywheelVelocity(double velocity) {
@@ -194,18 +198,35 @@ public class Shooter extends SubsystemBase {
 
   public Command setObjectiveVelocityCommand(Swerve swerve) {
         return this.run(() -> {
-            this.setShooterVelocity(ShooterCalculations.getObjectiveShootVelocity(swerve));
+            this.setShooterVelocity(AimingManager.latestShot.flywheelVel());
         });
   }
   public Command setFeedVelocityCommand(Swerve swerve) {
         return this.run(() -> {
-            this.setShooterVelocity(ShooterCalculations.getFeedVelocity(swerve));
+            this.setShooterVelocity(AimingManager.latestFeedShot.flywheelVel());
         });
   }
   
   public Command setHubVelocityCommand(Swerve swerve) {
         return this.run(() -> {
-            this.setShooterVelocity(ShooterCalculations.getHubVelocity(swerve));
+            this.setShooterVelocity(AimingManager.lastestHubShot.flywheelVel());
         });
+  }
+
+  public boolean atSpeed(double flywheelSpeed) {
+    boolean mainAtSpeed = MathUtil.isNear(flywheelSpeed, getFlywheelVelocityRadPerSec(), FLYWHEEL_TOLERANCE);
+    boolean kickerAtSpeed = MathUtil.isNear(getKickerSpeed(flywheelSpeed), getKickerVelocityRadPerSec(), KICKER_TOLERANCE);
+    if (flywheelSpeed > MAX_EFFECTIVE_FLYWHEEL_SPEED) {
+      boolean kickerAtMaxSpeed = MathUtil.isNear(MAX_KICKER_SPEED, getKickerVelocityRadPerSec(), KICKER_TOLERANCE);
+      return mainAtSpeed && kickerAtMaxSpeed;  // if we are trying to set a speed higher than we can maintain our kicker backspin, then just make sure it's maxxed.
+    } else {
+      return mainAtSpeed && kickerAtSpeed;
+    }
+  }
+
+    // see https://gemini.google.com/share/e8d7da86ce5d for explanation, returns motor velocity to get kicker to proportional speed as flywheel; keep in mind flywheel is geared up.
+  private double getKickerSpeed(double flywheelSpeed) {
+      double kickerSpeed = flywheelSpeed * ShooterConstants.KICKER_SURFACE_SPEED_RATIO * (ShooterConstants.EFFECTIVE_FLYWHEEL_DIAMETER / ShooterConstants.EFFECTIVE_KICKER_DIAMETER);
+      return kickerSpeed;
   }
 }

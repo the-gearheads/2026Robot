@@ -19,6 +19,7 @@ import static frc.robot.constants.ShooterConstants.HOOD_MIN_SYSID_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOTOR_ID;
 import static frc.robot.constants.ShooterConstants.HOOD_PID;
 
+import frc.robot.AimingManager;
 import frc.robot.subsystems.swerve.Swerve;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -150,9 +151,9 @@ public class Hood extends SubsystemBase {
 
     public void setVoltage(double volts){
         isManualMode = true;
-        if (getAngle().getRadians() > HOOD_MAX_ANGLE && volts > 0) {
+        if (getAngle().getRadians() > HOOD_MAX_ANGLE.getRadians() && volts > 0) {
             hoodController.setSetpoint(0, ControlType.kVoltage);
-        } else if (getAngle().getRadians() < HOOD_MIN_ANGLE && volts < 0) {
+        } else if (getAngle().getRadians() < HOOD_MIN_ANGLE.getRadians() && volts < 0) {
             hoodController.setSetpoint(0, ControlType.kVoltage);
         } else {
             hoodController.setSetpoint(volts, ControlType.kVoltage);
@@ -271,19 +272,19 @@ public class Hood extends SubsystemBase {
 
     public Command setObjectiveAngleCommand(Swerve swerve) {
         return this.run(() -> {
-            this.setAngle(ShooterCalculations.getObjectiveHoodAngle(swerve));
+            this.setAngle(AimingManager.latestShot.hoodAngle());
         });
     }
 
     public Command setAngleFeed(Swerve swerve) {
         return this.run(() -> {
-            this.setAngle(ShooterCalculations.getFeederHoodAngle(swerve));
+            this.setAngle(AimingManager.latestFeedShot.hoodAngle());
         });
     }
 
     public Command setAngleHub(Swerve swerve) {
         return this.run(() -> {
-            this.setAngle(ShooterCalculations.getHubHoodAngle(swerve));
+            this.setAngle(AimingManager.lastestHubShot.hoodAngle());
         });
     }
 }

@@ -23,7 +23,7 @@ public class HoodSim extends Hood {
         LinearSystemId.identifyPositionSystem(HOOD_FEEDFORWARD.getKv(), HOOD_FEEDFORWARD.getKa()),
         // LinearSystemId.identifyPositionSystem(0.0069965, 0.022602),
         // LinearSystemId.identifyPositionSystem(HOOD_FEEDFORWARD.getKv(), HOOD_FEEDFORWARD.getKa()),
-        hoodGearbox, HOOD_GEAR_RATIO, HOOD_LENGTH_METERS, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE, true, 0);
+        hoodGearbox, HOOD_GEAR_RATIO, HOOD_LENGTH_METERS, HOOD_MIN_ANGLE.getRadians(), HOOD_MAX_ANGLE.getRadians(), true, 0);
 
 
     public HoodSim() {

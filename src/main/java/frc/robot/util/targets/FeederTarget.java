@@ -33,7 +33,7 @@ public class FeederTarget implements AimingTarget {
     }
 
     @Override
-    public Translation2d getFieldPosition(Pose2d robotPose) {
+    public Translation2d getFieldPosition() {
         return this.location;
     }
 
@@ -53,5 +53,10 @@ public class FeederTarget implements AimingTarget {
     public double getTimeOfFlight(double distanceMeters) {
         double tof = feedToFFunction.get(distanceMeters);
         return tof;
+    }
+
+    @Override
+    public String toString() {
+        return "FEED " + location.getX() + location.getY();
     }
 }

@@ -11,7 +11,7 @@ public interface AimingTarget {
      *   Both for logging and to avoid footguns, these classes shouldn't think, all logic should be handled elsewhere
      *   (either objectiveTracker or Shootercalcs) that's why FeederTarget doesn't know if it's left or right
      */
-    Translation2d getFieldPosition(Pose2d robotPose); 
+    Translation2d getFieldPosition(); 
     
     Rotation2d getHoodAngle(double distanceMeters);
     double getFlywheelVel(double distanceMeters);

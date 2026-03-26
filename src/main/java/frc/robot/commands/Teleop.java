@@ -1,7 +1,8 @@
 package frc.robot.commands;
 
+import frc.robot.AimingManager;
 import frc.robot.constants.SwerveConstants;
-
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controllers.Controllers;
@@ -36,13 +37,11 @@ public class Teleop extends Command {
         ySpeed *= SwerveConstants.MAX_ROBOT_TRANS_SPEED;
         rotSpeed *= SwerveConstants.MAX_ROBOT_ROT_SPEED;
 
-        if (Controllers.driverController.getRightPaddle().getAsBoolean()) {
-            swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), ShooterCalculations.getHubYaw(swerve));
-        } else if (Controllers.driverController.getRightTriggerBtn().getAsBoolean()) {
-            swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), ShooterCalculations.getFeederYaw(swerve));
-        } else {
-            swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed));
-        }
+        Rotation2d angleOverride = null;
+        if (Controllers.driverController.getRightPaddle().getAsBoolean()) angleOverride = ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.latestShot.aimingTarget());
+        if (Controllers.driverController.getRightTriggerBtn().getAsBoolean()) angleOverride = ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.latestFeedShot.aimingTarget());
+        if (Controllers.driverController.getRightBumper().getAsBoolean()) angleOverride = ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.lastestHubShot.aimingTarget());
+        swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), angleOverride);
     }
 
     @Override

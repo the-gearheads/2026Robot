@@ -32,7 +32,7 @@ public class HubTarget implements AimingTarget {
     }
 
     @Override
-    public Translation2d getFieldPosition(Pose2d robotPose) {
+    public Translation2d getFieldPosition() {
         return AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
     }
 
@@ -52,6 +52,11 @@ public class HubTarget implements AimingTarget {
     public double getTimeOfFlight(double distanceMeters) {
         double tof = shooterToFFunction.get(distanceMeters);
         return tof;
+    }
+
+    @Override
+    public String toString() {
+        return "HUB";
     }
 
 }

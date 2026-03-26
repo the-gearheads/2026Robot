@@ -53,8 +53,8 @@ public class ShooterConstants {
     // public static final Rotation2d HOOD_ANGLE_OFFSET = Rotation2d.fromRadians(-1.59);
     
     public static final double HOOD_LENGTH_METERS = Units.inchesToMeters(8.07); // placeholder; from pivot point to out edge, for sim
-    public static final double HOOD_MIN_ANGLE = Units.degreesToRadians(0);  // hood 0 is 7.5 deg up
-    public static final double HOOD_MAX_ANGLE = Units.degreesToRadians(47);
+    public static final Rotation2d HOOD_MIN_ANGLE = Rotation2d.fromDegrees(0);  // hood 0 is 7.5 deg up
+    public static final Rotation2d HOOD_MAX_ANGLE = Rotation2d.fromDegrees(47);  
 
     public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(0.1);
 
@@ -78,8 +78,8 @@ public class ShooterConstants {
     public static final double FLYWHEEL_TOLERANCE = Units.rotationsPerMinuteToRadiansPerSecond(100);
     public static final double KICKER_TOLERANCE = Units.rotationsPerMinuteToRadiansPerSecond(100);
 
-    public static final double DEPOT_TRENCH_SHOOT_VELOCITY = 262.42; //From test 10
-    public static final Rotation2d DEPOT_TRENCH_SHOOT_ANGLE = new Rotation2d(0.258); //From test 10
+    public static final double DEPOT_TRENCH_SHOOT_VELOCITY = 262.42;  // TODO: fix these
+    public static final Rotation2d DEPOT_TRENCH_SHOOT_ANGLE = new Rotation2d(0.258); 
 
     public static final double HP_TRENCH_SHOOT_VELOCITY = 262.42;
     public static final Rotation2d HP_TRENCH_SHOOT_ANGLE = new Rotation2d(0.258); 

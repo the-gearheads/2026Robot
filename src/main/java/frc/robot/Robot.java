@@ -62,6 +62,7 @@ public class Robot extends LoggedRobot {
 
     CommandScheduler.getInstance().run();
     robotContainer.configureBindings();
+    robotContainer.updateAimingManager();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
