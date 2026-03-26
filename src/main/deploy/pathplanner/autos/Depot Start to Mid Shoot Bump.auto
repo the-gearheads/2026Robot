@@ -21,15 +21,9 @@
                 }
               },
               {
-                "type": "named",
-                "data": {
-                  "name": "HoodDown"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
-                  "pathName": "Works Depot to Center Pickup"
+                  "pathName": "W Version 2 Depot to Mid Bump"
                 }
               }
             ]
@@ -45,6 +39,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "New Autons Style",
+  "folder": "Depot Start",
   "choreoAuto": false
 }

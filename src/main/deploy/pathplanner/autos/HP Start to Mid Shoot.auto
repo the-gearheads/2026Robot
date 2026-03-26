@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Center Grab Depot Shoot"
+                  "pathName": "Works Version 2 Mid to HP"
                 }
               }
             ]
@@ -45,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "New Autons Style",
+  "folder": "HP Start",
   "choreoAuto": false
 }

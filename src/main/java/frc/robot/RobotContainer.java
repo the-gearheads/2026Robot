@@ -127,6 +127,8 @@ public class RobotContainer {
     spindexer.setVoltageMainSpinner(0);
     spindexer.setVoltageFeeder(0);
     }, spindexer));
+    NamedCommands.registerCommand("ClimbUp", climber.climberUp());
+    NamedCommands.registerCommand("ClimbDown", climber.climberDown());
 
     hood.setDefaultCommand(new HoodNTControl(hood));
     // deploy.setDefaultCommand(new DeployNTControl(deploy));

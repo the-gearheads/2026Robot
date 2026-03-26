@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Center Cycle Depot Side Bump"
+                  "pathName": "Works Depot to Mid Pickup"
                 }
               }
             ]
@@ -45,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Center Start",
+  "folder": "Depot Start",
   "choreoAuto": false
 }
