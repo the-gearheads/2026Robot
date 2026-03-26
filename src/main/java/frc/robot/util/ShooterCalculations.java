@@ -22,8 +22,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.FieldConstants;
@@ -302,11 +300,11 @@ public class ShooterCalculations {
     }
 
     // TIME OF FLIGHT AND STOM CODE HERE ----
-    private static Translation2d getAdjustedHubPose(Swerve swerve) {
-        Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
+    // private static Translation2d getAdjustedHubPose(Swerve swerve) {
+    //     Translation2d hubPosition = AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
 
-        // uhh hub speed is like. getHubDistance/ToF
-    }
+    //     // uhh hub speed is like. getHubDistance/ToF
+    // }
 
     private static double getHubTimeOfFlight(double distanceToHub) {
         return shooterToFFunction.get(distanceToHub).doubleValue();

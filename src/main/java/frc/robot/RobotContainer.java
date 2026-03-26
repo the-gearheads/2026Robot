@@ -19,8 +19,6 @@ import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
-import frc.robot.commands.NTControl.HoodNTControl;
-import frc.robot.commands.NTControl.ShooterNTControl;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.controllers.Controllers;
 
@@ -130,11 +128,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("ClimbUp", climber.climberUp());
     NamedCommands.registerCommand("ClimbDown", climber.climberDown());
 
-    hood.setDefaultCommand(new HoodNTControl(hood));
+    // hood.setDefaultCommand(new HoodNTControl(hood));
     // deploy.setDefaultCommand(new DeployNTControl(deploy));
-    shooter.setDefaultCommand(new ShooterNTControl(shooter));
-    // hood.setDefaultCommand(hood.setObjectiveAngleCommand(swerve));
-    // shooter.setDefaultCommand(shooter.run(()->{shooter.setShooterVelocity(0);}));
+    // shooter.setDefaultCommand(new ShooterNTControl(shooter));
+    hood.setDefaultCommand(hood.setObjectiveAngleCommand(swerve));
+    shooter.setDefaultCommand(shooter.run(()->{shooter.setShooterVelocity(0);}));
     deploy.setDefaultCommand(deploy.holdDownCommand());
     intake.setDefaultCommand(intake.run(()->{intake.stop();}));
 
