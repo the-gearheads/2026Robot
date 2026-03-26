@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6540178571428568,
-        "y": 0.63375
+        "x": 0.75,
+        "y": 5.95
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.654017857142857,
-        "y": 0.63375
+        "x": 1.75,
+        "y": 5.95
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot Intaking"
     },
     {
       "anchor": {
-        "x": 7.832696428571428,
-        "y": 2.2371964285714285
+        "x": 2.1801428571428567,
+        "y": 6.027
       },
       "prevControl": {
-        "x": 8.709263392857142,
-        "y": 1.9740044642857142
-      },
-      "nextControl": {
-        "x": 6.956129464285713,
-        "y": 2.500388392857143
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.14775,
-        "y": 1.6865178571428565
-      },
-      "prevControl": {
-        "x": 1.1477499999999998,
-        "y": 1.6865178571428565
+        "x": 1.1801428571428567,
+        "y": 6.027
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot Shoot Point Auton"
     }
   ],
   "rotationTargets": [],
@@ -58,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -40.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

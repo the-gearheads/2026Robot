@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": " Works Version 2 Center to Depot"
+                  "pathName": "Works Version 2 Mid to HP"
                 }
               }
             ]
@@ -79,7 +79,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Works 2nd Cycle Depot Pickup"
+                  "pathName": "Works 2nd Cycle Center to HP"
                 }
               }
             ]
@@ -89,6 +89,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "New Autons Style",
+  "folder": "HP Start",
   "choreoAuto": false
 }

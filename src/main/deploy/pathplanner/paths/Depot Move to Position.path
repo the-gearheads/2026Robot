@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.864086785688598,
-        "y": 6.4191736789155085
+        "x": 2.1801428571428567,
+        "y": 6.027
       },
       "prevControl": {
-        "x": 2.423873640801348,
-        "y": 6.78983042350311
+        "x": 2.7399297122556066,
+        "y": 6.397656744587602
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot Shoot Point Auton"
     }
   ],
   "rotationTargets": [],
