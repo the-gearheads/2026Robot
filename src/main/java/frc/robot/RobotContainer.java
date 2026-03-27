@@ -260,8 +260,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
     // return sysidPicker.get();
-    // return hood.NTVoltageCommand();
-    // return deploy.shimmy(intake);
     //return Swerve.wheelRadiusCharacterization(swerve);
   }
 

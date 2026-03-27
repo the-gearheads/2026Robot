@@ -1,7 +1,9 @@
 package frc.robot.util;
 
 
+import static frc.robot.constants.ShooterConstants.DRAG_CONSTANT;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
+import static frc.robot.constants.ShooterConstants.LATENCY_COMPENSATION;
 import static frc.robot.constants.SwerveConstants.YAW_ALIGN_TOLERANCE;
 
 import java.util.ArrayList;
@@ -91,13 +93,22 @@ public class ShooterCalculations {
         for (int i = 0; i < iterations; i++) {
             movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), fieldRelSpeeds, timeOfFlight);
             timeOfFlight = aimingTarget.getTimeOfFlight(getDistanceToTarget(robotPose, movingTargetPos));  // use the table for whatever the basic table is, but the distance is changing
-        }
+            timeOfFlight = applyLinearDragCompensation(timeOfFlight, DRAG_CONSTANT);
+            timeOfFlight += LATENCY_COMPENSATION;
+        }  // to tune: forward and back from goal = latency comp, hits short = L too small
+           //          sideways to the goal = Linear Drag, behind direction of travel = drag constant too low
 
         VirtualTarget adjustedTarget = new VirtualTarget(aimingTarget, movingTargetPos);
         ShotData adjustedShot = calculateStillShot(robotPose, adjustedTarget);
 
         Logger.recordOutput("ShooterCalculations/SOTMadjustedShot", adjustedShot);
         return adjustedShot;
+    }
+
+    private static double applyLinearDragCompensation(double timeOfFlight, double dragConstant) {
+        // again: https://frc-docs--3242.org.readthedocs.build/en/3242/docs/software/advanced-controls/fire-control/linear-drag.html
+        double decayedToF = (1 - Math.exp(-dragConstant * timeOfFlight)) / dragConstant;
+        return decayedToF;
     }
     
     // Move a target a set time in the future along a velocity defined by fieldSpeeds
