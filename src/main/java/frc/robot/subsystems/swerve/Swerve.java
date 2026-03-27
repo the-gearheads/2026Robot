@@ -72,6 +72,8 @@ public class Swerve extends SubsystemBase {
   double driveProfileLastTime = Timer.getFPGATimestamp();
 
   public Swerve() {
+    // SmartDashboard.putNumber("Swerve/HeadingPID/P", headingController.getP());
+    // SmartDashboard.putNumber("Swerve/HeadingPID/D", headingController.getD());
     this.vision = new Vision(this);
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
@@ -308,6 +310,8 @@ public class Swerve extends SubsystemBase {
   long odomTwistTime = 0;
 
   public void periodic() {
+    // headingController.setP(SmartDashboard.getNumber("Swerve/HeadingPID/P", headingController.getP()));
+    // headingController.setD(SmartDashboard.getNumber("Swerve/HeadingPID/D", headingController.getD()));
     // gyro.log();
 
     for (SwerveModule module : modules) {

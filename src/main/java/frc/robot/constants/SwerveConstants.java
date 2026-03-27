@@ -71,7 +71,7 @@ public final class SwerveConstants {
     public static double[] ROT_PATH_FOLLOWING_PID = {0.8, 0, 0};
 
     public static double[] DRIVE_CONTROLLER_PID = {5, 0, 0.3};
-    public static double[] ROT_CONTROLLER_PID = {3.2, 0, 0};
+    public static double[] ROT_CONTROLLER_PID = {11, 0, 0};
 
     public static Rotation2d YAW_ALIGN_TOLERANCE = Rotation2d.fromDegrees(3);
 
