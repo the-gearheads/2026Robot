@@ -43,7 +43,12 @@ public class ShooterCalculations {
         }
         
         boolean yawReady = MathUtil.isNear(getYawToTarget(robotPose, shot.aimingTarget).getRadians(), robotPose.getRotation().getRadians(), YAW_ALIGN_TOLERANCE.getRadians());
-        return hood.atAngle(shot.hoodAngle()) && shooter.atSpeed(shot.flywheelVel()) && yawReady;
+        boolean hoodReady = hood.atAngle(shot.hoodAngle(), Rotation2d.fromDegrees(0.5));
+        boolean shooterReady = shooter.atSpeed(shot.flywheelVel());
+        Logger.recordOutput("ShooterCalculations/yawReady", yawReady);
+        Logger.recordOutput("ShooterCalculations/hoodReady", hoodReady);
+        Logger.recordOutput("ShooterCalculations/shooterReady", shooterReady);
+        return hoodReady && shooterReady && yawReady;
     }
 
     public static boolean readyToShoot(Pose2d robotPose, Hood hood, Shooter shooter) {

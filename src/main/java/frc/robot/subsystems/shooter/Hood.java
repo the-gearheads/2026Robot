@@ -193,7 +193,11 @@ public class Hood extends SubsystemBase {
     }
 
     public boolean atAngle(Rotation2d angle) {
-        return MathUtil.isNear(angle.getRadians(), getAngle().getRadians(), HOOD_ANGLE_TOLERANCE.getRadians());
+        return atAngle(HOOD_ANGLE_TOLERANCE);
+    }
+
+    public boolean atAngle(Rotation2d angle, Rotation2d tolerance) {
+        return MathUtil.isNear(angle.getRadians(), getAngle().getRadians(), tolerance.getRadians());
     }
 
     @AutoLogOutput
