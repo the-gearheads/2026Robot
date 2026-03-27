@@ -146,13 +146,6 @@ public class RobotContainer {
     // Find new controllers
     Controllers.updateActiveControllerInstance();
 
-
-    // Controllers.driverController.getLeftPaddle().whileTrue(deploy.shimmy(intake));
-    // Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
-    //   intake.stop();
-    // }));
-
-
     Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.parallel(
         hood.setObjectiveAngleCommand(swerve),
         shooter.setObjectiveVelocityCommand(swerve),
@@ -230,6 +223,7 @@ public class RobotContainer {
 
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
+    Controllers.driverController.getStartButton().onTrue(intake.run((()->{intake.setIntakeVoltage(-12);})));
     // Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
     //   ShooterCalculations.HubDists.add(ShooterCalculations.getDistanceToTarget(swerve.getPose(), ObjectiveTracker.HUB.getFieldPosition()));
     //   ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
