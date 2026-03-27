@@ -259,6 +259,7 @@ public class Swerve extends SubsystemBase {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
   
+  @AutoLogOutput
   public double getSpeedMagnitude() {
     return Math.sqrt(Math.pow(this.getRobotRelativeSpeeds().vxMetersPerSecond, 2) + Math.pow(this.getRobotRelativeSpeeds().vyMetersPerSecond, 2));
   }

@@ -3,6 +3,7 @@ package frc.robot.util;
 
 import static frc.robot.constants.ShooterConstants.DRAG_CONSTANT;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
+import static frc.robot.constants.ShooterConstants.HOOD_MOVING_TOLERANCE;
 import static frc.robot.constants.ShooterConstants.LATENCY_COMPENSATION;
 import static frc.robot.constants.SwerveConstants.YAW_ALIGN_TOLERANCE;
 
@@ -43,7 +44,7 @@ public class ShooterCalculations {
         }
         
         boolean yawReady = MathUtil.isNear(getYawToTarget(robotPose, shot.aimingTarget).getRadians(), robotPose.getRotation().getRadians(), YAW_ALIGN_TOLERANCE.getRadians());
-        boolean hoodReady = hood.atAngle(shot.hoodAngle(), Rotation2d.fromDegrees(0.5));
+        boolean hoodReady = hood.atAngle(shot.hoodAngle(), HOOD_MOVING_TOLERANCE);
         boolean shooterReady = shooter.atSpeed(shot.flywheelVel());
         Logger.recordOutput("ShooterCalculations/yawReady", yawReady);
         Logger.recordOutput("ShooterCalculations/hoodReady", hoodReady);

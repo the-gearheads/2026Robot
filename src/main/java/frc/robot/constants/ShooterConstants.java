@@ -57,6 +57,7 @@ public class ShooterConstants {
     public static final Rotation2d HOOD_MAX_ANGLE = Rotation2d.fromDegrees(47);  
 
     public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(0.1);
+    public static final Rotation2d HOOD_MOVING_TOLERANCE = Rotation2d.fromDegrees(0.5);
 
     public static final double HOOD_MIN_SYSID_ANGLE = Units.degreesToRadians(5);  // more conservative so sysid doesn't break anything
     public static final double HOOD_MAX_SYSID_ANGLE = Units.degreesToRadians(45);
@@ -71,7 +72,7 @@ public class ShooterConstants {
     //public static final double[] SHOOT_TOFS      = { 1.13888, 1.18095, 1.17708, 1.18750, 1.15555, 1.18541, 1.15   , 1.13500, 1.15,    1.18,    1.21333, 1.25000, 1.27569, 1.26500, 1.31166, 1.29583, 1.24861, 1.23500, 1.23611, 1.25750, 1.31833, 1.37777, 1.37833, 1.40972, 1.43263 };
 
     // https://frc-docs--3242.org.readthedocs.build/en/3242/docs/software/advanced-controls/fire-control/linear-drag.html
-    public static final double DRAG_CONSTANT = 0.3;
+    public static final double DRAG_CONSTANT = 0.20;
     public static final double LATENCY_COMPENSATION = 0.15;  // seconds; time accounting for latency for everything other than just real ball ToF 
 
     public static final double MAX_KICKER_SPEED = KICKER_FEEDFORWARD.maxAchievableVelocity(12, 0);

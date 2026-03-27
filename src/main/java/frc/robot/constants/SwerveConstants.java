@@ -71,14 +71,14 @@ public final class SwerveConstants {
     public static double[] ROT_PATH_FOLLOWING_PID = {0.8, 0, 0};
 
     public static double[] DRIVE_CONTROLLER_PID = {5, 0, 0.3};
-    public static double[] ROT_CONTROLLER_PID = {11, 0, 0};
+    public static double[] ROT_CONTROLLER_PID = {11, 0, 0.2};
 
     public static Rotation2d YAW_ALIGN_TOLERANCE = Rotation2d.fromDegrees(3);
 
     public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // rad/s^2
     public static final double WHEEL_RADIUS_MAX_VEL = 0.25; // rad/s
 
-    public static final double SHIMMY_THRESHOLD_SPEED = 1;  // m/s
+    public static final double SHIMMY_THRESHOLD_SPEED = 1.5;  // m/s
 
     public static double ALIGNMENT_MAX_STOPPED_TRANS_SPEED = 0.1; // m/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning
     public static double ALIGNMENT_MAX_STOPPED_ROT_SPEED = Units.degreesToRadians(1); // rad/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning
