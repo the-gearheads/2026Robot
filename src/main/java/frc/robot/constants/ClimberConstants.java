@@ -6,7 +6,7 @@ public class ClimberConstants {
     public static final int CLIMBER_CURRENT_LIMIT = 60;
 
     public static final double CLIMB_UP_VOLTAGE = 12.0;
-    public static final double CLIMB_DOWN_VOLTAGE = 6.0;
+    public static final double CLIMB_DOWN_VOLTAGE = 12.0;
 
     public static final double MAX_CLIMBER_POS = 106.5;
     public static final double CLIMB_DOWN_POS = 60.48;

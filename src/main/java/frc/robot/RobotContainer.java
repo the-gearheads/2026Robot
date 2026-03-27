@@ -31,7 +31,6 @@ import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_VELOCITY;
 
-import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
 
@@ -199,6 +198,7 @@ public class RobotContainer {
       )
     ));
 
+    Controllers.driverController.getLeftTriggerBtn().whileTrue(intake.run(()->{intake.setIntakeVoltage(12);}));
 
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
@@ -218,10 +218,15 @@ public class RobotContainer {
       ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(0.5));
     }));
 
-    // Controllers.driverController.getPovLeft().whileTrue(Commands.run(
-    //   ()->{
-    //     climber.setClimberVoltage
-    //   }, null))
+    Controllers.driverController.getPovLeft().whileTrue(Commands.run(
+      ()->{
+        climber.setClimberVoltage(-3);
+      }, climber).finallyDo(()->{climber.setClimberVoltage(0);}));
+
+    Controllers.driverController.getPovRight().whileTrue(Commands.run(
+      ()->{
+        climber.setClimberVoltage(3);
+      }, climber).finallyDo(()->{climber.setClimberVoltage(0);}));
 
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
