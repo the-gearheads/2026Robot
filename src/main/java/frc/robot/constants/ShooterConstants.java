@@ -88,7 +88,7 @@ public class ShooterConstants {
     public static final double HP_TRENCH_SHOOT_VELOCITY = 262.42;
     public static final Rotation2d HP_TRENCH_SHOOT_ANGLE = new Rotation2d(0.258); 
 
-    public static Rotation2d HOOD_ANGLE_ADJUSTMENT = Rotation2d.fromDegrees(1);
-    public static double SHOOTER_VEL_ADJUSTMENT = Units.rotationsPerMinuteToRadiansPerSecond(50);
+    public static Rotation2d HOOD_ANGLE_ADJUSTMENT = Rotation2d.fromDegrees(0);
+    public static double SHOOTER_VEL_ADJUSTMENT = Units.rotationsPerMinuteToRadiansPerSecond(0);
 
 }
