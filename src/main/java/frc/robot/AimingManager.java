@@ -1,9 +1,7 @@
 package frc.robot;
 
 import static frc.robot.constants.MiscConstants.SOTM_ITERATIONS;
-import static frc.robot.constants.ShooterConstants.FLYWHEEL_VEL_FACTOR;
 import static frc.robot.constants.ShooterConstants.HOOD_ANGLE_ADJUSTMENT;
-import static frc.robot.constants.ShooterConstants.HOOD_DOWN_KS;
 import static frc.robot.constants.ShooterConstants.SHOOTER_VEL_ADJUSTMENT;
 
 import org.littletonrobotics.junction.Logger;

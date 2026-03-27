@@ -22,6 +22,7 @@ import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.commands.Teleop;
 import frc.robot.constants.ShooterConstants;
+import frc.robot.constants.SwerveConstants;
 import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.MiscConstants.isReal;
@@ -147,135 +148,97 @@ public class RobotContainer {
     Controllers.updateActiveControllerInstance();
 
 
-    Controllers.driverController.getLeftPaddle().whileTrue(deploy.shimmy(intake));
-    Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
-      intake.stop();
-    }));
-
-
-  // Controllers.driverController.getRightPaddle().whileTrue(Commands.sequence(
-  //   Commands.waitUntil(()->{return ShooterCalculations.isReadyToShoot(swerve, hood, shooter);}),
-  //   Commands.run(()-> {
-  //     spindexer.setVoltageMainSpinner(-12);
-  //     spindexer.setVoltageFeeder(12);
-  //   }).alongWith(deploy.shimmy(intake))  
-  //   ));
-
-  //   Controllers.driverController.getRightPaddle().onFalse(
-  //     Commands.runOnce(()-> {
-  //       spindexer.setVoltageMainSpinner(0);
-  //       spindexer.setVoltageFeeder(0);
-  //     })   
-  //   );
-
-    Controllers.driverController.getLeftBumper().whileTrue(intake.runEnd(()->{intake.setIntakeVoltage(12);}, ()->{intake.setIntakeVoltage(0);}));
-
-    // todo fix after merge
-    // Controllers.driverController.getPovRight().onTrue(Commands.run(()->{intake.setAngle(Rotation2d.fromDegrees(30));}).until(()->{return intake.atAngle(Rotation2d.fromDegrees(30));}));
-    // Controllers.driverController.getPovDown().onTrue(Commands.run(()->{intake.setAngle(Rotation2d.fromDegrees(0));}).until(()->{return intake.atAngle(Rotation2d.fromDegrees(0));}));
-    // Controllers.driverController.getPovUp().onTrue(Commands.run(()->{intake.setAngle(DEPLOY_MAX_ANGLE);}).until(()->{return intake.atAngle(DEPLOY_MAX_ANGLE);}));
-        
-    // Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-    //   spindexer.setVoltageMainSpinner(-12);
-    // }).finallyDo(() ->{spindexer.setVoltageMainSpinner(0);}));
-
-    // Controllers.driverController.getXBtn().whileTrue(Commands.run(() -> {
-    //   spindexer.setVoltageFeeder(12);
-    // }));
-    // Controllers.driverController.getXBtn().whileFalse(Commands.run(() -> {
-    //   spindexer.setVoltageFeeder(0);
+    // Controllers.driverController.getLeftPaddle().whileTrue(deploy.shimmy(intake));
+    // Controllers.driverController.getLeftPaddle().whileFalse(intake.run(() -> {
+    //   intake.stop();
     // }));
 
-    Controllers.driverController.getXBtn().whileTrue(spindexer.runWhenReady());
-    Controllers.driverController.getXBtn().whileTrue(deploy.shimmy(intake));
 
-    Controllers.driverController.getPovUp().whileTrue(Commands.run(()->{
+    Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.parallel(
+        hood.setObjectiveAngleCommand(swerve),
+        shooter.setObjectiveVelocityCommand(swerve),
+        new SequentialCommandGroup(
+          Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter);}).withTimeout(5),
+          Commands.deferredProxy(()->{
+            if(ObjectiveTracker.HUB == AimingManager.latestShot.aimingTarget()) {
+              if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
+                return spindexer.runSpindexer(12);
+              } else {
+                return spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake));
+              }
+            } else {
+              return spindexer.runSpindexer(12);
+            }
+          })
+        )
+      )
+    );
+
+    Controllers.driverController.getRightBumper().whileTrue(Commands.parallel(
+        hood.setAngleHub(swerve),
+        shooter.setHubVelocityCommand(swerve),
+        new SequentialCommandGroup(
+          Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);}),
+          Commands.deferredProxy(()->{
+            if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
+                return spindexer.runSpindexer(12);
+              } else {
+                return spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake));
+              }
+            })
+          )
+      )
+    );
+
+    Controllers.driverController.getLeftBumper().whileTrue(Commands.parallel(
+      hood.setAngleFeed(swerve),
+      shooter.setFeedVelocityCommand(swerve),
+      new SequentialCommandGroup(
+          Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.getFeedingObjective(swerve.getPose()));}),
+          spindexer.runSpindexer(12)
+      )
+    ));
+
+
+    Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
+    Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
+    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
+    Controllers.driverController.getBBtn().onTrue(climber.climberDown());
+
+    Controllers.driverController.getLeftPaddle().whileTrue(Commands.run(() -> {
       shooter.setShooterVelocity(HP_TRENCH_SHOOT_VELOCITY);
       hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
+    }, shooter, hood).alongWith(spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake))));
 
-    }, shooter, hood));
-
-    Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{
+    Controllers.driverController.getPovUp().onTrue(Commands.runOnce(()->{
       ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(0.5));
     }));
 
-    Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{
+    Controllers.driverController.getPovDown().onTrue(Commands.runOnce(()->{
       ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(0.5));
     }));
 
-    Controllers.driverController.getPovDown().onTrue(hood.setAngleCommand(Rotation2d.kZero));
-    
-    // Controllers.driverController.getPovDown().whileTrue(Commands.run(()-> {
-    //   shooter.setKickerVoltage(-6);
-    //   shooter.setFlywheelVoltage(6);
-    //   spindexer.setVoltageFeeder(-6);
-    // }).finallyDo(() -> {
-    //   shooter.setKickerVoltage(0);
-    //   shooter.setFlywheelVoltage(0);
-    //   spindexer.setVoltageFeeder(0);
-    // }));
-    // Controllers.driverController.getPovUp().onTrue(hood.hoodHome());
-    // Controllers.driverController.getYBtn().whileTrue(deploy.setVoltageCommand(2));
-    // Controllers.driverController.getBBtn().whileTrue(deploy.setVoltageCommand(-2));
+    // Controllers.driverController.getPovLeft().whileTrue(Commands.run(
+    //   ()->{
+    //     climber.setClimberVoltage
+    //   }, null))
 
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
-    Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
-      ShooterCalculations.HubDists.add(ShooterCalculations.getDistanceToTarget(swerve.getPose(), ObjectiveTracker.HUB.getFieldPosition()));
-      ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
-      ShooterCalculations.HoodAngles.add(hood.getAngle());
-      double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
-      double[] ShooterSpeedsArray = ShooterCalculations.ShooterSpeeds.stream().mapToDouble(Double::doubleValue).toArray();
-      double[] HoodAnglesArray = ShooterCalculations.HoodAngles.stream()
-                        .mapToDouble(r -> r.getRadians())
-                        .toArray();
-      Logger.recordOutput("ShooterCalculations/HubDistances", HubDistsArray);
-      Logger.recordOutput("ShooterCalculations/ShooterSpeeds", ShooterSpeedsArray);
-      Logger.recordOutput("ShooterCalculations/HoodAngles", HoodAnglesArray);
-    }));
-    // Controllers.driverController.getStartButton().whileTrue(Commands.run(() -> {
-    //   intake.setIntakeVoltage(-12);
-    // }));
-   // Controllers.driverController.getYBtn().whileTrue(Commands.run(() -> {
-    //  intake.setDeployVoltage(2);
-    //}).finallyDo(() ->{intake.setDeployVoltage(0);}));
-    //Controllers.driverController.getBBtn().whileTrue(Commands.run(() -> {
-    //   intake.setDeployVoltage(-2);
-    // }).finallyDo(() ->{intake.setDeployVoltage(0);}));
-
-    // Controllers.driverController.getYBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
-    // Controllers.driverController.getBBtn().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
-
-    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
-    Controllers.driverController.getBBtn().onTrue(climber.climberDown());
-    // Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{
-    //   spindexer.runSpindexer(12);
-    // }));
-    // Controllers.driverController.getYBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()+Units.rotationsPerMinuteToRadiansPerSecond(25));}));
-    // Controllers.driverController.getBBtn().onTrue(Commands.runOnce(()->{shooter.setShooterVelocity(shooter.getFlywheelSetpoint()-Units.rotationsPerMinuteToRadiansPerSecond(25));}));
-    // Controllers.driverController.getPovRight().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()+Units.degreesToRadians(0.5)));}));
-    // Controllers.driverController.getPovLeft().onTrue(Commands.runOnce(()->{hood.setAngle(Rotation2d.fromRadians(hood.getAngle().getRadians()-Units.degreesToRadians(0.5)));}));
-
-    // Controllers.driverController.getRightBumper().whileTrue(shooter.run(()->{
-    //   shooter.setShooterVelocity(ShooterCalculations.getHubVelocity(swerve));
+    // Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
+    //   ShooterCalculations.HubDists.add(ShooterCalculations.getDistanceToTarget(swerve.getPose(), ObjectiveTracker.HUB.getFieldPosition()));
+    //   ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
+    //   ShooterCalculations.HoodAngles.add(hood.getAngle());
+    //   double[] HubDistsArray = ShooterCalculations.HubDists.stream().mapToDouble(Double::doubleValue).toArray();
+    //   double[] ShooterSpeedsArray = ShooterCalculations.ShooterSpeeds.stream().mapToDouble(Double::doubleValue).toArray();
+    //   double[] HoodAnglesArray = ShooterCalculations.HoodAngles.stream()
+    //                     .mapToDouble(r -> r.getRadians())
+    //                     .toArray();
+    //   Logger.recordOutput("ShooterCalculations/HubDistances", HubDistsArray);
+    //   Logger.recordOutput("ShooterCalculations/ShooterSpeeds", ShooterSpeedsArray);
+    //   Logger.recordOutput("ShooterCalculations/HoodAngles", HoodAnglesArray);
     // }));
 
-    // Controllers.driverController.getRightBumper().whileFalse(shooter.run(()->{
-    //   shooter.setShooterVelocity(0);
-    // }));
-    
-    Controllers.driverController.getRightTriggerBtn().whileTrue(hood.setAngleFeed(swerve));
-    Controllers.driverController.getRightTriggerBtn().whileTrue(shooter.setFeedVelocityCommand(swerve));
-    Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.run(()->{
-      intake.setIntakeVoltage(12);
-      spindexer.setVoltageMainSpinner(-12);
-      spindexer.setVoltageFeeder(12);
-    }));
-    Controllers.driverController.getRightTriggerBtn().onFalse(Commands.runOnce(()->{
-      intake.setIntakeVoltage(0);
-      spindexer.setVoltageMainSpinner(0);
-      spindexer.setVoltageFeeder(0);
-    }));
 
     Controllers.operatorController.getAButton().onTrue(Commands.runOnce(()->{
       ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(1));

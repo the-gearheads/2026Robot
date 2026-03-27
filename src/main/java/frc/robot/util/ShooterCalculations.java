@@ -43,6 +43,10 @@ public class ShooterCalculations {
         boolean yawReady = MathUtil.isNear(getYawToTarget(robotPose, shot.aimingTarget).getRadians(), robotPose.getRotation().getRadians(), YAW_ALIGN_TOLERANCE.getRadians());
         return hood.atAngle(shot.hoodAngle()) && shooter.atSpeed(shot.flywheelVel()) && yawReady;
     }
+
+    public static boolean readyToShoot(Pose2d robotPose, Hood hood, Shooter shooter) {
+        return readyToShoot(robotPose, hood, shooter, null);
+    }
     
     public static ShotData calculateStillShot(Pose2d robotPose, AimingTarget aimingTarget) {
         double targetDist = getDistanceToTarget(robotPose, aimingTarget.getFieldPosition());
