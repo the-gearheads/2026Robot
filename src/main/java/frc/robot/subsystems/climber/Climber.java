@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
@@ -37,6 +38,10 @@ public class Climber extends SubsystemBase {
         climbConfig.smartCurrentLimit(60);
         climbConfig.idleMode(IdleMode.kBrake);
         climbConfig.inverted(false);
+        climbConfig.softLimit.forwardSoftLimit(ClimberConstants.MAX_CLIMBER_POS);
+        climbConfig.softLimit.reverseSoftLimit(ClimberConstants.MIN_CLIMBER_POS);
+        climbConfig.softLimit.reverseSoftLimitEnabled(true);
+        climbConfig.softLimit.forwardSoftLimitEnabled(true);
         climber.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         climbConfig.encoder.quadratureMeasurementPeriod(10);
@@ -72,5 +77,5 @@ public class Climber extends SubsystemBase {
         }).until(()->{return getClimbPosition()<=ClimberConstants.MIN_CLIMBER_POS;}).finallyDo(()->{
             setClimberVoltage(0);
         });
-    }  // these are super naiive. TODO: at some point add pid maybe + feedforward to climber bc why not and good for auto. Also motion profiling
+    } 
 }
