@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.util.AimingTarget;
+import frc.robot.util.AllianceFlipUtil;
 
 public class FeederTarget implements AimingTarget {
     static InterpolatingDoubleTreeMap feedAngleFunction = new InterpolatingDoubleTreeMap();
@@ -31,7 +32,7 @@ public class FeederTarget implements AimingTarget {
 
     @Override
     public Translation2d getFieldPosition() {
-        return this.location;
+        return AllianceFlipUtil.apply(this.location);
     }
 
     @Override
