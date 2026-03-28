@@ -93,17 +93,6 @@ public class RobotContainer {
       deploy = new Deploy();
     }
 
-
-    NamedCommands.registerCommand("aimShoot", Commands.parallel(
-    hood.setAngleHub(swerve),
-    shooter.setHubVelocityCommand(swerve),
-    swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.latestHubShot.aimingTarget()));}),
-      new SequentialCommandGroup(
-        Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);}).withTimeout(5),
-        spindexer.runSpindexer(12)
-      )
-    ));
-    
     initializeNamedCommands();
 
     // hood.setDefaultCommand(new HoodNTControl(hood));
@@ -270,6 +259,18 @@ public class RobotContainer {
   }
 
   private void initializeNamedCommands() {
+    NamedCommands.registerCommand("aimShoot", Commands.parallel(
+        hood.setAngleHub(swerve),
+        shooter.setHubVelocityCommand(swerve),
+        swerve.run(() -> {
+          swerve.drive(new ChassisSpeeds(),
+              ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.latestHubShot.aimingTarget()));
+        }),
+        new SequentialCommandGroup(
+            Commands.waitUntil(() -> {
+              return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);
+            }).withTimeout(5),
+            spindexer.runSpindexer(12))));
     NamedCommands.registerCommand("StartIntakeChomp", Commands.run(() -> {
       intake.setIntakeVoltage(12);
     }, intake));
