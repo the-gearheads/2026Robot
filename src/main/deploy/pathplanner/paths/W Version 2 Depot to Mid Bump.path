@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6540178571428568,
-        "y": 7.45
+        "x": 3.6510841290509264,
+        "y": 7.468642857142857
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.654017857142857,
-        "y": 7.450000000000001
+        "x": 4.651084129050926,
+        "y": 7.468642857142858
       },
       "isLocked": false,
       "linkedName": "Center Starting Forward Depot"
@@ -80,12 +80,12 @@
     },
     {
       "anchor": {
-        "x": 2.1801428571428567,
-        "y": 6.027
+        "x": 2.057732349537037,
+        "y": 6.049112123842592
       },
       "prevControl": {
-        "x": 2.388212601273149,
-        "y": 5.59062572337963
+        "x": 2.265802093667329,
+        "y": 5.612737847222222
       },
       "nextControl": null,
       "isLocked": false,
@@ -166,8 +166,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

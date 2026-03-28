@@ -10,5 +10,5 @@ public class ClimberConstants {
 
     public static final double MAX_CLIMBER_POS = 106.5;
     public static final double CLIMB_DOWN_POS = 60.48;
-    public static final double MIN_CLIMBER_POS = 5;
+    public static final double MIN_CLIMBER_POS = 5.0;
 }
