@@ -14,6 +14,7 @@ public class SplineEncoderSim {
   private SimDouble m_zeroOffset;
   private SimDouble m_positionConversionFactor;
   private SimDouble m_velocityConversionFactor;
+  @SuppressWarnings("unused")
   private int id;
   private String simDeviceName;
 
@@ -24,6 +25,7 @@ public class SplineEncoderSim {
    * @param motor The CANSparkFlex associated with the sensor
    */
   public SplineEncoderSim(DetachedEncoder encoder) {
+    this.id = encoder.getDeviceId();
     simDeviceName = "Detached MAXSpline Encoder [" + encoder.getDeviceId() + "]";
     setupSimDevice();
   }
