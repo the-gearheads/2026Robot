@@ -107,7 +107,7 @@ public class ShooterCalculations {
         VirtualTarget adjustedTarget = new VirtualTarget(aimingTarget, movingTargetPos);
         ShotData adjustedShot = calculateStillShot(robotPose, adjustedTarget);
 
-        Logger.recordOutput("ShooterCalculations/SOTMadjustedShot", adjustedShot);
+        Logger.recordOutput("ShooterCalculations/SOTMadjustedShot", adjustedShot.toString());
         return adjustedShot;
     }
 

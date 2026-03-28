@@ -20,6 +20,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.AimingTarget;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
+import frc.robot.util.targets.VirtualTarget;
 import frc.robot.commands.Teleop;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
@@ -146,13 +147,13 @@ public class RobotContainer {
     // Find new controllers
     Controllers.updateActiveControllerInstance();
 
-    Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.parallel(
+   Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.parallel(
         hood.setObjectiveAngleCommand(swerve),
         shooter.setObjectiveVelocityCommand(swerve),
         new SequentialCommandGroup(
           Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter);}).withTimeout(5),
           Commands.deferredProxy(()->{
-            if(ObjectiveTracker.HUB == AimingManager.latestShot.aimingTarget()) {
+            if(AimingManager.latestShot.aimingTarget() == ObjectiveTracker.HUB || (AimingManager.latestShot.aimingTarget() instanceof VirtualTarget) && ((VirtualTarget)AimingManager.latestShot.aimingTarget()).baseTarget == ObjectiveTracker.HUB) {
               if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
                 return spindexer.runSpindexer(12);
               } else {
