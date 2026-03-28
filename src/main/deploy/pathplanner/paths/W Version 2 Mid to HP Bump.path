@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 3.6540178571428568,
-        "y": 7.45
+        "y": 0.619326
       },
       "prevControl": null,
       "nextControl": {
         "x": 4.654017857142857,
-        "y": 7.450000000000001
+        "y": 0.6193260000000009
       },
       "isLocked": false,
-      "linkedName": "Center Starting Forward Depot"
+      "linkedName": "HP Starting Point"
     },
     {
       "anchor": {
         "x": 7.929874999999999,
-        "y": 6.594035714285715
+        "y": 1.475326
       },
       "prevControl": {
-        "x": 7.994660714285713,
-        "y": 7.582017857142857
+        "x": 7.994665386068576,
+        "y": 0.48734416350036835
       },
       "nextControl": {
-        "x": 7.841810769641182,
-        "y": 5.251056201313738
+        "x": 7.841795504443319,
+        "y": 2.818441036943031
       },
       "isLocked": false,
       "linkedName": null
@@ -33,47 +33,47 @@
     {
       "anchor": {
         "x": 7.3629999999999995,
-        "y": 4.682857142857142
+        "y": 3.386326
       },
       "prevControl": {
-        "x": 8.202048055386815,
-        "y": 4.755817843325561
+        "x": 8.202047725220247,
+        "y": 3.313361502715587
       },
       "nextControl": {
-        "x": 6.617964285714287,
-        "y": 4.618071428571429
+        "x": 6.617964578886869,
+        "y": 3.4511150856820225
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.550312210648149,
-        "y": 5.586
+        "x": 5.662375,
+        "y": 2.483326
       },
       "prevControl": {
-        "x": 6.7164550677910055,
-        "y": 5.553607142857143
+        "x": 6.828517936443367,
+        "y": 2.5157160021985914
       },
       "nextControl": {
-        "x": 4.6384727933423955,
-        "y": 5.611328872702938
+        "x": 4.750535520686981,
+        "y": 2.457999359657103
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.6540178571428568,
-        "y": 5.586
+        "x": 3.1323761261261267,
+        "y": 2.483326
       },
       "prevControl": {
-        "x": 4.450988994295636,
-        "y": 5.568678819444445
+        "x": 3.572207162540851,
+        "y": 2.47048498820521
       },
       "nextControl": {
-        "x": 2.5517723829882595,
-        "y": 5.6099559401643875
+        "x": 2.571069155092593,
+        "y": 2.4997135416666665
       },
       "isLocked": false,
       "linkedName": null
@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 2.1801428571428567,
-        "y": 6.027
+        "y": 2.042326
       },
       "prevControl": {
-        "x": 2.388212601273149,
-        "y": 5.59062572337963
+        "x": 2.3848008535879632,
+        "y": 2.3415921585648154
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot Shoot Point Auton"
+      "linkedName": "HP Shoot Point Auton"
     }
   ],
   "rotationTargets": [
@@ -99,27 +99,27 @@
     },
     {
       "waypointRelativePos": 0.75,
-      "rotationDegrees": 180.0
-    },
-    {
-      "waypointRelativePos": 1.2735849056603774,
-      "rotationDegrees": 180.0
-    },
-    {
-      "waypointRelativePos": 2.003597861842101,
-      "rotationDegrees": 57.048
-    },
-    {
-      "waypointRelativePos": 2.2833059210526314,
       "rotationDegrees": 0.0
     },
     {
+      "waypointRelativePos": 1.2735849056603774,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 2.1791443850267385,
+      "rotationDegrees": 122.95200000000001
+    },
+    {
+      "waypointRelativePos": 2.5,
+      "rotationDegrees": 180.0
+    },
+    {
       "waypointRelativePos": 2.7673796791443865,
-      "rotationDegrees": -70.0
+      "rotationDegrees": -59.99999999999999
     },
     {
       "waypointRelativePos": 3.88,
-      "rotationDegrees": -70.0
+      "rotationDegrees": -59.99999999999999
     }
   ],
   "constraintZones": [
@@ -138,24 +138,11 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8115526370431891,
-      "maxWaypointRelativePos": 2.170758928571429,
+      "minWaypointRelativePos": 0.6271186440677966,
+      "maxWaypointRelativePos": 2.2542372881355934,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.9527226951827297,
-      "maxWaypointRelativePos": 4.047316237541517,
-      "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -175,7 +162,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -40.0
+    "rotation": 40.0
   },
   "reversed": false,
   "folder": null,
