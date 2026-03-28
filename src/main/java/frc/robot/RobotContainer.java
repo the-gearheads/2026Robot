@@ -303,5 +303,9 @@ public class RobotContainer {
     }, spindexer));
     NamedCommands.registerCommand("ClimbUp", climber.climberUp());
     NamedCommands.registerCommand("ClimbDown", climber.climberDown());
+    NamedCommands.registerCommand("TrenchShoot", Commands.run(() -> {
+      shooter.setShooterVelocity(HP_TRENCH_SHOOT_VELOCITY);
+      hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
+    }, shooter, hood).alongWith(spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake))));
   }
 }
