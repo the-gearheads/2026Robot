@@ -49,6 +49,8 @@ public class AimingManager {
         Logger.recordOutput("AimingManager/hubShotStill", hubStillShot);
         Logger.recordOutput("AimingManager/feedSotmShot", feedSotmShot);
         Logger.recordOutput("AimingManager/feedStillShot", feedStillShot);
+        Logger.recordOutput("AimingManager/hoodAngleAdjustment", HOOD_ANGLE_ADJUSTMENT);
+        Logger.recordOutput("AimingManager/shooterVelAdjustment", SHOOTER_VEL_ADJUSTMENT);
     }
 
     private static ShotData applySafeties(ShotData baseShot, Pose2d robotPose, ChassisSpeeds fieldRelSpeeds) {

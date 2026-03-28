@@ -43,15 +43,12 @@ public class Camera {
     final double MAX_PITCHROLL = VisionConstants.MAX_PITCHROLL;
     final double MAX_Z = VisionConstants.MAX_Z;        
     final AprilTagFieldLayout field;
-    
-    Supplier<Pose2d> robotPoseSupplier;
-    
+        
     public Camera(AprilTagFieldLayout field, String name, Transform3d transform, Supplier<Pose2d> robotPose, CameraIntrinsics intrinsics){
         this.name = name;
         this.transform = transform;
         this.field = field;
         this.simIntrinsics = intrinsics;
-        this.robotPoseSupplier = robotPoseSupplier;
         path = "Vision/" + name.replace("_", "");
 
         camera = new PhotonCamera(name);
