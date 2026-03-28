@@ -49,7 +49,7 @@ public class ObjectiveTracker {
 
     @AutoLogOutput
     public static AimingTarget getObjective(Pose2d robotPose) {
-        if (HubTracker.isActive() && inAllianceZone(robotPose)) {
+        if (inAllianceZone(robotPose)) {
             return HUB;
         } else {
             return getFeedingObjective(robotPose);
