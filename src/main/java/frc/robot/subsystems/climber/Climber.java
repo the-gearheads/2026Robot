@@ -77,5 +77,9 @@ public class Climber extends SubsystemBase {
         }).until(()->{return getClimbPosition()<=ClimberConstants.MIN_CLIMBER_POS;}).finallyDo(()->{
             setClimberVoltage(0);
         });
-    } 
+    }
+
+    public void setPosition(double position) {
+        climbEncoder.setPosition(position);
+    }
 }

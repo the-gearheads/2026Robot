@@ -22,6 +22,7 @@ import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.targets.VirtualTarget;
 import frc.robot.commands.Teleop;
+import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
 import frc.robot.controllers.Controllers;
@@ -214,11 +215,13 @@ public class RobotContainer {
 
     Controllers.driverController.getPovLeft().whileTrue(Commands.run(
       ()->{
+        climber.setPosition(ClimberConstants.MIN_CLIMBER_POS + 1);
         climber.setClimberVoltage(-3);
       }, climber).finallyDo(()->{climber.setClimberVoltage(0);}));
 
     Controllers.driverController.getPovRight().whileTrue(Commands.run(
       ()->{
+        climber.setPosition(ClimberConstants.MAX_CLIMBER_POS -1);
         climber.setClimberVoltage(3);
       }, climber).finallyDo(()->{climber.setClimberVoltage(0);}));
 
