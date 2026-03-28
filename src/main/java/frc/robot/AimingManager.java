@@ -19,7 +19,7 @@ import frc.robot.util.ShooterCalculations.ShotData;
  */
 public class AimingManager {
     public static ShotData latestShot;
-    public static ShotData lastestHubShot;
+    public static ShotData latestHubShot;
     public static ShotData latestFeedShot;
     public static boolean USE_SOTM = true;
 
@@ -40,7 +40,7 @@ public class AimingManager {
             latestShot = applySafeties(USE_SOTM ? hubSotmShot : hubStillShot, robotPose, fieldRelSpeeds);
         }
 
-        lastestHubShot = applySafeties(USE_SOTM ? hubSotmShot : hubStillShot, robotPose, fieldRelSpeeds);
+        latestHubShot = applySafeties(USE_SOTM ? hubSotmShot : hubStillShot, robotPose, fieldRelSpeeds);
         latestFeedShot = applySafeties(USE_SOTM ? feedSotmShot : feedStillShot, robotPose, fieldRelSpeeds);
 
         Logger.recordOutput("AimingManager/targetPosition", ObjectiveTarget.getFieldPosition());

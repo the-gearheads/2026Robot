@@ -287,7 +287,7 @@ public class Hood extends SubsystemBase {
 
     public Command setAngleHub(Swerve swerve) {
         return this.run(() -> {
-            this.setAngle(AimingManager.lastestHubShot.hoodAngle());
+            this.setAngle(AimingManager.latestHubShot.hoodAngle());
         });
     }
 }

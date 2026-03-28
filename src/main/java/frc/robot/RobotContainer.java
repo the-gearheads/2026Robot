@@ -95,7 +95,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("aimShoot", Commands.parallel(
     hood.setAngleHub(swerve),
     shooter.setHubVelocityCommand(swerve),
-    swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.lastestHubShot.aimingTarget()));}),
+    swerve.run(()->{swerve.drive(new ChassisSpeeds(), ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.latestHubShot.aimingTarget()));}),
       new SequentialCommandGroup(
         Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);}).withTimeout(5),
         spindexer.runSpindexer(12)

@@ -208,7 +208,7 @@ public class Shooter extends SubsystemBase {
   
   public Command setHubVelocityCommand(Swerve swerve) {
         return this.run(() -> {
-            this.setShooterVelocity(AimingManager.lastestHubShot.flywheelVel());
+            this.setShooterVelocity(AimingManager.latestHubShot.flywheelVel());
         });
   }
 

@@ -35,7 +35,7 @@ public class ShooterCalculations {
         ShotData shot;
         if (overrideTarget != null) {
             if (ObjectiveTracker.HUB == overrideTarget) {
-                shot = AimingManager.lastestHubShot;
+                shot = AimingManager.latestHubShot;
             } else {
                 shot = AimingManager.latestFeedShot;
             }
