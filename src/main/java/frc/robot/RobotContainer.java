@@ -239,15 +239,12 @@ public class RobotContainer {
     Controllers.operatorController.getBButton().onTrue(Commands.runOnce(()->{
       ShooterConstants.SHOOTER_VEL_ADJUSTMENT = (ShooterConstants.SHOOTER_VEL_ADJUSTMENT - 50); 
     }));
-       Controllers.operatorController.getYButton().onTrue(Commands.runOnce(()->{
+    Controllers.operatorController.getYButton().onTrue(Commands.runOnce(()->{
       ShooterConstants.SHOOTER_VEL_ADJUSTMENT = (ShooterConstants.SHOOTER_VEL_ADJUSTMENT + 50); 
     }));
 
     Controllers.operatorController.getCButton().whileTrue(Commands.run(()->{
         deploy.shimmy(intake);
-    }));
-     Controllers.operatorController.getCButton().whileFalse(Commands.run(()->{
-        deploy.holdDownCommand();
     }));
 
     Controllers.operatorController.getRightBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
