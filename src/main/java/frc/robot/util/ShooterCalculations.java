@@ -1,6 +1,8 @@
 package frc.robot.util;
 
 
+import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.constants.MiscConstants.REAL_FUEL_PROCESSING_TIME;
 import static frc.robot.constants.ShooterConstants.DRAG_CONSTANT;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOVING_TOLERANCE;
@@ -50,6 +52,11 @@ public class ShooterCalculations {
         Logger.recordOutput("ShooterCalculations/hoodReady", hoodReady);
         Logger.recordOutput("ShooterCalculations/shooterReady", shooterReady);
         return hoodReady && shooterReady && yawReady;
+    }
+
+    public static boolean isTimeToShoot(double timeOfFlight) {
+        return HubTracker.isActive() || 
+            (HubTracker.isActiveNext() && HubTracker.timeRemainingInCurrentShift().orElse(Seconds.of(25)).baseUnitMagnitude() < (timeOfFlight + REAL_FUEL_PROCESSING_TIME));
     }
 
     public static boolean readyToShoot(Pose2d robotPose, Hood hood, Shooter shooter) {

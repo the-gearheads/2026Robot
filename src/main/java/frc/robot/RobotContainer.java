@@ -18,6 +18,7 @@ import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.AimingTarget;
+import frc.robot.util.HubTracker;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.targets.VirtualTarget;
@@ -116,21 +117,16 @@ public class RobotContainer {
     configureBindings();
     sysidPicker.addSysidRoutines("Swerve Drive", swerve.getDriveSysIdRoutine());
     sysidPicker.addSysidRoutines("Intake Deploy", deploy.getDeploySysid(), deploy::getForwardSysidLimit, deploy::getBackwardSysidLimit);
-    // // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
-    // sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
-    // sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
+    // sysidPicker.addSysidRoutines("Swerve Angular", swerve.getAngularSysIdRoutine());  // we only need this for Choreo
+    sysidPicker.addSysidRoutines("Shooter Main Fly", shooter.getMainFlySysidRoutine());
+    sysidPicker.addSysidRoutines("Shooter Kicker", shooter.getKickerSysidRoutine());
     sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine(), hood::forwardSysIdLimit, hood::reverseSysIdLimit);
     sysidPicker.addSysidRoutines("Feeder", spindexer.getFeederSysidRoutine());
 
-    // hood.setDefaultCommand(hood.run(() -> {
-    //   hood.setAngle(ShooterCalculations.getHubAngle(swerve.getPose()));
-    // }));
+    HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(
+      Controllers.driverController.getRumbleCommand(1, 0.3, 3)
+    );
 
-    // shooter.setDefaultCommand(shooter.run(() -> {
-    //   shooter.setFlywheelVelocity(ShooterCalculations.getHubDistance(swerve.getPose()));
-    //   shooter.setKickerVelocity(ShooterCalculations.getHubVelocity(swerve.getPose()));
-    // }));
-    
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -148,13 +144,14 @@ public class RobotContainer {
     // Find new controllers
     Controllers.updateActiveControllerInstance();
 
-   Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.parallel(
+    Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.parallel(
         hood.setObjectiveAngleCommand(swerve),
         shooter.setObjectiveVelocityCommand(swerve),
         new SequentialCommandGroup(
           Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter);}).withTimeout(5),
           Commands.deferredProxy(()->{
-            if(AimingManager.latestShot.aimingTarget() == ObjectiveTracker.HUB || (AimingManager.latestShot.aimingTarget() instanceof VirtualTarget) && ((VirtualTarget)AimingManager.latestShot.aimingTarget()).baseTarget == ObjectiveTracker.HUB) {
+            if(ShooterCalculations.isTimeToShoot(AimingManager.latestShot.timeOfFlight()) &&
+              AimingManager.latestShot.aimingTarget() == ObjectiveTracker.HUB || (AimingManager.latestShot.aimingTarget() instanceof VirtualTarget) && ((VirtualTarget)AimingManager.latestShot.aimingTarget()).baseTarget == ObjectiveTracker.HUB) {
               if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
                 return spindexer.runSpindexer(12);
               } else {

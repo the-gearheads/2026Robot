@@ -49,7 +49,7 @@ public class ObjectiveTracker {
 
     @AutoLogOutput
     public static AimingTarget getObjective(Pose2d robotPose) {
-        if (HubTracker.isAllianceHubActive() && inAllianceZone(robotPose)) {
+        if (HubTracker.isActive() && inAllianceZone(robotPose)) {
             return HUB;
         } else {
             return getFeedingObjective(robotPose);
@@ -58,7 +58,7 @@ public class ObjectiveTracker {
 
     public static void log(Pose2d robotPose) {
         Logger.recordOutput("ObjectiveTracker/inAllianceZone", inAllianceZone(robotPose));
-        Logger.recordOutput("ObjectiveTracker/ActiveAlliance", HubTracker.getActiveAlliance());
+        Logger.recordOutput("ObjectiveTracker/isActive", HubTracker.isActive());
         Logger.recordOutput("ObjectiveTracker/Objective", getObjective(robotPose).getFieldPosition());
         Logger.recordOutput("ObjectiveTracker/FeedingObjective", getFeedingObjective(robotPose).getFieldPosition());
     }

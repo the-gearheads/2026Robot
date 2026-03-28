@@ -12,4 +12,10 @@ public final class MiscConstants {
         public static final Translation2d RIGHT_FEEDING_LOCATION = new Translation2d(2.763,2.140);
 
         public static final int SOTM_ITERATIONS = 10;
+
+        public static final double FUEL_PROCESSING_TIME = 3.0;  // seconds
+        // this is so we can start shooting tof + real processing time early
+        public static final double REAL_FUEL_PROCESSING_TIME = 0.25;  // VERY conservative seconds from ball in hub to ball counted;
+        
+        public static final double SHIFT_WARNING_TIME = 5.0;  // Controller vibrates X seconds before active
 }
