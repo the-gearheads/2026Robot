@@ -173,6 +173,7 @@ public class ShooterCalculations {
 
     public static void log(Pose2d robotPose) {
         Logger.recordOutput("ShooterCalculations/HubDistance", getDistanceToTarget(robotPose, ObjectiveTracker.HUB.getFieldPosition()));
+        Logger.recordOutput("HubTracker/ShiftTimeRemaining", HubTracker.timeRemainingInCurrentShift().orElse(Seconds.of(-1)));
         ObjectiveTracker.log(robotPose);
     }
 

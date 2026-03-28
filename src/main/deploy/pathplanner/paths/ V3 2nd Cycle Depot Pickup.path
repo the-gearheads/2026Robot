@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.3479335937500005,
+        "x": 4.5,
         "y": 7.468642857142857
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.3479335937500005,
+        "x": 5.5,
         "y": 7.468642857142858
       },
       "isLocked": false,
-      "linkedName": "V3 Depot Start Point"
+      "linkedName": "V3 Depot Shoot Point"
     },
     {
       "anchor": {
