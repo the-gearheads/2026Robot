@@ -139,12 +139,12 @@ public class RobotContainer {
         new SequentialCommandGroup(
           Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter);}).withTimeout(5),
           Commands.deferredProxy(()->{
-            if(ShooterCalculations.isTimeToShoot(AimingManager.latestShot.timeOfFlight()) &&
+             if( //ShooterCalculations.isTimeToShoot(AimingManager.latestShot.timeOfFlight()) &&
               AimingManager.latestShot.aimingTarget() == ObjectiveTracker.HUB || (AimingManager.latestShot.aimingTarget() instanceof VirtualTarget) && ((VirtualTarget)AimingManager.latestShot.aimingTarget()).baseTarget == ObjectiveTracker.HUB) {
               if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
                 return spindexer.runSpindexer(12);
               } else {
-                return spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake));
+                return spindexer.runSpindexer(12); // .alongWith(deploy.shimmy(intake));
               }
             } else {
               return spindexer.runSpindexer(12);
@@ -163,7 +163,7 @@ public class RobotContainer {
             if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
                 return spindexer.runSpindexer(12);
               } else {
-                return spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake));
+                return spindexer.runSpindexer(12);//.alongWith(deploy.shimmy(intake));
               }
             })
           )
