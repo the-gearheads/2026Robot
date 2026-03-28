@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.urcl.URCL;
 
+import com.pathplanner.lib.commands.FollowPathCommand;
 import com.reduxrobotics.canand.CanandEventLoop;
 
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -48,6 +49,11 @@ public class Robot extends LoggedRobot {
     // autonomous chooser on the dashboard.
     
     robotContainer = new RobotContainer();
+  }
+
+  @Override
+  public void robotInit() {
+    FollowPathCommand.warmupCommand().schedule();
   }
 
   /**
