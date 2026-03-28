@@ -20,4 +20,16 @@ public interface OperatorController {
         return new Trigger(() ->false);
     }
 
+      public default Trigger getCButton(){
+        return new Trigger(() ->false);
+    }
+
+    public   default Trigger getLeftBumper() {
+        return new Trigger(() ->false);
+    }
+
+    public  default Trigger getRightBumper() {
+        return new Trigger(() ->false);
+    }
+
 }
