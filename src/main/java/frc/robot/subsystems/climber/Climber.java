@@ -25,6 +25,13 @@ public class Climber extends SubsystemBase {
         configure();
         climbEncoder.setPosition(0);
     }
+
+    @Override
+    public void periodic() {
+        if (climbEncoder.getPosition() < -10) {
+            climbEncoder.setPosition(0);
+        }
+    }
     
     public void configure(){
         climbConfig.smartCurrentLimit(60);
