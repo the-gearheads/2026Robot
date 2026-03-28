@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6540178571428568,
-        "y": 7.45
+        "x": 3.6510841290509264,
+        "y": 7.468642857142857
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.654017857142857,
-        "y": 7.450000000000001
+        "x": 4.651084129050926,
+        "y": 7.468642857142858
       },
       "isLocked": false,
       "linkedName": "Center Starting Forward Depot"
@@ -68,12 +68,12 @@
         "y": 7.323896396396396
       },
       "prevControl": {
-        "x": 3.5066449485199493,
-        "y": 7.555281531531532
+        "x": 3.4608948936489647,
+        "y": 7.616627760556164
       },
       "nextControl": {
-        "x": 2.1946119469923526,
-        "y": 6.744140140115352
+        "x": 2.55925925925926,
+        "y": 6.813212384259259
       },
       "isLocked": false,
       "linkedName": null
@@ -84,8 +84,8 @@
         "y": 6.027160714285714
       },
       "prevControl": {
-        "x": 2.7953153153153156,
-        "y": 6.139076576576576
+        "x": 2.2450504195601853,
+        "y": 6.3935674189814815
       },
       "nextControl": null,
       "isLocked": false,
@@ -120,8 +120,8 @@
       "minWaypointRelativePos": 2.5224416517055643,
       "maxWaypointRelativePos": 5.0,
       "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 1.5,
+        "maxVelocity": 4.0,
+        "maxAcceleration": 4.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -145,8 +145,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
