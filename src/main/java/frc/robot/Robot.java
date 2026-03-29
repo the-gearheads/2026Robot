@@ -13,13 +13,13 @@ import org.littletonrobotics.urcl.URCL;
 
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.reduxrobotics.canand.CanandEventLoop;
-import com.vendor.jni.VendorJNI;
 
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import frc.robot.constants.MiscConstants;
+import frc.robot.jni.FunJNI;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -53,8 +53,8 @@ public class Robot extends LoggedRobot {
     // autonomous chooser on the dashboard.
 
     robotContainer = new RobotContainer();
-    VendorJNI.forceLoad();
-    VendorJNI.initialize();
+    FunJNI.forceLoad();
+    FunJNI.initialize();
   }
 
   @Override

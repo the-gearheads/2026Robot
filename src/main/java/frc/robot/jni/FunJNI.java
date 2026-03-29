@@ -1,11 +1,11 @@
-package com.vendor.jni;
+package frc.robot.jni;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Demo class for loading the driver via JNI.
  */
-public class VendorJNI {
+public class FunJNI {
     static boolean libraryLoaded = false;
 
     /**
@@ -36,7 +36,7 @@ public class VendorJNI {
 
     static {
         if (Helper.getExtractOnStaticLoad()) {
-            System.loadLibrary("VendorDriver");
+            System.loadLibrary("FunDriver");
             libraryLoaded = true;
         }
     }
@@ -48,7 +48,7 @@ public class VendorJNI {
         if (libraryLoaded) {
             return;
         }
-        System.loadLibrary("VendorDriver");
+        System.loadLibrary("FunDriver");
         libraryLoaded = true;
     }
 
