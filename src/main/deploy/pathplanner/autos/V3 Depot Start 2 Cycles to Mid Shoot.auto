@@ -42,7 +42,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "TrenchShoot"
+                  "name": "aimShoot"
                 }
               },
               {
@@ -88,7 +88,7 @@
         {
           "type": "named",
           "data": {
-            "name": "TrenchShoot"
+            "name": "aimShoot"
           }
         }
       ]
