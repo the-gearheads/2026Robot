@@ -1,5 +1,6 @@
 #include "frc_robot_jni_FunJNI.h"
 #include "jni.h"
+#include "driverheader.h"
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
   // Check to ensure the JNI version is valid
@@ -17,5 +18,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *reserved) {}
 
 JNIEXPORT jint JNICALL Java_frc_robot_jni_FunJNI_initialize(JNIEnv *, jclass) {
+  doThing();
   return 0;
 }
