@@ -1,6 +1,11 @@
+import edu.wpi.first.toolchain.*
+
 plugins {
+    id "cpp"
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id 'edu.wpi.first.NativeUtils' version '2026.0.1'
+    id 'edu.wpi.first.GradleJni' version '1.1.0'
     id 'com.diffplug.spotless' version '8.2.1'
 }
 
@@ -28,6 +33,18 @@ deploy {
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
+                }
+
+                // Custom artifact to deploy natively compiled C++ Vendor JNI libraries.
+                // GradleRIO automatically deploys /usr/local/frc/third-party/lib libs.
+                vendorJniDeploy(edu.wpi.first.deployutils.deploy.artifact.FileTreeArtifact) {
+                    def debugMode = project.frc.getDebugOrDefault(false)
+                    def type = debugMode ? 'debug' : 'release'
+                    def libDir = project.file("${project.buildDir}/libs/vendorDriver/shared/linuxathena/${type}")
+
+                    files = project.fileTree(dir: libDir, includes: ['*.so'])
+                    directory = '/usr/local/frc/third-party/lib'
+                    dependsOn("VendorDriverLinuxathena${type.capitalize()}SharedLibrary")
                 }
 
                 // Static files artifact
@@ -81,6 +98,55 @@ test {
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 }
 
+nativeUtils.addWpiNativeUtils()
+nativeUtils.withCrossRoboRIO()
+nativeUtils.withCrossLinuxArm32()
+nativeUtils.withCrossLinuxArm64()
+
+nativeUtils {
+  wpi.configureDependencies {
+    wpiVersion = "2026.2.1"
+    niLibVersion = "2026.1.0"
+    opencvVersion = "4.10.0-2"
+    googleTestVersion = "1.14.0-1"
+    wpimathVersion = "2026.2.1"
+  }
+  exportsConfigs {
+  }
+  privateExportsConfigs {
+    // Only export explicit symbols from driver library
+    VendorDriver {
+      exportsFile = project.file("src/main/driver/symbols.txt")
+    }
+  }
+}
+
+model {
+  components {
+        VendorDriver(JniNativeLibrarySpec) {
+            enableCheckTask true
+            javaCompileTasks << compileJava
+
+            targetPlatform nativeUtils.wpi.platforms.roborio
+            targetPlatform edu.wpi.first.toolchain.NativePlatforms.desktop
+
+            jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.roborio)
+            sources {
+                cpp {
+                    source {
+                        srcDirs 'src/main/driver/cpp'
+                        include '**/*.cpp'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/main/driver/include'
+                    }
+                }
+            }
+            nativeUtils.useRequiredLibrary(it, "driver_shared")
+        }
+    }
+}
+
 // Simulation configuration (e.g. environment variables).
 wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()
@@ -101,6 +167,22 @@ jar {
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
+
+afterEvaluate {
+    def desktopPlatform = edu.wpi.first.toolchain.NativePlatforms.desktop
+
+    tasks.named('extractReleaseNative').configure {
+        def libDir = project.file("${project.buildDir}/libs/vendorDriver/shared/${desktopPlatform}/release")
+        it.files.from(project.fileTree(dir: libDir, includes: ['*.so', '*.dll', '*.dylib']))
+        it.dependsOn("VendorDriver${desktopPlatform.capitalize()}ReleaseSharedLibrary")
+    }
+
+    tasks.named('extractDebugNative').configure {
+        def libDir = project.file("${project.buildDir}/libs/vendorDriver/shared/${desktopPlatform}/debug")
+        it.files.from(project.fileTree(dir: libDir, includes: ['*.so', '*.dll', '*.dylib']))
+        it.dependsOn("VendorDriver${desktopPlatform.capitalize()}DebugSharedLibrary")
+    }
+}
 
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {
