@@ -1,3 +1,0 @@
-JNI_OnLoad
-JNI_OnUnload
-Java_frc_robot_jni_FunJNI_initialize
