@@ -71,6 +71,8 @@ public class Swerve extends SubsystemBase {
   double lastProfileVel = 0.0;
   double driveProfileLastTime = Timer.getFPGATimestamp();
 
+  public boolean waitToCross = false;
+
   public Swerve() {
     // SmartDashboard.putNumber("Swerve/HeadingPID/P", headingController.getP());
     // SmartDashboard.putNumber("Swerve/HeadingPID/D", headingController.getD());
@@ -195,6 +197,12 @@ public class Swerve extends SubsystemBase {
     // SwerveModuleState[] moduleStates = lastSetpoint.moduleStates();
 
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(discretized);
+    if (waitToCross == true) {
+      Logger.recordOutput("Swerve/waitToCrossToggle", waitToCross);
+      if (speeds.omegaRadiansPerSecond == 0 && speeds.vxMetersPerSecond == 0 && speeds.vyMetersPerSecond == 0){
+        moduleStates = waitToCrossStates();
+      } 
+    }
     Logger.recordOutput("Swerve/DesiredStates", moduleStates); 
 
     for (int i = 0; i < modules.length; i++) {
@@ -254,6 +262,24 @@ public class Swerve extends SubsystemBase {
     Logger.recordOutput("Swerve/States", states);
     return states;
   }
+
+  public SwerveModuleState[] waitToCrossStates() {
+    SwerveModuleState[] waitToCrossModuleStates = {
+      new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+      new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+      new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+      new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+    };    
+    for (int i = 0; i < modules.length; i++) {
+      modules[i].setState(waitToCrossModuleStates[i]);
+    } 
+  
+    return waitToCrossModuleStates;
+  
+  }
+
+  
+  
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
@@ -412,6 +438,15 @@ public class Swerve extends SubsystemBase {
         setDriveVoltage(v);
       }, null, this)
     );
+  }
+
+  public boolean waitToCrossToggle() {
+    if (waitToCross == false){
+      return waitToCross == true;
+    } else {
+      return waitToCross == false;
+    }
+
   }
 
   public SysIdRoutine getAngularSysIdRoutine() {

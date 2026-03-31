@@ -17,6 +17,7 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.util.AimingTarget;
 import frc.robot.util.HubTracker;
 import frc.robot.util.ObjectiveTracker;
@@ -33,7 +34,6 @@ import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_VELOCITY;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_VELOCITY;
-
 
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
 
@@ -214,6 +214,7 @@ public class RobotContainer {
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
     Controllers.driverController.getStartButton().onTrue(intake.run((()->{intake.setIntakeVoltage(-12);})));
+    Controllers.driverController.getRightPaddle().onTrue(Commands.runOnce(() -> {swerve.waitToCrossToggle();}));
     // Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
     //   ShooterCalculations.HubDists.add(ShooterCalculations.getDistanceToTarget(swerve.getPose(), ObjectiveTracker.HUB.getFieldPosition()));
     //   ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
@@ -244,8 +245,6 @@ public class RobotContainer {
     }));
 
     Controllers.operatorController.getCButton().whileTrue(deploy.shimmy(intake));
-
-    Controllers.operatorController.getAButton().onTrue(Commands.print("AAAAAAAAAAAAAAAAAAAAAAAAAa"));
 
     Controllers.operatorController.getRightBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
     Controllers.operatorController.getLeftBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
