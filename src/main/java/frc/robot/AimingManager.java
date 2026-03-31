@@ -23,8 +23,7 @@ public class AimingManager {
     public static ShotData latestFeedShot;
     public static boolean USE_SOTM = true;
 
-    public static void update(Pose2d robotPose, ChassisSpeeds robotRelSpeeds) {
-        ChassisSpeeds fieldRelSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelSpeeds, robotPose.getRotation());
+    public static void update(Pose2d robotPose, ChassisSpeeds fieldRelSpeeds) {
         AimingTarget ObjectiveTarget = ObjectiveTracker.getObjective(robotPose);
 
         AimingTarget hubTarget = ObjectiveTracker.HUB;
