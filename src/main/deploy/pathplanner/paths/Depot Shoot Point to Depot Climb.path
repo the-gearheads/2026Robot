@@ -16,77 +16,45 @@
     },
     {
       "anchor": {
-        "x": 1.140988,
-        "y": 4.94293339951637
+        "x": 1.0414,
+        "y": 4.8
       },
       "prevControl": {
-        "x": 1.387590363892621,
-        "y": 4.984009841944742
+        "x": 1.0414,
+        "y": 5.05
       },
       "nextControl": {
-        "x": 0.8943856361073788,
-        "y": 4.901856957087999
+        "x": 1.0414,
+        "y": 4.55
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.1650437163262162,
-        "y": 4.94293339951637
+        "x": 1.0414,
+        "y": 4.60207106
       },
       "prevControl": {
-        "x": 1.4143116497951238,
-        "y": 4.9620513843510805
-      },
-      "nextControl": {
-        "x": 0.9157757828573085,
-        "y": 4.923815414681659
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.989,
-        "y": 4.6
-      },
-      "prevControl": {
-        "x": 0.9902297865321904,
-        "y": 4.849996975231871
-      },
-      "nextControl": {
-        "x": 0.9871034845938284,
-        "y": 4.214467143188595
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.989,
-        "y": 4.457
-      },
-      "prevControl": {
-        "x": 0.989,
-        "y": 4.707
+        "x": 1.0414,
+        "y": 4.85207106
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot Side Climb"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.1233552631578948,
       "rotationDegrees": 90.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.9799962197580709,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 0.5041009136212604,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 0.25,
         "maxAcceleration": 0.25,
