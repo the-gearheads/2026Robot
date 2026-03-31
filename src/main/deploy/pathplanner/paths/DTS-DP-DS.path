@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 4.5,
-        "y": 7.468642857142857
+        "y": 7.469
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.927128378378379,
-        "y": 7.272826576576576
+        "y": 7.273183719433719
       },
       "isLocked": false,
       "linkedName": "V3 Depot Shoot Point"
@@ -105,7 +105,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -24.962789830807047
+    "rotation": -24.96278983080705
   },
   "reversed": false,
   "folder": null,

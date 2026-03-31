@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 4.3479335937500005,
-        "y": 7.468642857142857
+        "y": 7.469
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.3479335937500005,
-        "y": 7.468642857142858
+        "y": 7.469000000000001
       },
       "isLocked": false,
       "linkedName": "V3 Depot Start Point"
@@ -65,11 +65,11 @@
     {
       "anchor": {
         "x": 4.5,
-        "y": 7.468642857142857
+        "y": 7.469
       },
       "prevControl": {
         "x": 4.952581452546296,
-        "y": 7.483883246527778
+        "y": 7.484240389384921
       },
       "nextControl": null,
       "isLocked": false,
