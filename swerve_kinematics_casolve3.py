@@ -10,10 +10,6 @@ mod_positions = [
 ]
 
 
-# current_vel = [1, 0, 0]
-# desired_vel = [10, 0, math.radians(9000)]
-
-
 max_mod_vel = 4
 
 p = ca.Opti()
@@ -21,19 +17,14 @@ p = ca.Opti()
 current_vel: ca.MX = p.parameter(3)
 desired_vel: ca.MX = p.parameter(3)
 
-# current_vel.set([1, 0, 0])
-# desired_vel.set([10, 0, math.radians(9000)])
-
-p.set_value(current_vel, [1, 0, 0])
+p.set_value(current_vel, [4, 0, 0])
 p.set_value(desired_vel, [10, 0, math.radians(9000)])
 
 trans_delta_mag = ca.hypot(desired_vel[0] - current_vel[0], desired_vel[1] - current_vel[1])
 rot_delta_mag = ca.fabs(desired_vel[2] - current_vel[2])
 
 
-# current_chassis_state: Variable = p.decision_variable(3) # vx, vy, w
 desired_chassis_state: list[ca.MX] = []
-# desired_mod_states = p.variable(4, 2) # vx, vy
 desired_mod_states: list[list[ca.MX]] = []
 
 lerp_xy = p.variable()
@@ -54,6 +45,7 @@ p.subject_to(lerp_rot <= 1)
 # p.maximize(lerp_xy**2 + (5 * lerp_rot**2)) # weigh against reducing rotational speed more
 # p.minimize((lerp_xy**2 + (5 * lerp_rot**2)) * -1)
 # p.minimize( trans_delta_mag * (1 - lerp_xy)**2 + (5 * rot_delta_mag) * (1 - lerp_rot)**2 )
+# gotta be quadratic or else qrqp gets very mad at you and probably wants your firstborn child
 p.minimize(
     1 * (trans_delta_mag * (1 - lerp_xy))**2 + 
     5 * (rot_delta_mag * (1 - lerp_rot))**2
@@ -64,18 +56,17 @@ for i in range(4):
     mod_vx = desired_chassis_state[0] + desired_chassis_state[2] * -mod_positions[i][1]
     mod_vy = desired_chassis_state[1] + desired_chassis_state[2] *  mod_positions[i][0]
     desired_mod_states.append([mod_vx, mod_vy])
-    # p.subject_to(desired_mod_states[i, 0] == )
-    # p.subject_to(desired_mod_states[i, 1] == )
 
     # max drive velocity constraint
     p.subject_to(mod_vx**2 + mod_vy**2 <= max_mod_vel**2)
 
 
-# p.solver("ipopt")
+# p.solver("ipopt") # this one is cool and good but like... ew dependencies and slow
 p.solver("sqpmethod", {"qpsol": "qrqp"})
 
 sol = p.solve()
 
+# not used in the codegen lmao
 def mod_states_to_polar_components(mod_states):
     out = []
     for i in range(4):
@@ -94,7 +85,7 @@ print(f"lerp constants: {sol.value(lerp_xy)}, {sol.value(lerp_rot)}")
 
 # now for fun
 f = p.to_function(
-    "solver_fun",
+    "max_swerve_lerp",
     [current_vel, desired_vel],   # inputs
     [
         lerp_xy,
@@ -110,6 +101,14 @@ f = p.to_function(
 #     })
 # solver.generate("solver.c")
 
+import os
+import shutil
+
+# ARGHHHHHH
+outpath = f"{os.path.dirname(os.path.realpath(__file__))}/src/main/driver"
 f.generate("solver.c", {
     "with_header": True,
 })
+
+shutil.move("solver.c", f"{outpath}/cpp/solver.c")
+shutil.move("solver.h", f"{outpath}/include/solver.h")

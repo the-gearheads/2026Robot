@@ -111,6 +111,8 @@ nativeUtils {
   }
 }
 
+
+
 // nonstandard, for jni
 model {
   components {
@@ -126,7 +128,7 @@ model {
                 cpp {
                     source {
                         srcDirs 'src/main/driver/cpp'
-                        include '**/*.cpp'
+                        include '**/*.c*'
                     }
                     exportedHeaders {
                         srcDirs 'src/main/driver/include'
@@ -135,6 +137,15 @@ model {
             }
             nativeUtils.useRequiredLibrary(it, "driver_shared")
         }
+    }
+}
+
+nativeUtils.platformConfigs.all { config ->
+    if (!config.name.startsWith("windows")) {
+        config.cppCompiler.releaseArgs.remove("-O2")
+        config.cppCompiler.releaseArgs.add("-O3")
+        config.cCompiler.releaseArgs.remove("-O2")
+        config.cCompiler.releaseArgs.add("-O3")
     }
 }
 

@@ -1,3 +1,4 @@
 JNI_OnLoad
 JNI_OnUnload
 Java_frc_robot_jni_FunJNI_initialize
+Java_frc_robot_jni_FunJNI_solveSwerve

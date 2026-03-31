@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
+import frc.robot.jni.FunJNI;
 import frc.robot.subsystems.swerve.gyro.Gyro;
 import frc.robot.subsystems.swerve.gyro.GyroRedux;
 import frc.robot.subsystems.swerve.gyro.GyroSim;
@@ -165,6 +166,7 @@ public class Swerve extends SubsystemBase {
     // aligner.execute();
   }
 
+  ChassisSpeeds lastCoolSpeeds = new ChassisSpeeds();
 
   public void drive(ChassisSpeeds speeds, Rotation2d alignToAngle) {
     double commandedRot = headingController.calculate(getPose().getRotation().getRadians());
@@ -183,7 +185,23 @@ public class Swerve extends SubsystemBase {
     Logger.recordOutput("Swerve/Speeds", speeds);
 
     // SwerveDriveKinematics.desaturateWheelSpeeds(getModuleStates(), speeds, MAX_MOD_SPEED, MAX_ROBOT_TRANS_SPEED, MAX_ROBOT_ROT_SPEED);
-    Logger.recordOutput("Swerve/DesaturatedSpeeds", speeds);
+    double[] lerps = FunJNI.solveSwerve(
+      new double[]{lastCoolSpeeds.vxMetersPerSecond, lastCoolSpeeds.vyMetersPerSecond, lastCoolSpeeds.omegaRadiansPerSecond},
+      new double[]{speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond}
+    );
+
+    Logger.recordOutput("Swerve/Lerps", lerps);
+
+    speeds = new ChassisSpeeds(
+      lastCoolSpeeds.vxMetersPerSecond + lerps[0] * (speeds.vxMetersPerSecond - lastCoolSpeeds.vxMetersPerSecond),
+      lastCoolSpeeds.vyMetersPerSecond + lerps[0] * (speeds.vyMetersPerSecond - lastCoolSpeeds.vyMetersPerSecond),
+      lastCoolSpeeds.omegaRadiansPerSecond + lerps[1] * (speeds.omegaRadiansPerSecond - lastCoolSpeeds.omegaRadiansPerSecond)
+    );
+
+    lastCoolSpeeds = speeds;
+
+
+    Logger.recordOutput("Swerve/CoolDesaturatedSpeeds", speeds);
 
     ChassisSpeeds discretized = ChassisSpeeds.discretize(speeds, 0.02);
     Logger.recordOutput("Swerve/DiscretizedSpeeds", discretized);

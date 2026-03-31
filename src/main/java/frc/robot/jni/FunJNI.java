@@ -60,4 +60,15 @@ public class FunJNI {
      * @see "VendorJNI.cpp"
      */
     public static native int initialize();
+
+
+    /**
+     * Solves swerve!!
+     * okay actually it just gives you [lerp_xy, lerp_rot] if you give it current, desired velocities.
+     * Uses the style of 254setpointgenerator so can't take away speed you already have somehow.
+     * @param currentVel [vx, vy, omega]
+     * @param desiredVel [vx, vy, omega]
+     * @return [lerp_xy, lerp_rot]
+     */
+    public static native double[] solveSwerve(double[] currentVel, double[] desiredVel);
 }
