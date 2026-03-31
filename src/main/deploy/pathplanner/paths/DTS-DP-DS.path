@@ -1,0 +1,117 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.5,
+        "y": 7.468642857142857
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.927128378378379,
+        "y": 7.272826576576576
+      },
+      "isLocked": false,
+      "linkedName": "V3 Depot Shoot Point"
+    },
+    {
+      "anchor": {
+        "x": 0.7,
+        "y": 7.078761261261261
+      },
+      "prevControl": {
+        "x": 0.7304481981981988,
+        "y": 7.374966216216217
+      },
+      "nextControl": {
+        "x": 0.6577523056437493,
+        "y": 6.667768915432264
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.76,
+        "y": 5.066610360360361
+      },
+      "prevControl": {
+        "x": 0.5485520970533976,
+        "y": 5.199988710700606
+      },
+      "nextControl": {
+        "x": 0.9714479029466005,
+        "y": 4.933232010020117
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.2641891891891897,
+        "y": 5.066610360360361
+      },
+      "prevControl": {
+        "x": 1.7024211711711716,
+        "y": 5.066610360360361
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.17452830188679375,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 0.8836477987421383,
+      "rotationDegrees": 130.0
+    },
+    {
+      "waypointRelativePos": 1.834905660377362,
+      "rotationDegrees": 130.0
+    },
+    {
+      "waypointRelativePos": 2.2264150943396204,
+      "rotationDegrees": 128.44003024588088
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Depot Intake",
+      "minWaypointRelativePos": 0.5529622980251346,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -24.962789830807047
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": true
+}

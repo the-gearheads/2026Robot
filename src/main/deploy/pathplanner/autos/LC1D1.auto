@@ -53,6 +53,43 @@
               }
             ]
           }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DeployIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartIntakeChomp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "HoodDown"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "DTS-DP-DS"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimShoot"
+          }
         }
       ]
     }
