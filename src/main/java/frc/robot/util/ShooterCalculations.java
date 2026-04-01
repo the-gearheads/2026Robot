@@ -104,10 +104,9 @@ public class ShooterCalculations {
         
         // Iterate the process, getting better time of flight estimations and updating the predicted target accordingly
         for (int i = 0; i < iterations; i++) {
-            movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), fieldRelSpeeds, timeOfFlight);
+            movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), fieldRelSpeeds, timeOfFlight, LATENCY_COMPENSATION);
             timeOfFlight = aimingTarget.getTimeOfFlight(getDistanceToTarget(robotPose, movingTargetPos));  // use the table for whatever the basic table is, but the distance is changing
             timeOfFlight = applyLinearDragCompensation(timeOfFlight, DRAG_CONSTANT);
-            timeOfFlight += LATENCY_COMPENSATION;
         }  // to tune: forward and back from goal = latency comp, hits short = L too small
            //          sideways to the goal = Linear Drag, behind direction of travel = drag constant too low
 
@@ -125,9 +124,13 @@ public class ShooterCalculations {
     }
     
     // Move a target a set time in the future along a velocity defined by fieldSpeeds
-    public static Translation2d predictTargetPos(Translation2d target, ChassisSpeeds fieldSpeeds, double tofSeconds) {
-        double predictedX = target.getX() - fieldSpeeds.vxMetersPerSecond * tofSeconds;
-        double predictedY = target.getY() - fieldSpeeds.vyMetersPerSecond * tofSeconds;
+    public static Translation2d predictTargetPos(Translation2d target, ChassisSpeeds fieldSpeeds, double tofSeconds, double latencySeconds) {
+        double shooterVxSpeed = fieldSpeeds.vxMetersPerSecond + (-fieldSpeeds.omegaRadiansPerSecond * ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d().getY());
+        double shooterVySpeed = fieldSpeeds.vyMetersPerSecond + (fieldSpeeds.omegaRadiansPerSecond * ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d().getX());
+
+        double totalTime = tofSeconds + latencySeconds;
+        double predictedX = target.getX() - shooterVxSpeed * totalTime;
+        double predictedY = target.getY() - shooterVySpeed * totalTime;
 
         return new Translation2d(predictedX, predictedY);
     }

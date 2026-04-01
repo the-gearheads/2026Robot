@@ -1,7 +1,14 @@
 package frc.robot.subsystems.swerve.gyro;
 
-import org.littletonrobotics.junction.AutoLogOutput;
+import java.util.Arrays;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
+import com.reduxrobotics.sensors.canandgyro.Vec3Frame;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
@@ -50,5 +57,10 @@ public class GyroSim implements Gyro {
   @AutoLogOutput(key="Swerve/simGyro/isConnected")
   public boolean isConnected() {
     return true;
+  }
+
+  public Vec3Frame getLinearAcceleration() {
+    var zeros = VecBuilder.fill(0.0, 0.0, 0.0);
+    return new Vec3Frame(0.0, zeros, 1.0);
   }
 }

@@ -7,6 +7,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 import com.reduxrobotics.sensors.canandgyro.CanandgyroFaults;
 import com.reduxrobotics.sensors.canandgyro.CanandgyroSettings;
+import com.reduxrobotics.sensors.canandgyro.Vec3Frame;
 
 import edu.wpi.first.math.geometry.CoordinateAxis;
 import edu.wpi.first.math.geometry.CoordinateSystem;
@@ -18,6 +19,8 @@ public class GyroRedux implements Gyro {
   CanandgyroSettings settings = new CanandgyroSettings();
   public GyroRedux() {
     settings.setEphemeral(true);
+    settings.setAccelerationFramePeriod(0.01);
+    settings.setAngularVelocityFramePeriod(0.01);
     gyro.setSettings(settings);
     gyro.startCalibration();
   }
@@ -64,4 +67,8 @@ public class GyroRedux implements Gyro {
     return gyro.getStickyFaults();
   }
 
+  @AutoLogOutput(key="Swerve/GyroRedux/linearAccel")
+  public Vec3Frame getLinearAcceleration() {
+    return gyro.getAccelerationFrame();
+  }
 }

@@ -18,10 +18,12 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -72,7 +74,15 @@ public class Swerve extends SubsystemBase {
   double lastProfileVel = 0.0;
   double driveProfileLastTime = Timer.getFPGATimestamp();
 
-  public boolean waitToCross = false;
+  boolean waitToCross = false;
+
+  final LinearFilter xAccelFilter = LinearFilter.movingAverage(5);
+  final LinearFilter yAccelFilter = LinearFilter.movingAverage(5);
+  final LinearFilter alphaFilter = LinearFilter.movingAverage(10);
+  double lastYawVelocity = 0;
+  double filteredAccelX = 0;
+  double filteredAccelY = 0;
+  double filteredAlpha = 0;
 
   public Swerve() {
     // SmartDashboard.putNumber("Swerve/HeadingPID/P", headingController.getP());
@@ -397,11 +407,47 @@ public class Swerve extends SubsystemBase {
     odomTwist = new Twist3d(odomTwist2d.dx, odomTwist2d.dy, 0, 0, 0, odomTwist2d.dtheta);
     odomTwistTime = WPIUtilJNI.now();
     lastOdom = odom;
+
+    // acceleration moving average stuff
+    var accelFrame = gyro.getLinearAcceleration();
+    Translation2d fieldAccel = new Translation2d(accelFrame.getX(), accelFrame.getY())
+                                    .rotateBy(getRotation());
+
+    filteredAccelX = xAccelFilter.calculate(fieldAccel.getX());
+    filteredAccelY = yAccelFilter.calculate(fieldAccel.getY());
+
+    double timeDelta = lastTime - Timer.getFPGATimestamp();
+    lastTime = Timer.getFPGATimestamp();
+    double currentYawVel = gyro.getVelocityYaw();
+    double rawAlpha = (currentYawVel - lastYawVelocity) / timeDelta;
+    
+    filteredAlpha = alphaFilter.calculate(rawAlpha);
+    
+    // 4. Update memory for next loop
+    lastYawVelocity = currentYawVel;
   }
 
   @AutoLogOutput
   public Twist3d getTwist3d() {
     return odomTwist;
+  }
+
+  public double getGyroYawAcceleration() {
+    return alphaFilter.lastValue();
+  }
+
+  /*
+   * Returns Field Relative X acceleration
+   */
+  public double getGyroXAcceleration() {
+    return xAccelFilter.lastValue();
+  }
+
+  /*
+   * Returns Field Relative Y acceleration
+   */
+  public double getGyroYAcceleration() {
+    return yAccelFilter.lastValue();
   }
 
   public long getTwist3dTimestamp() { 

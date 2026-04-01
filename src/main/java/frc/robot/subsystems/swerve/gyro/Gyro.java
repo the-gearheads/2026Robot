@@ -1,6 +1,8 @@
 package frc.robot.subsystems.swerve.gyro;
 
 
+import com.reduxrobotics.sensors.canandgyro.Vec3Frame;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
@@ -28,6 +30,8 @@ public interface Gyro {
   public boolean isConnected();
   
   public void reset();
+
+  public Vec3Frame getLinearAcceleration();
   
   /**
    * Log any other periodic gyro-specific things.
