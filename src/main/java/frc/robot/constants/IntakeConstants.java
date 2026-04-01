@@ -24,7 +24,7 @@ public class IntakeConstants {
 
     public static final float DEPLOY_ABS_ENC_POS_FACTOR = (float)(2 * Math.PI);
     public static final float DEPLOY_ABS_ENC_VEL_FACTOR = (float)(DEPLOY_ABS_ENC_POS_FACTOR / 60.0);  // why tf does it want a float TODO: complain to rev
-    public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.973;  // this must be in rotations
+    public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.14108491;  // this must be in rotations
 
     public static final double INTAKE_GEAR_RATIO = 16.0 / 11.0;
 
@@ -34,7 +34,7 @@ public class IntakeConstants {
 
     public static final double DEPLOY_LENGTH = Units.inchesToMeters(21);  // not exact
 
-    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(-5);  // it sinks into the bumper a bit to hold position
+    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(-1);  // it sinks into the bumper a bit to hold position
     public static final Rotation2d DEPLOY_MAX_ANGLE = Rotation2d.fromDegrees(84);
 
     public static final Rotation2d DEPLOY_MIN_SYSID_ANGLE = Rotation2d.fromDegrees(4);
