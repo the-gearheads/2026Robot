@@ -17,7 +17,6 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.util.AimingTarget;
 import frc.robot.util.HubTracker;
 import frc.robot.util.ObjectiveTracker;

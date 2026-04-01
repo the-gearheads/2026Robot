@@ -60,10 +60,12 @@ public final class SwerveConstants {
     
     public static final double MAX_MOD_SPEED = DRIVE_FREE_SPD;  // m/s, placeholders
     public static final double MAX_ROBOT_TRANS_SPEED = DRIVE_FEEDFORWARD.maxAchievableVelocity(12, 0.1); // 4.75 m/s
-    public static final double MAX_ROBOT_ACCEL = DRIVE_FEEDFORWARD.maxAchievableAcceleration(12, MAX_ROBOT_TRANS_SPEED-1); // 8.47 m/s^2, 1 is a fudge factor
+    // public static final double MAX_ROBOT_ACCEL = DRIVE_FEEDFORWARD.maxAchievableAcceleration(12, 0); // because our ka is so low (~0.1 instead of ~1.4) this number is comlpetely inaccurate
+    public static final double MAX_ROBOT_TRANS_ACCEL = 7.5; // safe bet in m/s, can prob bump up to 10 TODO: increase if autos are too slow
     public static final double MAX_MOD_STEER_VEL = Units.degreesToRadians(1040); // I think? Going from 0-90 went at ~200deg/s
     
-    public static final double MAX_ROBOT_ROT_SPEED = MAX_ROBOT_TRANS_SPEED / 0.4585738763; // rad/s, 0.45 is radius of robot, spd/r is rad/s
+    public static final double MAX_ROBOT_ROT_SPEED = MAX_ROBOT_TRANS_SPEED / DRIVE_BASE_RADIUS; // rad/s
+    public static final double MAX_ROBOT_ROT_ACCEL = MAX_ROBOT_TRANS_ACCEL / DRIVE_BASE_RADIUS; // rad/s
 
     public static final double HEADING_CONTROLLER_TOLERANCE = 0.005;  // rad
 
