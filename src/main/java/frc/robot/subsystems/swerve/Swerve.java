@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
+import frc.robot.constants.MiscConstants;
 import frc.robot.subsystems.swerve.gyro.Gyro;
 import frc.robot.subsystems.swerve.gyro.GyroRedux;
 import frc.robot.subsystems.swerve.gyro.GyroSim;
@@ -410,7 +411,7 @@ public class Swerve extends SubsystemBase {
 
     // acceleration moving average stuff
     var accelFrame = gyro.getLinearAcceleration();
-    Translation2d fieldAccel = new Translation2d(accelFrame.getX(), accelFrame.getY())
+    Translation2d fieldAccel = new Translation2d(accelFrame.getX()*MiscConstants.G, accelFrame.getY()*MiscConstants.G)
                                     .rotateBy(getRotation());
 
     filteredAccelX = xAccelFilter.calculate(fieldAccel.getX());

@@ -97,35 +97,74 @@ public class ShooterCalculations {
     public static ShotData iterativeMovingShot(
             Pose2d robotPose, ChassisSpeeds fieldRelSpeeds, double accelX, double accelY, double accelRot, AimingTarget aimingTarget, int iterations) {
                 
-        // Perform initial estimation (assuming unmoving robot) to get time of flight estimate
-        double distance = getDistanceToTarget(robotPose, aimingTarget.getFieldPosition());
-        double timeOfFlight = aimingTarget.getTimeOfFlight(distance);
-        Translation2d movingTargetPos = aimingTarget.getFieldPosition();
+        double vLx = fieldRelSpeeds.vxMetersPerSecond + (accelX * LATENCY_COMPENSATION);
+        double vLy = fieldRelSpeeds.vyMetersPerSecond + (accelY * LATENCY_COMPENSATION);
+        double omegaL = fieldRelSpeeds.omegaRadiansPerSecond + (accelRot * LATENCY_COMPENSATION);
 
-        Translation2d positionDelta = new Translation2d(
-                (fieldRelSpeeds.vxMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * accelX * Math.pow(LATENCY_COMPENSATION, 2)),
-                (fieldRelSpeeds.vyMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * accelY * Math.pow(LATENCY_COMPENSATION, 2)));
-        Translation2d futureTranslation = robotPose.getTranslation().plus(positionDelta);
-        Rotation2d futureHeading = robotPose.getRotation().plus(
-                Rotation2d.fromRadians((fieldRelSpeeds.omegaRadiansPerSecond * LATENCY_COMPENSATION)
-                        + (0.5 * accelRot * Math.pow(LATENCY_COMPENSATION, 2))));
+        Translation2d posDelta = new Translation2d(
+            vLx * LATENCY_COMPENSATION - (0.5 * accelX * Math.pow(LATENCY_COMPENSATION, 2)),
+            vLy * LATENCY_COMPENSATION - (0.5 * accelY * Math.pow(LATENCY_COMPENSATION, 2))
+        );
+        Translation2d shotOrigin = robotPose.getTranslation().plus(posDelta);
 
-        Pose2d shotOrigin = new Pose2d(futureTranslation, futureHeading);  // this is where the robot will be, considering current velocity and accel, when ball fired
-        
+        // (Translation + Whip)
+        double rX = ShooterConstants.CENTER_BOT_TOSHOOT.getX();
+        double rY = ShooterConstants.CENTER_BOT_TOSHOOT.getY();
+        Translation2d totalShooterVel = new Translation2d(
+            vLx + (-omegaL * rY), 
+            vLy + (omegaL * rX)
+        );
+
+        // Initial Guess 
+        double distance = shotOrigin.getDistance(aimingTarget.getFieldPosition());
+        double baseTof = aimingTarget.getTimeOfFlight(distance);
+        double t = applyLinearDragCompensation(baseTof, DRAG_CONSTANT);
+
         // Iterate the process, getting better time of flight estimations and updating the predicted target accordingly
-        for (int i = 0; i < iterations; i++) {
-            movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), fieldRelSpeeds, accelX, accelY, accelRot, timeOfFlight, LATENCY_COMPENSATION);
+        for (int i = 0; i < 3; i++) {
+            // Find virtual target with current guess `t`
+            Translation2d virtualTarget = predictTargetPos(
+                aimingTarget.getFieldPosition(), fieldRelSpeeds, 
+                accelX, accelY, accelRot, t, LATENCY_COMPENSATION
+            );
 
-            timeOfFlight = aimingTarget.getTimeOfFlight(getDistanceToTarget(shotOrigin, movingTargetPos));  // use the table for whatever the basic table is, but the distance is changing
-            timeOfFlight = applyLinearDragCompensation(timeOfFlight, DRAG_CONSTANT);
+            double distToVirtual = shotOrigin.getDistance(virtualTarget);
+            
+            // Calculate the actual dragged time it would take to hit that virtual target
+            double currentBaseTof = aimingTarget.getTimeOfFlight(distToVirtual);
+            double expectedDraggedTof = applyLinearDragCompensation(currentBaseTof, DRAG_CONSTANT);
+            
+            double error = t - expectedDraggedTof;
+
+            Translation2d vectorToTarget = virtualTarget.minus(shotOrigin);
+            Translation2d unitVector = vectorToTarget.div(distToVirtual);
+            // fast the shooter is moving toward the virtual target
+            double radialVelocity = (totalShooterVel.getX() * unitVector.getX()) + (totalShooterVel.getY() * unitVector.getY());
+
+            // chain rule Derivatives
+            double splineDerivative = aimingTarget.getTofDerivative(distToVirtual);
+            double dragDerivative = Math.exp(-DRAG_CONSTANT * currentBaseTof);
+
+            // f'(t) = 1 - (Drag' * Spline' * RadialVelocity)
+            double fPrime = 1 - (dragDerivative * splineDerivative * radialVelocity);
+
+            // Newton Update
+            t = t - (error / fPrime);
         }  // to tune: forward and back from goal = latency comp, hits short = L too small
            //          sideways to the goal = Linear Drag, behind direction of travel = drag constant too low
 
-        VirtualTarget adjustedTarget = new VirtualTarget(aimingTarget, movingTargetPos);
-        ShotData adjustedShot = calculateStillShot(robotPose, adjustedTarget);
+        Translation2d finalVirtualTarget = predictTargetPos(aimingTarget.getFieldPosition(), fieldRelSpeeds, accelX, accelY, accelRot, t, LATENCY_COMPENSATION);
+        VirtualTarget adjustedTarget = new VirtualTarget(aimingTarget, finalVirtualTarget);
+        double finalDist = shotOrigin.getDistance(finalVirtualTarget);
 
-        Logger.recordOutput("ShooterCalculations/SOTMadjustedShot", adjustedShot.toString());
-        return adjustedShot;
+        ShotData finalAdjustedShot = new ShotData(
+                adjustedTarget.getFlywheelVel(finalDist),
+                adjustedTarget.getHoodAngle(finalDist),
+                t,
+                finalVirtualTarget,
+                adjustedTarget);
+        Logger.recordOutput("ShooterCalculations/SOTMadjustedShot", finalAdjustedShot.toString());
+        return finalAdjustedShot;
     }
 
     private static double applyLinearDragCompensation(double timeOfFlight, double dragConstant) {
