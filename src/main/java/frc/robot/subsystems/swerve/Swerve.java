@@ -75,7 +75,8 @@ public class Swerve extends SubsystemBase {
   double lastProfileVel = 0.0;
   double driveProfileLastTime = Timer.getFPGATimestamp();
 
-  boolean waitToCross = false;
+  @AutoLogOutput
+  boolean shouldSwerveX = false;
 
   final LinearFilter xAccelFilter = LinearFilter.movingAverage(5);
   final LinearFilter yAccelFilter = LinearFilter.movingAverage(5);
@@ -209,12 +210,6 @@ public class Swerve extends SubsystemBase {
     // SwerveModuleState[] moduleStates = lastSetpoint.moduleStates();
 
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(discretized);
-    if (waitToCross == true) {
-      Logger.recordOutput("Swerve/waitToCrossToggle", waitToCross);
-      if (speeds.omegaRadiansPerSecond == 0 && speeds.vxMetersPerSecond == 0 && speeds.vyMetersPerSecond == 0){
-        moduleStates = waitToCrossStates();
-      } 
-    }
     Logger.recordOutput("Swerve/DesiredStates", moduleStates); 
 
     for (int i = 0; i < modules.length; i++) {
@@ -240,6 +235,18 @@ public class Swerve extends SubsystemBase {
 
   public void driveFieldRelative(ChassisSpeeds speeds) {
     driveFieldRelative(speeds, null);
+  }
+
+  public void setX() {
+    SwerveModuleState[] xStates = {
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45))
+    };
+    for (int i = 0; i < modules.length; i++) {
+      modules[i].setState(xStates[i]);
+    }
   }
 
   /* relative to your alliance's DS wall */
@@ -300,6 +307,11 @@ public class Swerve extends SubsystemBase {
   @AutoLogOutput
   public double getSpeedMagnitude() {
     return Math.sqrt(Math.pow(this.getRobotRelativeSpeeds().vxMetersPerSecond, 2) + Math.pow(this.getRobotRelativeSpeeds().vyMetersPerSecond, 2));
+  }
+
+  
+  public boolean getShouldSwerveX() {
+    return shouldSwerveX;
   }
 
   public ChassisSpeeds getFieldRelativeSpeeds(){
@@ -488,11 +500,11 @@ public class Swerve extends SubsystemBase {
     );
   }
 
-  public boolean waitToCrossToggle() {
-    if (waitToCross == false){
-      return waitToCross == true;
+  public void waitToCrossToggle() {
+    if (shouldSwerveX == false){
+      shouldSwerveX = true;
     } else {
-      return waitToCross == false;
+      shouldSwerveX = false;
     }
 
   }

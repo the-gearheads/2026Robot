@@ -41,7 +41,12 @@ public class Teleop extends Command {
         if (Controllers.driverController.getRightTriggerBtn().getAsBoolean()) angleOverride = ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.latestShot.aimingTarget());
         if (Controllers.driverController.getLeftBumper().getAsBoolean()) angleOverride = ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.latestFeedShot.aimingTarget());
         if (Controllers.driverController.getRightBumper().getAsBoolean()) angleOverride = ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.latestHubShot.aimingTarget());
-        swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), angleOverride);
+
+        if (angleOverride == null && xSpeed == 0 && ySpeed == 0 && rotSpeed == 0 && swerve.getShouldSwerveX()) {
+            swerve.setX();
+        } else {
+            swerve.driveAllianceRelative(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed), angleOverride);
+        }
     }
 
     @Override
