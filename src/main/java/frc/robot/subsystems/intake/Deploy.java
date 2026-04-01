@@ -125,8 +125,8 @@ public class Deploy extends SubsystemBase {
 
   @AutoLogOutput
   public Rotation2d getAngle() {
-    // return Rotation2d.fromRadians(deploySplineEncoder.getAngle());
-    return Rotation2d.fromRadians(deployRelativeEncoder.getPosition());
+    return Rotation2d.fromRadians(deploySplineEncoder.getAngle());
+    // return Rotation2d.fromRadians(deployRelativeEncoder.getPosition());
   }
 
   @AutoLogOutput

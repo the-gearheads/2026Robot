@@ -24,6 +24,7 @@ public class Intake extends SubsystemBase {
     SparkClosedLoopController intakeController = intake.getClosedLoopController();
 
     boolean isManualMode = false;
+    int initializedRollerPeriodicCount = 0;
 
     public Intake() {
         configure();
@@ -55,7 +56,12 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeVoltage(double volts) {
-        intake.setVoltage(volts);
+        if (initializedRollerPeriodicCount < 10) {
+            intake.setVoltage(-12);
+            initializedRollerPeriodicCount += 1; // hopefully it only takes like 10 periodics!
+        } else {
+            intake.setVoltage(volts);
+        }
     }
 
     @AutoLogOutput
