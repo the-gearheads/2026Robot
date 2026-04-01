@@ -67,7 +67,6 @@ public class GyroRedux implements Gyro {
     return gyro.getStickyFaults();
   }
 
-  @AutoLogOutput(key="Swerve/GyroRedux/linearAccel")
   public Vec3Frame getLinearAcceleration() {
     return gyro.getAccelerationFrame();
   }
