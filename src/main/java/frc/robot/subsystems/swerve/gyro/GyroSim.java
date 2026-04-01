@@ -1,14 +1,11 @@
 package frc.robot.subsystems.swerve.gyro;
 
-import java.util.Arrays;
 
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 import com.reduxrobotics.sensors.canandgyro.Vec3Frame;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 

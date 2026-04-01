@@ -95,17 +95,28 @@ public class ShooterCalculations {
     } 
 
     public static ShotData iterativeMovingShot(
-            Pose2d robotPose, ChassisSpeeds fieldRelSpeeds, AimingTarget aimingTarget, int iterations) {
+            Pose2d robotPose, ChassisSpeeds fieldRelSpeeds, double accelX, double accelY, double accelRot, AimingTarget aimingTarget, int iterations) {
                 
         // Perform initial estimation (assuming unmoving robot) to get time of flight estimate
         double distance = getDistanceToTarget(robotPose, aimingTarget.getFieldPosition());
         double timeOfFlight = aimingTarget.getTimeOfFlight(distance);
         Translation2d movingTargetPos = aimingTarget.getFieldPosition();
+
+        Translation2d positionDelta = new Translation2d(
+                (fieldRelSpeeds.vxMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * accelX * Math.pow(LATENCY_COMPENSATION, 2)),
+                (fieldRelSpeeds.vyMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * accelY * Math.pow(LATENCY_COMPENSATION, 2)));
+        Translation2d futureTranslation = robotPose.getTranslation().plus(positionDelta);
+        Rotation2d futureHeading = robotPose.getRotation().plus(
+                Rotation2d.fromRadians((fieldRelSpeeds.omegaRadiansPerSecond * LATENCY_COMPENSATION)
+                        + (0.5 * accelRot * Math.pow(LATENCY_COMPENSATION, 2))));
+
+        Pose2d shotOrigin = new Pose2d(futureTranslation, futureHeading);  // this is where the robot will be, considering current velocity and accel, when ball fired
         
         // Iterate the process, getting better time of flight estimations and updating the predicted target accordingly
         for (int i = 0; i < iterations; i++) {
-            movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), fieldRelSpeeds, timeOfFlight, LATENCY_COMPENSATION);
-            timeOfFlight = aimingTarget.getTimeOfFlight(getDistanceToTarget(robotPose, movingTargetPos));  // use the table for whatever the basic table is, but the distance is changing
+            movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), fieldRelSpeeds, accelX, accelY, accelRot, timeOfFlight, LATENCY_COMPENSATION);
+
+            timeOfFlight = aimingTarget.getTimeOfFlight(getDistanceToTarget(shotOrigin, movingTargetPos));  // use the table for whatever the basic table is, but the distance is changing
             timeOfFlight = applyLinearDragCompensation(timeOfFlight, DRAG_CONSTANT);
         }  // to tune: forward and back from goal = latency comp, hits short = L too small
            //          sideways to the goal = Linear Drag, behind direction of travel = drag constant too low
@@ -124,15 +135,29 @@ public class ShooterCalculations {
     }
     
     // Move a target a set time in the future along a velocity defined by fieldSpeeds
-    public static Translation2d predictTargetPos(Translation2d target, ChassisSpeeds fieldSpeeds, double tofSeconds, double latencySeconds) {
-        double shooterVxSpeed = fieldSpeeds.vxMetersPerSecond + (-fieldSpeeds.omegaRadiansPerSecond * ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d().getY());
-        double shooterVySpeed = fieldSpeeds.vyMetersPerSecond + (fieldSpeeds.omegaRadiansPerSecond * ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d().getX());
+    public static Translation2d predictTargetPos(Translation2d target, ChassisSpeeds fieldSpeeds, double accelX,
+            double accelY, double accelRot, double tof, double latencySeconds) {
+                
+        // 1. Predict robot velocities at the moment of launch
+        double vLx = fieldSpeeds.vxMetersPerSecond + (accelX * latencySeconds);
+        double vLy = fieldSpeeds.vyMetersPerSecond + (accelY * latencySeconds);
+        double omegaL = fieldSpeeds.omegaRadiansPerSecond + (accelRot * latencySeconds);
 
-        double totalTime = tofSeconds + latencySeconds;
-        double predictedX = target.getX() - shooterVxSpeed * totalTime;
-        double predictedY = target.getY() - shooterVySpeed * totalTime;
+        // 2. Calculate the "Whip" (tangential velocity) at launch
+        // rX and rY are the shooter's offset from robot center
+        double rX = ShooterConstants.CENTER_BOT_TOSHOOT.getX();
+        double rY = ShooterConstants.CENTER_BOT_TOSHOOT.getY();
 
-        return new Translation2d(predictedX, predictedY);
+        double whipVx = -omegaL * rY;
+        double whipVy = omegaL * rX;
+
+        // 3. Shift the target to create the virtual setpoint
+        // Robot translation affects the shot for (Latency + ToF)
+        // The "Whip" only affects the note during (ToF)
+        double virtualX = target.getX() - (vLx * (tof + latencySeconds)) - (whipVx * tof);
+        double virtualY = target.getY() - (vLy * (tof + latencySeconds)) - (whipVy * tof);
+
+        return new Translation2d(virtualX, virtualY);
     }
 
 

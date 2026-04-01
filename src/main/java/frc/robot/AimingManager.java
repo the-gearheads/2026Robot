@@ -23,15 +23,15 @@ public class AimingManager {
     public static ShotData latestFeedShot;
     public static boolean USE_SOTM = true;
 
-    public static void update(Pose2d robotPose, ChassisSpeeds fieldRelSpeeds) {
+    public static void update(Pose2d robotPose, ChassisSpeeds fieldRelSpeeds, double accelX, double accelY, double accelRot) {
         AimingTarget ObjectiveTarget = ObjectiveTracker.getObjective(robotPose);
 
         AimingTarget hubTarget = ObjectiveTracker.HUB;
-        ShotData hubSotmShot = ShooterCalculations.iterativeMovingShot(robotPose, fieldRelSpeeds, hubTarget, SOTM_ITERATIONS);
+        ShotData hubSotmShot = ShooterCalculations.iterativeMovingShot(robotPose, fieldRelSpeeds, accelX, accelY, accelRot, hubTarget, SOTM_ITERATIONS);
         ShotData hubStillShot = ShooterCalculations.calculateStillShot(robotPose, hubTarget);
 
         AimingTarget feedTarget = ObjectiveTracker.getFeedingObjective(robotPose);
-        ShotData feedSotmShot = ShooterCalculations.iterativeMovingShot(robotPose, fieldRelSpeeds, feedTarget, SOTM_ITERATIONS);
+        ShotData feedSotmShot = ShooterCalculations.iterativeMovingShot(robotPose, fieldRelSpeeds, accelX, accelY, accelRot, feedTarget, SOTM_ITERATIONS);
         ShotData feedStillShot = ShooterCalculations.calculateStillShot(robotPose, feedTarget);
 
         if (ObjectiveTarget != ObjectiveTracker.HUB) {

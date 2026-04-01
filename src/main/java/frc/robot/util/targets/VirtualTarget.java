@@ -1,5 +1,6 @@
 package frc.robot.util.targets;
 
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.util.AimingTarget;
@@ -32,4 +33,9 @@ public class VirtualTarget implements AimingTarget {
     public double getTimeOfFlight(double distance) {
         return baseTarget.getTimeOfFlight(distance);
     }
+
+    @Override
+    public double getTofDerivative(double distanceMeters) {
+        return baseTarget.getTofDerivative(distanceMeters);
+    } 
 }

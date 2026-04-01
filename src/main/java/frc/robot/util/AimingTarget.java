@@ -15,4 +15,5 @@ public interface AimingTarget {
     Rotation2d getHoodAngle(double distanceMeters);
     double getFlywheelVel(double distanceMeters);
     double getTimeOfFlight(double distanceMeters);
+    double getTofDerivative(double distance);
 }
