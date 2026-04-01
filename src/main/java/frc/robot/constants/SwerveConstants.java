@@ -3,6 +3,7 @@ package frc.robot.constants;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 public final class SwerveConstants {
@@ -64,8 +65,8 @@ public final class SwerveConstants {
     public static final double MAX_ROBOT_TRANS_ACCEL = 7.5; // safe bet in m/s, can prob bump up to 10 TODO: increase if autos are too slow
     public static final double MAX_MOD_STEER_VEL = Units.degreesToRadians(1040); // I think? Going from 0-90 went at ~200deg/s
     
-    public static final double MAX_ROBOT_ROT_SPEED = MAX_ROBOT_TRANS_SPEED / DRIVE_BASE_RADIUS; // rad/s
-    public static final double MAX_ROBOT_ROT_ACCEL = MAX_ROBOT_TRANS_ACCEL / DRIVE_BASE_RADIUS; // rad/s
+    public static final double MAX_ROBOT_ROT_SPEED = MAX_ROBOT_TRANS_SPEED / DRIVE_BASE_RADIUS; // rad/s  ~10
+    public static final double MAX_ROBOT_ROT_ACCEL = MAX_ROBOT_TRANS_ACCEL / DRIVE_BASE_RADIUS; // rad/s  ~17
 
     public static final double HEADING_CONTROLLER_TOLERANCE = 0.005;  // rad
 
@@ -74,6 +75,11 @@ public final class SwerveConstants {
 
     public static double[] DRIVE_CONTROLLER_PID = {5, 0, 0.3};
     public static double[] ROT_CONTROLLER_PID = {11, 0, 0.2};
+
+    public static Constraints ROT_CONTROLLER_CONSTRAINTS = new Constraints(
+      MAX_ROBOT_ROT_SPEED - 2,
+      MAX_ROBOT_ROT_ACCEL - 2  // -2 just keeping things a lil conservative
+    );
 
     public static Rotation2d YAW_ALIGN_TOLERANCE = Rotation2d.fromDegrees(3);
 

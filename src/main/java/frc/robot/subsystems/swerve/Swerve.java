@@ -16,6 +16,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -57,7 +58,7 @@ public class Swerve extends SubsystemBase {
   Field2d field = new Field2d();
   Gyro gyro;
 
-  PIDController headingController = new PIDController(ROT_CONTROLLER_PID[0], ROT_CONTROLLER_PID[1], ROT_CONTROLLER_PID[2]);
+  ProfiledPIDController headingController = new ProfiledPIDController(ROT_CONTROLLER_PID[0], ROT_CONTROLLER_PID[1], ROT_CONTROLLER_PID[2], ROT_CONTROLLER_CONSTRAINTS);
   PIDController driveController = new PIDController(DRIVE_CONTROLLER_PID[0], DRIVE_CONTROLLER_PID[1], DRIVE_CONTROLLER_PID[2]);
 
   SwerveModule[] modules = new SwerveModule[4];
@@ -174,7 +175,7 @@ public class Swerve extends SubsystemBase {
     if (alignToAngle != null) {
       Logger.recordOutput("Swerve/PoseRotPidAtSetpoint", headingController.atSetpoint());
       Logger.recordOutput("Swerve/alignToAngleSetpoint", headingController.getSetpoint());
-      headingController.setSetpoint(alignToAngle.getRadians());
+      headingController.setGoal(alignToAngle.getRadians());
       if (!headingController.atSetpoint()) {
         speeds.omegaRadiansPerSecond = commandedRot;
       } else {
