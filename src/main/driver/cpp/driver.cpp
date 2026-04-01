@@ -24,10 +24,10 @@ std::vector<double> solveSwerve(std::vector<double> current_vel, std::vector<dou
   // The '0' at the end tells CasADi to use its default, single-threaded memory <---- says gemini
   max_swerve_lerp(arg, res, iw, w, 0);
 
-  fmt::println("cpp side here!");
-  fmt::println("out_lerp_xy: {}", out_lerp_xy);
-  fmt::println("out_lerp_rot: {}", out_lerp_rot);
-  fmt::println("that's all!");
+  // fmt::println("cpp side here!");
+  // fmt::println("out_lerp_xy: {}", out_lerp_xy);
+  // fmt::println("out_lerp_rot: {}", out_lerp_rot);
+  // fmt::println("that's all!");
   
   return {out_lerp_xy, out_lerp_rot};
 }

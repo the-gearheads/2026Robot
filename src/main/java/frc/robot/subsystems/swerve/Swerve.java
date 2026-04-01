@@ -185,10 +185,13 @@ public class Swerve extends SubsystemBase {
     Logger.recordOutput("Swerve/Speeds", speeds);
 
     // SwerveDriveKinematics.desaturateWheelSpeeds(getModuleStates(), speeds, MAX_MOD_SPEED, MAX_ROBOT_TRANS_SPEED, MAX_ROBOT_ROT_SPEED);
+    var startTime = Timer.getFPGATimestamp();
     double[] lerps = FunJNI.solveSwerve(
       new double[]{lastCoolSpeeds.vxMetersPerSecond, lastCoolSpeeds.vyMetersPerSecond, lastCoolSpeeds.omegaRadiansPerSecond},
       new double[]{speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond}
     );
+    var endTime = Timer.getFPGATimestamp();
+    Logger.recordOutput("Swerve/SolveTime", endTime - startTime);
 
     Logger.recordOutput("Swerve/Lerps", lerps);
 
