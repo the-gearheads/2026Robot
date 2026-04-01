@@ -307,5 +307,6 @@ public class RobotContainer {
       shooter.setShooterVelocity(HP_TRENCH_SHOOT_VELOCITY);
       hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
     }, shooter, hood).alongWith(spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake))));
+    NamedCommands.registerCommand("ShouldWeLeave", shooter.jarvisShouldIGo());
   }
 }
