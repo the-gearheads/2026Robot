@@ -104,6 +104,7 @@ public class HubTracker {
     public static boolean isActive() {
         Optional<Shift> currentShift = getCurrentShift();
         Optional<Alliance> alliance = DriverStation.getAlliance();
+        if (currentShift.isEmpty()) return true;
         return currentShift.isPresent() && alliance.isPresent() && isActive(alliance.get(), currentShift.get());
     }
 
