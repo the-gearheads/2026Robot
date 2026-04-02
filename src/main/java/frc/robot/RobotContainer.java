@@ -43,6 +43,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -111,9 +112,20 @@ public class RobotContainer {
     sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine(), hood::forwardSysIdLimit, hood::reverseSysIdLimit);
     sysidPicker.addSysidRoutines("Feeder", spindexer.getFeederSysidRoutine());
 
-    HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(
-      Controllers.driverController.getRumbleCommand(1, 0.3, 3)
-    );
+    HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(Commands.deferredProxy(() -> {
+      if (DriverStation.isTeleopEnabled()) {
+        return Controllers.driverController.getRumbleCommand(1, 0.3, 3);
+      } else {
+        return Commands.none();
+      }
+    }));
+    HubTracker.NEXT_SHIFT_INACTIVE_TRIGGER.onTrue(Commands.deferredProxy(() -> {
+      if (DriverStation.isTeleopEnabled()) {
+        return Controllers.driverController.getRumbleCommand(1, 1);
+      } else {
+        return Commands.none();
+      }
+    }));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
