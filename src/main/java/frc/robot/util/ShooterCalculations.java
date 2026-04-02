@@ -92,7 +92,7 @@ public class ShooterCalculations {
 
     public static Rotation2d getYawToTarget(Pose2d robotPose, AimingTarget aimingTarget) {
         Translation2d targetPosition = aimingTarget.getFieldPosition();
-        Rotation2d targetAngle = targetPosition.minus(robotPose.getTranslation()).getAngle();
+        Rotation2d targetAngle = targetPosition.minus(getShooterPosition(robotPose).getTranslation()).getAngle();
         return targetAngle;  
     } 
 
