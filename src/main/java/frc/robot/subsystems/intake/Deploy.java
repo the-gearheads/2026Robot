@@ -165,7 +165,10 @@ public class Deploy extends SubsystemBase {
   public Command shimmy(Intake intake) {
     return Commands.repeatingSequence(
       this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_HIGH_ANGLE).withTimeout(SHIMMY_UP_TIMEOUT),
-      this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_LOW_ANGLE).withTimeout(SHIMMY_DOWN_TIMEOUT)
+      this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_LOW_ANGLE).withTimeout(SHIMMY_DOWN_TIMEOUT),
+      this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_HIGH_ANGLE).withTimeout(SHIMMY_UP_TIMEOUT),
+      this.setAngleCommand(IntakeConstants.DEPLOY_MIN_ANGLE).withTimeout(SHIMMY_DOWN_TIMEOUT+0.1)
+
     ).alongWith(intake.run(()->{intake.setIntakeVoltage(12);})).andThen(this.setAngleCommand(DEPLOY_MIN_ANGLE));
   }
 
