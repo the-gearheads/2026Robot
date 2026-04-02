@@ -21,7 +21,7 @@ public class AimingManager {
     public static ShotData latestShot;
     public static ShotData latestHubShot;
     public static ShotData latestFeedShot;
-    public static boolean USE_SOTM = true;
+    public static boolean USE_SOTM = false;
 
     public static void update(Pose2d robotPose, ChassisSpeeds fieldRelSpeeds, double accelX, double accelY, double accelRot) {
         AimingTarget ObjectiveTarget = ObjectiveTracker.getObjective(robotPose);

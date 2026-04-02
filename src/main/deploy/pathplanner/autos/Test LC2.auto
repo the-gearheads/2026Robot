@@ -50,12 +50,6 @@
                 "data": {
                   "waitTime": 8.0
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShouldWeLeave"
-                }
               }
             ]
           }

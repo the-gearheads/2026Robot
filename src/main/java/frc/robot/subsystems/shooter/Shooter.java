@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.AimingManager;
-import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import edu.wpi.first.wpilibj.Timer;
