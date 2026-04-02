@@ -143,7 +143,7 @@ public class RobotContainer {
               if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
                 return spindexer.runSpindexer(12);
               } else {
-                return spindexer.runSpindexer(12); // .alongWith(deploy.shimmy(intake));
+                return spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake));
               }
             } else {
               return spindexer.runSpindexer(12);
@@ -162,7 +162,7 @@ public class RobotContainer {
             if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
                 return spindexer.runSpindexer(12);
               } else {
-                return spindexer.runSpindexer(12);//.alongWith(deploy.shimmy(intake));
+                return spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake));
               }
             })
           )
