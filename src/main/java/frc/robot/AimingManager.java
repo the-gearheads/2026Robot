@@ -60,6 +60,7 @@ public class AimingManager {
             trenchAvoidanceShot.hoodAngle().plus(HOOD_ANGLE_ADJUSTMENT),
             trenchAvoidanceShot.timeOfFlight(),
             trenchAvoidanceShot.target(),
+            trenchAvoidanceShot.yawTarget(),
             trenchAvoidanceShot.aimingTarget()
         );
     } 
