@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.AimingManager;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.ShooterConstants;
@@ -75,6 +76,7 @@ public class ShooterCalculations {
     }
 
     public static ShotData applyTrenchAvoidance(ShotData baseShot, Pose2d robotPose, ChassisSpeeds fieldRelSpeeds) {
+        if (DriverStation.isAutonomous()) return baseShot;
         Rectangle2d[] badRectangles = getTrenchAvoidanceRectanlges(robotPose, fieldRelSpeeds);
         for (Rectangle2d zone : badRectangles) {
             if (zone.contains(robotPose.getTranslation())) {
