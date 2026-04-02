@@ -20,4 +20,6 @@ public final class MiscConstants {
         public static final double SHIFT_WARNING_TIME = 5.0;  // Controller vibrates X seconds before active
 
         public static final double G = 9.80665;
+
+        public static final boolean DEATH_MODE = false; //SUPER DUPER IMPORTANT CODE, DO NOT REMOVE OR ROBOT DEATH!!!!
 }
