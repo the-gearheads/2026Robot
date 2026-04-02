@@ -19,6 +19,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -26,8 +27,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.AimingManager;
+import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.swerve.Swerve;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Shooter extends SubsystemBase {
 
@@ -45,6 +48,7 @@ public class Shooter extends SubsystemBase {
   RelativeEncoder kickerEncoder = kicker.getEncoder();
 
   ShooterCalculations shooterCalculations = new ShooterCalculations();
+  Double timeOfLastShot;
 
   public Shooter() {
     configure();
@@ -227,5 +231,29 @@ public class Shooter extends SubsystemBase {
   private double getKickerSpeed(double flywheelSpeed) {
       double kickerSpeed = flywheelSpeed * ShooterConstants.KICKER_SURFACE_SPEED_RATIO * (ShooterConstants.EFFECTIVE_FLYWHEEL_DIAMETER / ShooterConstants.EFFECTIVE_KICKER_DIAMETER);
       return kickerSpeed;
+  }
+
+  public double getTimeOfLastShot(){
+    if((this.getKickerVelocityRadPerSec() < 0.9*(this.getKickerSetpoint())))
+    {
+      timeOfLastShot = Timer.getFPGATimestamp();
+    }
+    return timeOfLastShot;
+  }
+
+  public boolean shouldIGo(){
+    if((Timer.getFPGATimestamp()-(this.getTimeOfLastShot())) >= 2.0)
+    {
+      return true;
+    }
+    else 
+    {
+      return false;
+    }
+  }
+  public Command jarvisShouldIGo(){
+    return this.run(()->{
+          getTimeOfLastShot();
+        }).until(()->{return shouldIGo() == true;});
   }
 }
