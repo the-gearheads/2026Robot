@@ -447,26 +447,30 @@ public class Swerve extends SubsystemBase {
   }
 
   public double getGyroYawAcceleration() {
-    return alphaFilter.lastValue();
+    // return alphaFilter.lastValue();
+    return 0;
   }
 
   /*
    * Returns Field Relative X acceleration
    */
   public double getGyroXAcceleration() {
-    return xAccelFilter.lastValue();
+    // return xAccelFilter.lastValue();
+    return 0;
   }
 
   /*
    * Returns Field Relative Y acceleration
    */
   public double getGyroYAcceleration() {
-    return yAccelFilter.lastValue();
+    // return yAccelFilter.lastValue();
+    return 0;
   }
 
   @AutoLogOutput
   public Translation2d getGyroAccel() {
-    return new Translation2d(getGyroXAcceleration(), getGyroYAcceleration());
+    return new Translation2d();
+    // return new Translation2d(getGyroXAcceleration(), getGyroYAcceleration());
   }
 
   public long getTwist3dTimestamp() { 

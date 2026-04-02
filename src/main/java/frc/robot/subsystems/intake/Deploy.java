@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.encoder.DetachedEncoder.Faults;
 import com.revrobotics.encoder.SplineEncoder;
 import com.revrobotics.encoder.config.DetachedEncoderConfig;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -86,6 +87,12 @@ public class Deploy extends SubsystemBase {
     deploy.configure(deployConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     deploySplineEncoder.configure(deployAbsEncoderConfig, ResetMode.kResetSafeParameters);
   }
+
+  @AutoLogOutput
+  public Faults getSplineFaults() {
+    return deploySplineEncoder.getFaults();
+  }
+
 
   @Override
   public void periodic() {

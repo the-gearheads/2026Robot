@@ -92,7 +92,7 @@ public class ShooterCalculations {
 
     public static Rotation2d getYawToTarget(Pose2d robotPose, AimingTarget aimingTarget) {
         Translation2d targetPosition = aimingTarget.getFieldPosition();
-        Rotation2d targetAngle = targetPosition.minus(getShooterPosition(robotPose).getTranslation()).getAngle();
+        Rotation2d targetAngle = targetPosition.minus(robotPose.getTranslation()).getAngle();
         return targetAngle;  
     } 
 
@@ -101,14 +101,15 @@ public class ShooterCalculations {
 
         double vLx = fieldRelSpeeds.vxMetersPerSecond + (ax * LATENCY_COMPENSATION);
         double vLy = fieldRelSpeeds.vyMetersPerSecond + (ay * LATENCY_COMPENSATION);
-        double omegaL = fieldRelSpeeds.omegaRadiansPerSecond + (alpha * LATENCY_COMPENSATION);
-            
+        // double omegaL = fieldRelSpeeds.omegaRadiansPerSecond + (alpha * LATENCY_COMPENSATION);
+        double omegaL = 0;
+
         Pose2d effectivePose = new Pose2d(  // 0.5at^2 + v_0t + x_0 don pata reference
                 robotPose.getX() + (fieldRelSpeeds.vxMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * ax * Math.pow(LATENCY_COMPENSATION, 2)),
                 robotPose.getY() + (fieldRelSpeeds.vyMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * ay * Math.pow(LATENCY_COMPENSATION, 2)),
-                robotPose.getRotation().plus( // 0.5alpha * t^2 + omega * t + theta_0 also don pata reference
-                        new Rotation2d(fieldRelSpeeds.omegaRadiansPerSecond * LATENCY_COMPENSATION)).plus(  // omega * t
-                                new Rotation2d(0.5 * alpha * Math.pow(LATENCY_COMPENSATION, 2))));  // 0.5alpha t^2
+                robotPose.getRotation());//.plus( // 0.5alpha * t^2 + omega * t + theta_0 also don pata reference
+                        // new Rotation2d(fieldRelSpeeds.omegaRadiansPerSecond * LATENCY_COMPENSATION)).plus(  // omega * t
+                        //         new Rotation2d(0.5 * alpha * Math.pow(LATENCY_COMPENSATION, 2))));  // 0.5alpha t^2
 
         Translation2d shooterOffsetRobot = ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d();
         Translation2d shooterOffsetField = shooterOffsetRobot.rotateBy(effectivePose.getRotation());
