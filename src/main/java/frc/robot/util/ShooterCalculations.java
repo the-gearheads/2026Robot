@@ -46,7 +46,7 @@ public class ShooterCalculations {
             shot = AimingManager.latestShot; 
         }
         
-        boolean yawReady = MathUtil.isNear(getYawToTarget(robotPose, shot.aimingTarget).getRadians(), robotPose.getRotation().getRadians(), YAW_ALIGN_TOLERANCE.getRadians());
+        boolean yawReady = Math.abs(shot.yawTarget.minus(robotPose.getRotation()).getRadians()) < YAW_ALIGN_TOLERANCE.getRadians();
         boolean hoodReady = hood.atAngle(shot.hoodAngle(), HOOD_MOVING_TOLERANCE);
         boolean shooterReady = shooter.atSpeed(shot.flywheelVel());
         Logger.recordOutput("ShooterCalculations/yawReady", yawReady);
@@ -71,6 +71,7 @@ public class ShooterCalculations {
             aimingTarget.getHoodAngle(targetDist),
             aimingTarget.getTimeOfFlight(targetDist),
             aimingTarget.getFieldPosition(),
+            getYawToTarget(robotPose, aimingTarget),
             aimingTarget
         );
     }
@@ -80,7 +81,7 @@ public class ShooterCalculations {
         Rectangle2d[] badRectangles = getTrenchAvoidanceRectanlges(robotPose, fieldRelSpeeds);
         for (Rectangle2d zone : badRectangles) {
             if (zone.contains(robotPose.getTranslation())) {
-                return new ShotData(baseShot.flywheelVel, HOOD_MIN_ANGLE, baseShot.timeOfFlight, baseShot.target, baseShot.aimingTarget);
+                return new ShotData(baseShot.flywheelVel, HOOD_MIN_ANGLE, baseShot.timeOfFlight, baseShot.target, baseShot.yawTarget, baseShot.aimingTarget);
             }
         }
         return baseShot;
@@ -139,7 +140,7 @@ public class ShooterCalculations {
         double finalEffectiveToF =
              applyLinearDragCompensation(rawTimeOfFlight, DRAG_CONSTANT);
         Translation2d finalMovingTargetPos = predictTargetPos(
-            aimingTarget.getFieldPosition(), shooterFinalVelocity, finalEffectiveToF + LATENCY_COMPENSATION);
+            aimingTarget.getFieldPosition(), shooterFinalVelocity, finalEffectiveToF);
 
         VirtualTarget adjustedTarget = new VirtualTarget(aimingTarget, finalMovingTargetPos);
         ShotData adjustedShot = calculateStillShot(effectivePose, adjustedTarget);
@@ -207,5 +208,5 @@ public class ShooterCalculations {
         ObjectiveTracker.log(robotPose);
     }
 
-    public record ShotData(double flywheelVel, Rotation2d hoodAngle, double timeOfFlight, Translation2d target, AimingTarget aimingTarget) {}
+    public record ShotData(double flywheelVel, Rotation2d hoodAngle, double timeOfFlight, Translation2d target, Rotation2d yawTarget, AimingTarget aimingTarget) {}
 }
