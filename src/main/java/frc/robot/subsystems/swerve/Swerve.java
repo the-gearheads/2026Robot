@@ -463,6 +463,11 @@ public class Swerve extends SubsystemBase {
     return yAccelFilter.lastValue();
   }
 
+  @AutoLogOutput
+  public Translation2d getGyroAccel() {
+    return new Translation2d(getGyroXAcceleration(), getGyroYAcceleration());
+  }
+
   public long getTwist3dTimestamp() { 
     return odomTwistTime;
   }
