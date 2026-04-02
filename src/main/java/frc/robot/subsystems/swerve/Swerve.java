@@ -429,8 +429,9 @@ public class Swerve extends SubsystemBase {
     filteredAccelX = xAccelFilter.calculate(fieldAccel.getX());
     filteredAccelY = yAccelFilter.calculate(fieldAccel.getY());
 
-    double timeDelta = lastTime - Timer.getFPGATimestamp();
-    lastTime = Timer.getFPGATimestamp();
+    double now = Timer.getFPGATimestamp();
+    double timeDelta = now - lastTime;
+    lastTime = now;
     double currentYawVel = gyro.getVelocityYaw();
     double rawAlpha = (currentYawVel - lastYawVelocity) / timeDelta;
     

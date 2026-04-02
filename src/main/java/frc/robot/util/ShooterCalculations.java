@@ -97,42 +97,49 @@ public class ShooterCalculations {
     } 
 
     public static ShotData iterativeMovingShot(
-            Pose2d robotPose, ChassisSpeeds fieldRelSpeeds, AimingTarget aimingTarget, int iterations) {
+            Pose2d robotPose, ChassisSpeeds fieldRelSpeeds, double ax, double ay, double alpha, AimingTarget aimingTarget, int iterations) {
+
+        double vLx = fieldRelSpeeds.vxMetersPerSecond + (ax * LATENCY_COMPENSATION);
+        double vLy = fieldRelSpeeds.vyMetersPerSecond + (ay * LATENCY_COMPENSATION);
+        double omegaL = fieldRelSpeeds.omegaRadiansPerSecond + (alpha * LATENCY_COMPENSATION);
             
-        Pose2d effectivePose = new Pose2d(
-                robotPose.getX() + fieldRelSpeeds.vxMetersPerSecond * LATENCY_COMPENSATION,
-                robotPose.getY() + fieldRelSpeeds.vyMetersPerSecond * LATENCY_COMPENSATION,
-                robotPose.getRotation().plus(
-                        new Rotation2d(fieldRelSpeeds.omegaRadiansPerSecond * LATENCY_COMPENSATION)));
+        Pose2d effectivePose = new Pose2d(  // 0.5at^2 + v_0t + x_0 don pata reference
+                robotPose.getX() + (fieldRelSpeeds.vxMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * ax * Math.pow(LATENCY_COMPENSATION, 2)),
+                robotPose.getY() + (fieldRelSpeeds.vyMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * ay * Math.pow(LATENCY_COMPENSATION, 2)),
+                robotPose.getRotation().plus( // 0.5alpha * t^2 + omega * t + theta_0 also don pata reference
+                        new Rotation2d(fieldRelSpeeds.omegaRadiansPerSecond * LATENCY_COMPENSATION)).plus(  // omega * t
+                                new Rotation2d(0.5 * alpha * Math.pow(LATENCY_COMPENSATION, 2))));  // 0.5alpha t^2
 
         Translation2d shooterOffsetRobot = ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d();
         Translation2d shooterOffsetField = shooterOffsetRobot.rotateBy(effectivePose.getRotation());
 
         Translation2d shooterRotationalVelocity = new Translation2d(
-            -fieldRelSpeeds.omegaRadiansPerSecond * shooterOffsetField.getY(),
-            fieldRelSpeeds.omegaRadiansPerSecond * shooterOffsetField.getX()
+            -omegaL * shooterOffsetField.getY(),
+            omegaL * shooterOffsetField.getX()
         );
 
         Translation2d shooterFinalVelocity = new Translation2d(
-            fieldRelSpeeds.vxMetersPerSecond,
-            fieldRelSpeeds.vyMetersPerSecond
+            vLx,
+            vLy
         ).plus(shooterRotationalVelocity);
                 
         // Perform initial estimation (assuming unmoving robot) to get time of flight estimate
         double distance = getDistanceToTarget(effectivePose, aimingTarget.getFieldPosition());
-        double timeOfFlight = aimingTarget.getTimeOfFlight(distance);
+        double rawTimeOfFlight = aimingTarget.getTimeOfFlight(distance);
         Translation2d movingTargetPos = aimingTarget.getFieldPosition();
         
         // Iterate the process, getting better time of flight estimations and updating the predicted target accordingly
         for (int i = 0; i < iterations; i++) {
-            movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), shooterFinalVelocity, timeOfFlight);
-            timeOfFlight = aimingTarget.getTimeOfFlight(getDistanceToTarget(effectivePose, movingTargetPos));  // use the table for whatever the basic table is, but the distance is changing
-            timeOfFlight = applyLinearDragCompensation(timeOfFlight, DRAG_CONSTANT);
-        }  // to tune: forward and back from goal = latency comp, hits short = L too small
-           //          sideways to the goal = Linear Drag, behind direction of travel = drag constant too low
+            double effectiveToF = applyLinearDragCompensation(rawTimeOfFlight, DRAG_CONSTANT);
+            movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), shooterFinalVelocity, effectiveToF);
+            rawTimeOfFlight = aimingTarget.getTimeOfFlight(getDistanceToTarget(effectivePose, movingTargetPos));  // use the table for whatever the basic table is, but the distance is changing
+        }  // to tune: drive backwards and it overshoots? Latency comp too high
+           //          drive sideways to goal low mid far, if error increases with further distance, increase drag constant
 
+        double finalEffectiveToF =
+             applyLinearDragCompensation(rawTimeOfFlight, DRAG_CONSTANT);
         Translation2d finalMovingTargetPos = predictTargetPos(
-            aimingTarget.getFieldPosition(), shooterFinalVelocity, timeOfFlight + LATENCY_COMPENSATION);
+            aimingTarget.getFieldPosition(), shooterFinalVelocity, finalEffectiveToF + LATENCY_COMPENSATION);
 
         VirtualTarget adjustedTarget = new VirtualTarget(aimingTarget, finalMovingTargetPos);
         ShotData adjustedShot = calculateStillShot(effectivePose, adjustedTarget);
