@@ -193,6 +193,8 @@ public class Swerve extends SubsystemBase {
       } else {
         speeds.omegaRadiansPerSecond = 0;
       }
+    } else {
+      headingController.reset(getPose().getRotation().getRadians());
     }
 
     Logger.recordOutput("Swerve/Speeds", speeds);
