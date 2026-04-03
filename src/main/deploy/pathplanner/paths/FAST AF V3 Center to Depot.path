@@ -64,16 +64,32 @@
     },
     {
       "anchor": {
-        "x": 4.5,
+        "x": 3.4110714285714283,
         "y": 7.469
       },
       "prevControl": {
-        "x": 4.952581452546296,
+        "x": 3.863652881117724,
         "y": 7.484240389384921
+      },
+      "nextControl": {
+        "x": 2.9584899760251324,
+        "y": 7.453759610615079
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.7632142857142856,
+        "y": 6.739803571428572
+      },
+      "prevControl": {
+        "x": 2.666494988012566,
+        "y": 7.226353019593255
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "V4 DShoot"
     }
   ],
   "rotationTargets": [
@@ -95,6 +111,10 @@
     },
     {
       "waypointRelativePos": 2.8993288590604034,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 3.9438502673796854,
       "rotationDegrees": -90.0
     }
   ],
@@ -138,7 +158,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -87.07902560125265
+    "rotation": -52.23024263925159
   },
   "reversed": false,
   "folder": null,

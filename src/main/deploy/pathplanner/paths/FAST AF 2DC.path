@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.3479335937500005,
-        "y": 7.469
+        "x": 2.7632142857142856,
+        "y": 6.739803571428572
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.3479335937500005,
-        "y": 7.469000000000001
+        "x": 1.9048035714285716,
+        "y": 7.922142857142857
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "V4 DShoot"
     },
     {
       "anchor": {
@@ -64,21 +64,41 @@
     },
     {
       "anchor": {
-        "x": 4.522326388891404,
-        "y": 7.467743055553203
+        "x": 3.621625,
+        "y": 7.468642857142857
       },
       "prevControl": {
-        "x": 4.9749078414377,
-        "y": 7.4829834449381245
+        "x": 4.042732142857142,
+        "y": 7.501035714285713
+      },
+      "nextControl": {
+        "x": 3.170120855851729,
+        "y": 7.433911769131453
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.7632142857142856,
+        "y": 6.739803571428572
+      },
+      "prevControl": {
+        "x": 2.487875,
+        "y": 7.3876607142857145
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "V4 DShoot"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.32704402515723274,
+      "waypointRelativePos": 0.2941176470588234,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 0.695187165775401,
       "rotationDegrees": -90.0
     },
     {
@@ -99,6 +119,10 @@
     },
     {
       "waypointRelativePos": 2.8993288590604034,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 4.104278074866313,
       "rotationDegrees": -90.0
     }
   ],
@@ -142,13 +166,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -52.23024263925159
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -52.23024263925159
   },
   "useDefaultConstraints": true
 }

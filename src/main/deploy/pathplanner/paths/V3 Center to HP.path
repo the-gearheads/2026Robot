@@ -64,16 +64,32 @@
     },
     {
       "anchor": {
-        "x": 4.107517857142857,
+        "x": 3.589232142857143,
         "y": 0.600326
       },
       "prevControl": {
-        "x": 4.560099221833815,
-        "y": 0.5850830018700899
+        "x": 4.041813507548102,
+        "y": 0.58508300187009
+      },
+      "nextControl": {
+        "x": 3.1366507781661843,
+        "y": 0.6155689981299101
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.666035714285714,
+        "y": 1.3301964285714292
+      },
+      "prevControl": {
+        "x": 2.868950389083092,
+        "y": 1.1191661419220988
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Intake Trench Shoot"
+      "linkedName": "V4 HSHOOT"
     }
   ],
   "rotationTargets": [
@@ -133,7 +149,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 53.569141879837645
   },
   "reversed": false,
   "folder": null,

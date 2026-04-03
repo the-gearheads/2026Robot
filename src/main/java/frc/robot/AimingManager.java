@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.util.AimingTarget;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
@@ -54,6 +55,9 @@ public class AimingManager {
     }
 
     private static ShotData applySafeties(ShotData baseShot, Pose2d robotPose, ChassisSpeeds fieldRelSpeeds) {
+        if (DriverStation.isAutonomous()) {
+            return baseShot;
+        }
         ShotData trenchAvoidanceShot = ShooterCalculations.applyTrenchAvoidance(baseShot, robotPose, fieldRelSpeeds);
         return new ShotData(
             trenchAvoidanceShot.flywheelVel() + SHOOTER_VEL_ADJUSTMENT,

@@ -56,7 +56,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeVoltage(double volts) {
-        if (initializedRollerPeriodicCount < 10) {
+        if (initializedRollerPeriodicCount < 50) {
             intake.setVoltage(-12);
             initializedRollerPeriodicCount += 1; // hopefully it only takes like 10 periodics!
         } else {
