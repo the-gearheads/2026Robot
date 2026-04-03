@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.MiscConstants;
+import frc.robot.util.targets.CrossmapTarget;
 import frc.robot.util.targets.FeederTarget;
 import frc.robot.util.targets.HubTarget;
 
@@ -19,6 +20,7 @@ public class ObjectiveTracker {
     public static final HubTarget HUB = new HubTarget();
     public static final FeederTarget FEED_LEFT = new FeederTarget(MiscConstants.LEFT_FEEDING_LOCATION);
     public static final FeederTarget FEED_RIGHT = new FeederTarget(MiscConstants.RIGHT_FEEDING_LOCATION);
+    public static final CrossmapTarget CROSSMAP = new CrossmapTarget();
     
     // takes in swerve, looks at hub status and robot position and velocity, maybe also considers Time of Flight for the balls
     // from there has a function to return what Objective we are aiming towards
@@ -38,6 +40,21 @@ public class ObjectiveTracker {
         }
     }
 
+    public static boolean inOppositeAlliance(Pose2d robotPose) {
+        double allianceZoneLine = AllianceFlipUtil.applyX(FieldConstants.LinesVertical.allianceZone);
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+
+        Rectangle2d blueAllianceZone = new Rectangle2d(new Translation2d(-0.1, -0.1), new Translation2d(allianceZoneLine+0.1, FieldConstants.fieldWidth));
+        Rectangle2d redAllianceZone = new Rectangle2d(new Translation2d(FieldConstants.fieldLength, FieldConstants.fieldWidth), new Translation2d(allianceZoneLine, -0.1));
+        if (alliance.get() == Alliance.Blue) {
+            return redAllianceZone.contains(robotPose.getTranslation());
+        } else if (alliance.get() == Alliance.Red) {
+            return blueAllianceZone.contains(robotPose.getTranslation());
+        } else {
+            return blueAllianceZone.contains(robotPose.getTranslation()) || redAllianceZone.contains(robotPose.getTranslation());
+        }
+    }
+
     @AutoLogOutput
     public static AimingTarget getFeedingObjective(Pose2d robotPose) {
         if(AllianceFlipUtil.applyY(robotPose.getY()) < FieldConstants.fieldWidth/2.0) {
@@ -51,6 +68,8 @@ public class ObjectiveTracker {
     public static AimingTarget getObjective(Pose2d robotPose) {
         if (inAllianceZone(robotPose)) {
             return HUB;
+        } else if(inOppositeAlliance(robotPose)){
+            return CROSSMAP;
         } else {
             return getFeedingObjective(robotPose);
         }
