@@ -73,7 +73,7 @@ public class ShooterConstants {
 
     // https://frc-docs--3242.org.readthedocs.build/en/3242/docs/software/advanced-controls/fire-control/linear-drag.html
     public static final double DRAG_CONSTANT = 0.2;
-    public static final double LATENCY_COMPENSATION = 0.10;  // seconds; time accounting for latency for everything other than just real ball ToF 
+    public static final double LATENCY_COMPENSATION = 0.15;  // seconds; time accounting for latency for everything other than just real ball ToF 
 
     public static final double MAX_KICKER_SPEED = KICKER_FEEDFORWARD.maxAchievableVelocity(12, 0);
     public static final double MAX_EFFECTIVE_FLYWHEEL_SPEED = (MAX_KICKER_SPEED * EFFECTIVE_KICKER_DIAMETER) / (EFFECTIVE_FLYWHEEL_DIAMETER * KICKER_SURFACE_SPEED_RATIO);  // in order to maintain the surface speed ratio, the flywheel can't go faster than this speed or the kicker will be commanded to go faster than its max speed

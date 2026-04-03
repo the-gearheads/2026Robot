@@ -27,11 +27,11 @@ public class AimingManager {
         AimingTarget ObjectiveTarget = ObjectiveTracker.getObjective(robotPose);
 
         AimingTarget hubTarget = ObjectiveTracker.HUB;
-        ShotData hubSotmShot = ShooterCalculations.iterativeMovingShot(robotPose, fieldRelSpeeds, accelX, accelY, accelRot, hubTarget, SOTM_ITERATIONS);
+        ShotData hubSotmShot = ShooterCalculations.iterativeMovingShot(robotPose, fieldRelSpeeds, hubTarget, SOTM_ITERATIONS);
         ShotData hubStillShot = ShooterCalculations.calculateStillShot(robotPose, hubTarget);
 
         AimingTarget feedTarget = ObjectiveTracker.getFeedingObjective(robotPose);
-        ShotData feedSotmShot = ShooterCalculations.iterativeMovingShot(robotPose, fieldRelSpeeds, accelX, accelY, accelRot, feedTarget, SOTM_ITERATIONS);
+        ShotData feedSotmShot = ShooterCalculations.iterativeMovingShot(robotPose, fieldRelSpeeds, feedTarget, SOTM_ITERATIONS);
         ShotData feedStillShot = ShooterCalculations.calculateStillShot(robotPose, feedTarget);
 
         if (ObjectiveTarget != ObjectiveTracker.HUB) {
@@ -60,7 +60,6 @@ public class AimingManager {
             trenchAvoidanceShot.hoodAngle().plus(HOOD_ANGLE_ADJUSTMENT),
             trenchAvoidanceShot.timeOfFlight(),
             trenchAvoidanceShot.target(),
-            trenchAvoidanceShot.yawTarget(),
             trenchAvoidanceShot.aimingTarget()
         );
     } 

@@ -7,12 +7,12 @@ import static frc.robot.constants.ShooterConstants.DRAG_CONSTANT;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.HOOD_MOVING_TOLERANCE;
 import static frc.robot.constants.ShooterConstants.LATENCY_COMPENSATION;
-import static frc.robot.constants.SwerveConstants.YAW_ALIGN_TOLERANCE;
 
 import java.util.ArrayList;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rectangle2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,10 +20,10 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.AimingManager;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.ShooterConstants;
+import frc.robot.constants.SwerveConstants;
 import frc.robot.subsystems.shooter.Hood;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.targets.VirtualTarget;
@@ -45,7 +45,7 @@ public class ShooterCalculations {
             shot = AimingManager.latestShot; 
         }
         
-        boolean yawReady = Math.abs(shot.yawTarget.minus(robotPose.getRotation()).getRadians()) < YAW_ALIGN_TOLERANCE.getRadians();
+        boolean yawReady = Math.abs(getYawToTarget(robotPose, shot.aimingTarget).minus(robotPose.getRotation()).getRadians()) < SwerveConstants.YAW_ALIGN_TOLERANCE.getRadians();
         boolean hoodReady = hood.atAngle(shot.hoodAngle(), HOOD_MOVING_TOLERANCE);
         boolean shooterReady = shooter.atSpeed(shot.flywheelVel());
         Logger.recordOutput("ShooterCalculations/yawReady", yawReady);
@@ -70,17 +70,15 @@ public class ShooterCalculations {
             aimingTarget.getHoodAngle(targetDist),
             aimingTarget.getTimeOfFlight(targetDist),
             aimingTarget.getFieldPosition(),
-            getYawToTarget(robotPose, aimingTarget),
             aimingTarget
         );
     }
 
     public static ShotData applyTrenchAvoidance(ShotData baseShot, Pose2d robotPose, ChassisSpeeds fieldRelSpeeds) {
-        if (DriverStation.isAutonomous()) return baseShot;
         Rectangle2d[] badRectangles = getTrenchAvoidanceRectanlges(robotPose, fieldRelSpeeds);
         for (Rectangle2d zone : badRectangles) {
             if (zone.contains(robotPose.getTranslation())) {
-                return new ShotData(baseShot.flywheelVel, HOOD_MIN_ANGLE, baseShot.timeOfFlight, baseShot.target, baseShot.yawTarget, baseShot.aimingTarget);
+                return new ShotData(baseShot.flywheelVel, HOOD_MIN_ANGLE, baseShot.timeOfFlight, baseShot.target, baseShot.aimingTarget);
             }
         }
         return baseShot;
@@ -97,53 +95,24 @@ public class ShooterCalculations {
     } 
 
     public static ShotData iterativeMovingShot(
-            Pose2d robotPose, ChassisSpeeds fieldRelSpeeds, double ax, double ay, double alpha, AimingTarget aimingTarget, int iterations) {
-
-        double vLx = fieldRelSpeeds.vxMetersPerSecond + (ax * LATENCY_COMPENSATION);
-        double vLy = fieldRelSpeeds.vyMetersPerSecond + (ay * LATENCY_COMPENSATION);
-        // double omegaL = fieldRelSpeeds.omegaRadiansPerSecond + (alpha * LATENCY_COMPENSATION);
-        double omegaL = 0;
-
-        Pose2d effectivePose = new Pose2d(  // 0.5at^2 + v_0t + x_0 don pata reference
-                robotPose.getX() + (fieldRelSpeeds.vxMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * ax * Math.pow(LATENCY_COMPENSATION, 2)),
-                robotPose.getY() + (fieldRelSpeeds.vyMetersPerSecond * LATENCY_COMPENSATION) + (0.5 * ay * Math.pow(LATENCY_COMPENSATION, 2)),
-                robotPose.getRotation());//.plus( // 0.5alpha * t^2 + omega * t + theta_0 also don pata reference
-                        // new Rotation2d(fieldRelSpeeds.omegaRadiansPerSecond * LATENCY_COMPENSATION)).plus(  // omega * t
-                        //         new Rotation2d(0.5 * alpha * Math.pow(LATENCY_COMPENSATION, 2))));  // 0.5alpha t^2
-
-        Translation2d shooterOffsetRobot = ShooterConstants.CENTER_BOT_TOSHOOT.toTranslation2d();
-        Translation2d shooterOffsetField = shooterOffsetRobot.rotateBy(effectivePose.getRotation());
-
-        Translation2d shooterRotationalVelocity = new Translation2d(
-            -omegaL * shooterOffsetField.getY(),
-            omegaL * shooterOffsetField.getX()
-        );
-
-        Translation2d shooterFinalVelocity = new Translation2d(
-            vLx,
-            vLy
-        ).plus(shooterRotationalVelocity);
+            Pose2d robotPose, ChassisSpeeds fieldRelSpeeds, AimingTarget aimingTarget, int iterations) {
                 
         // Perform initial estimation (assuming unmoving robot) to get time of flight estimate
-        double distance = getDistanceToTarget(effectivePose, aimingTarget.getFieldPosition());
-        double rawTimeOfFlight = aimingTarget.getTimeOfFlight(distance);
+        double distance = getDistanceToTarget(robotPose, aimingTarget.getFieldPosition());
+        double timeOfFlight = aimingTarget.getTimeOfFlight(distance);
         Translation2d movingTargetPos = aimingTarget.getFieldPosition();
         
         // Iterate the process, getting better time of flight estimations and updating the predicted target accordingly
         for (int i = 0; i < iterations; i++) {
-            double effectiveToF = applyLinearDragCompensation(rawTimeOfFlight, DRAG_CONSTANT);
-            movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), shooterFinalVelocity, effectiveToF);
-            rawTimeOfFlight = aimingTarget.getTimeOfFlight(getDistanceToTarget(effectivePose, movingTargetPos));  // use the table for whatever the basic table is, but the distance is changing
-        }  // to tune: drive backwards and it overshoots? Latency comp too high
-           //          drive sideways to goal low mid far, if error increases with further distance, increase drag constant
+            movingTargetPos = predictTargetPos(aimingTarget.getFieldPosition(), fieldRelSpeeds, timeOfFlight);
+            timeOfFlight = aimingTarget.getTimeOfFlight(getDistanceToTarget(robotPose, movingTargetPos));  // use the table for whatever the basic table is, but the distance is changing
+            timeOfFlight = applyLinearDragCompensation(timeOfFlight, DRAG_CONSTANT);
+            timeOfFlight += LATENCY_COMPENSATION;
+        }  // to tune: forward and back from goal = latency comp, hits short = L too small
+           //          sideways to the goal = Linear Drag, behind direction of travel = drag constant too low
 
-        double finalEffectiveToF =
-             applyLinearDragCompensation(rawTimeOfFlight, DRAG_CONSTANT);
-        Translation2d finalMovingTargetPos = predictTargetPos(
-            aimingTarget.getFieldPosition(), shooterFinalVelocity, finalEffectiveToF);
-
-        VirtualTarget adjustedTarget = new VirtualTarget(aimingTarget, finalMovingTargetPos);
-        ShotData adjustedShot = calculateStillShot(effectivePose, adjustedTarget);
+        VirtualTarget adjustedTarget = new VirtualTarget(aimingTarget, movingTargetPos);
+        ShotData adjustedShot = calculateStillShot(robotPose, adjustedTarget);
 
         Logger.recordOutput("ShooterCalculations/SOTMadjustedShot", adjustedShot.toString());
         return adjustedShot;
@@ -156,9 +125,9 @@ public class ShooterCalculations {
     }
     
     // Move a target a set time in the future along a velocity defined by fieldSpeeds
-    public static Translation2d predictTargetPos(Translation2d target, Translation2d shooterVelocity, double tofSeconds) {
-        double predictedX = target.getX() - shooterVelocity.getX() * tofSeconds;
-        double predictedY = target.getY() - shooterVelocity.getY() * tofSeconds;
+    public static Translation2d predictTargetPos(Translation2d target, ChassisSpeeds fieldSpeeds, double tofSeconds) {
+        double predictedX = target.getX() - fieldSpeeds.vxMetersPerSecond * tofSeconds;
+        double predictedY = target.getY() - fieldSpeeds.vyMetersPerSecond * tofSeconds;
 
         return new Translation2d(predictedX, predictedY);
     }
@@ -208,5 +177,5 @@ public class ShooterCalculations {
         ObjectiveTracker.log(robotPose);
     }
 
-    public record ShotData(double flywheelVel, Rotation2d hoodAngle, double timeOfFlight, Translation2d target, Rotation2d yawTarget, AimingTarget aimingTarget) {}
+    public record ShotData(double flywheelVel, Rotation2d hoodAngle, double timeOfFlight, Translation2d target, AimingTarget aimingTarget) {}
 }
