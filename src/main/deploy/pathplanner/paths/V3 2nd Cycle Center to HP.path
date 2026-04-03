@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.5,
+        "x": 4.107517857142857,
         "y": 0.600326
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.5,
-        "y": 0.6003260000000008
+        "x": 5.107517857142857,
+        "y": 0.6003260000000009
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Intake Trench Shoot"
     },
     {
       "anchor": {
@@ -64,11 +64,11 @@
     },
     {
       "anchor": {
-        "x": 4.5,
+        "x": 4.107517857142857,
         "y": 0.600326
       },
       "prevControl": {
-        "x": 4.952581364690959,
+        "x": 4.560099221833815,
         "y": 0.5850830018700899
       },
       "nextControl": null,
