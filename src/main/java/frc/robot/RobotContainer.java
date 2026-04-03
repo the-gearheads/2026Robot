@@ -224,8 +224,10 @@ public class RobotContainer {
 
 
     Controllers.driverController.getBackButton().onTrue(hood.hoodHome());
-    Controllers.driverController.getStartButton().onTrue(intake.run((()->{intake.setIntakeVoltage(-12);})));
-    Controllers.driverController.getRightPaddle().onTrue(Commands.runOnce(() -> {swerve.waitToCrossToggle();}));
+    Controllers.driverController.getRightPaddle().onTrue(intake.run((()->{intake.setIntakeVoltage(-12);})).finallyDo(()->{
+      intake.setIntakeVoltage(0);
+    }));
+    Controllers.driverController.getStartButton().onTrue(Commands.runOnce(() -> {swerve.waitToCrossToggle();}));
     // Controllers.driverController.getStartButton().onTrue(Commands.runOnce(()->{
     //   ShooterCalculations.HubDists.add(ShooterCalculations.getDistanceToTarget(swerve.getPose(), ObjectiveTracker.HUB.getFieldPosition()));
     //   ShooterCalculations.ShooterSpeeds.add(shooter.getFlywheelVelocityRadPerSec());
