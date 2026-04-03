@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "V3 Center to Depot"
+                  "pathName": "FAST AF V3 Center to Depot"
                 }
               }
             ]
@@ -48,7 +48,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 6.0
                 }
               }
             ]
@@ -79,7 +79,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": " V3 2nd Cycle Depot Pickup"
+                  "pathName": "FAST AF 2DC"
                 }
               }
             ]
