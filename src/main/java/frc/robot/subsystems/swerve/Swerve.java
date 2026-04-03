@@ -61,7 +61,8 @@ public class Swerve extends SubsystemBase {
   Field2d field = new Field2d();
   Gyro gyro;
 
-  ProfiledPIDController headingController = new ProfiledPIDController(ROT_CONTROLLER_PID[0], ROT_CONTROLLER_PID[1], ROT_CONTROLLER_PID[2], ROT_CONTROLLER_CONSTRAINTS);
+  // ProfiledPIDController headingController = new ProfiledPIDController(ROT_CONTROLLER_PID[0], ROT_CONTROLLER_PID[1], ROT_CONTROLLER_PID[2], ROT_CONTROLLER_CONSTRAINTS);
+  PIDController headingController = new PIDController(ROT_CONTROLLER_PID[0], ROT_CONTROLLER_PID[1], ROT_CONTROLLER_PID[2]);
   PIDController driveController = new PIDController(DRIVE_CONTROLLER_PID[0], DRIVE_CONTROLLER_PID[1], DRIVE_CONTROLLER_PID[2]);
 
   SwerveModule[] modules = new SwerveModule[4];
@@ -187,14 +188,12 @@ public class Swerve extends SubsystemBase {
     if (alignToAngle != null) {
       Logger.recordOutput("Swerve/PoseRotPidAtSetpoint", headingController.atSetpoint());
       Logger.recordOutput("Swerve/alignToAngleSetpoint", headingController.getSetpoint());
-      headingController.setGoal(alignToAngle.getRadians());
+      headingController.setSetpoint(alignToAngle.getRadians());
       if (!headingController.atSetpoint()) {
         speeds.omegaRadiansPerSecond = commandedRot;
       } else {
         speeds.omegaRadiansPerSecond = 0;
       }
-    } else {
-      headingController.reset(getPose().getRotation().getRadians());
     }
 
     Logger.recordOutput("Swerve/Speeds", speeds);
@@ -441,6 +440,8 @@ public class Swerve extends SubsystemBase {
     
     // 4. Update memory for next loop
     lastYawVelocity = currentYawVel;
+
+    // headingController.reset(getPose().getRotation().getRadians());
   }
 
   @AutoLogOutput

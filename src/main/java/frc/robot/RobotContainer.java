@@ -284,7 +284,7 @@ public class RobotContainer {
             Commands.waitUntil(() -> {
               return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);
             }).withTimeout(5),
-            spindexer.runSpindexer(12))));
+            spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake)))));
     NamedCommands.registerCommand("StartIntakeChomp", Commands.run(() -> {
       intake.setIntakeVoltage(12);
     }, intake));
