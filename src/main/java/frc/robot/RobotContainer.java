@@ -184,6 +184,7 @@ public class RobotContainer {
     Controllers.driverController.getLeftBumper().whileTrue(Commands.parallel(
       hood.setAngleFeed(swerve),
       shooter.setFeedVelocityCommand(swerve),
+      intake.run(() -> {intake.setIntakeVoltage(12);}),
       new SequentialCommandGroup(
           Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.getFeedingObjective(swerve.getPose()));}),
           spindexer.runSpindexer(12)
@@ -244,11 +245,11 @@ public class RobotContainer {
 
 
      Controllers.operatorController.getAButton().onTrue(Commands.runOnce(()->{
-       ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(1));
+       ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(3));
      }));
 
     Controllers.operatorController.getXButton().onTrue(Commands.runOnce(()->{
-      ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(1));
+      ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(3));
     }));
     Controllers.operatorController.getBButton().onTrue(Commands.runOnce(()->{
       ShooterConstants.SHOOTER_VEL_ADJUSTMENT = (ShooterConstants.SHOOTER_VEL_ADJUSTMENT - 50); 
@@ -261,12 +262,14 @@ public class RobotContainer {
 
     Controllers.operatorController.getRightBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
     Controllers.operatorController.getLeftBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
+    Controllers.operatorController.getStartButton().onTrue(Commands.runOnce(() -> {swerve.waitToCrossToggle();}));
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
     // return sysidPicker.get();
     //return Swerve.wheelRadiusCharacterization(swerve);
+    
   }
 
   public void updateAimingManager() {

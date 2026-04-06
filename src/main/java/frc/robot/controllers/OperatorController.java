@@ -32,4 +32,8 @@ public interface OperatorController {
         return new Trigger(() ->false);
     }
 
+    public default Trigger getStartButton() {;
+        return new Trigger(()-> false);
+    }
+
 }
