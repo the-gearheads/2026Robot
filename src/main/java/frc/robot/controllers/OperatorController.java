@@ -35,5 +35,11 @@ public interface OperatorController {
     public default Trigger getStartButton() {;
         return new Trigger(()-> false);
     }
+    public default Trigger getPOVUp() {
+        return new Trigger(()-> false);
+    }
+    public default Trigger getPOVDown(){
+        return new Trigger(() -> false);
+    }
 
 }

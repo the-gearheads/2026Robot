@@ -244,13 +244,8 @@ public class RobotContainer {
     // }));
 
 
-     Controllers.operatorController.getAButton().onTrue(Commands.runOnce(()->{
-       ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(3));
-     }));
+     Controllers.operatorController.getAButton().whileTrue(deploy.shimmy(intake));
 
-    Controllers.operatorController.getXButton().onTrue(Commands.runOnce(()->{
-      ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(3));
-    }));
     Controllers.operatorController.getBButton().onTrue(Commands.runOnce(()->{
       ShooterConstants.SHOOTER_VEL_ADJUSTMENT = (ShooterConstants.SHOOTER_VEL_ADJUSTMENT - 50); 
     }));
@@ -258,11 +253,18 @@ public class RobotContainer {
       ShooterConstants.SHOOTER_VEL_ADJUSTMENT = (ShooterConstants.SHOOTER_VEL_ADJUSTMENT + 50);
     }));
 
-    Controllers.operatorController.getCButton().whileTrue(deploy.shimmy(intake));
+  
 
     Controllers.operatorController.getRightBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
     Controllers.operatorController.getLeftBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
     Controllers.operatorController.getStartButton().onTrue(Commands.runOnce(() -> {swerve.waitToCrossToggle();}));
+    
+    Controllers.operatorController.getPOVUp().onTrue(Commands.runOnce(()->{
+      ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.plus(Rotation2d.fromDegrees(3));
+    }));
+    Controllers.operatorController.getPOVDown().onTrue(Commands.runOnce(()->{
+      ShooterConstants.HOOD_ANGLE_ADJUSTMENT = ShooterConstants.HOOD_ANGLE_ADJUSTMENT.minus(Rotation2d.fromDegrees(3));
+    }));
   }
 
   public Command getAutonomousCommand() {
