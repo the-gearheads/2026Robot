@@ -41,8 +41,5 @@ public class SegaController implements OperatorController{
     public Trigger getCButton() {;
         return new Trigger(()-> joy.getRawButton(5));
     }
-       public Trigger getStartButton() {;
-        return new Trigger(()-> joy.getRawButton(10));
-    }
 
 }
