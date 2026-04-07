@@ -126,7 +126,7 @@ public class Camera {
             
             EstimatedRobotPose pose = poseResult.get();
             
-            Logger.recordOutput(path + "/EstPoseUnfilitered", pose.estimatedPose);
+            Logger.recordOutput(path + "/EstPoseUnfiltered", pose.estimatedPose);
             posedUnfilitered = true;
 
             Optional<Pose3d> filteredPose = filterPose(pose, onBump);

@@ -25,7 +25,7 @@ public class VisionConstants {
     public static final double MAX_Z = Units.inchesToMeters(7);
 
     // if gyro readings are above this; assume we're midair from bump and react accordingly 
-    // TODO: measure roll and pitch going over real bump to tune these numbers; make sure noise wont activate
+    // TODO: measure roll and pitch going over real bump tow tune these numbers; make sure noise wont activate
     public static final Rotation2d BUMP_ROLL_THRESHOLD = Rotation2d.fromDegrees(3);
     public static final Rotation2d BUMP_PITCH_THRESHOLD = Rotation2d.fromDegrees(6);
 

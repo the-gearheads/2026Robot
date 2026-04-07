@@ -1,5 +1,6 @@
 package frc.robot.constants;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -13,9 +14,10 @@ public class IntakeConstants {
     public static final int DEPLOY_CURRENT_LIMIT = 50;
 
     public static final double[] DEPLOY_PID = {0.55, 0, 0};
+    public static final ArmFeedforward DEPLOY_FEEDFOWARD = new ArmFeedforward(0, 0, 0, 0);
     public static final Constraints DEPLOY_CONSTRAINTS = new Constraints(
-        Units.degreesToRadians(1500), // per second; max vel
-        Units.degreesToRadians(2500)  //  per sec^2; max accel
+        Units.degreesToRadians(1250), // per second; max vel
+        Units.degreesToRadians(2300)  //  per sec^2; max accel
     );
 
 
@@ -27,8 +29,7 @@ public class IntakeConstants {
     public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.14108491;  // this must be in rotations
 
     public static final double INTAKE_GEAR_RATIO = 16.0 / 11.0;
-
-    public static final double DEPLOY_GEAR_RATIO = (74.0 + (2.0/3.0)) /1.0;  // placeholder
+    public static final double DEPLOY_GEAR_RATIO = (29.0/24.0) * (3.0*4.0*5.0);
     public static final double DEPLOY_POS_FACTOR = (1/DEPLOY_GEAR_RATIO)*(2 * Math.PI);
     public static final double DEPLOY_VEL_FACTOR = DEPLOY_POS_FACTOR / 60.0;
 
@@ -41,10 +42,10 @@ public class IntakeConstants {
     public static final Rotation2d DEPLOY_MAX_SYSID_ANGLE = Rotation2d.fromDegrees(54);
 
     public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromDegrees(0);
-    public static final Rotation2d DEPLOY_SHIMMY_LOW_ANGLE = Rotation2d.fromDegrees(15); 
-    public static final Rotation2d DEPLOY_SHIMMY_HIGH_ANGLE = Rotation2d.fromDegrees(56); 
+    public static final Rotation2d DEPLOY_SHIMMY_LOW_ANGLE = Rotation2d.fromDegrees(17); 
+    public static final Rotation2d DEPLOY_SHIMMY_HIGH_ANGLE = Rotation2d.fromDegrees(43); 
     public static final double SHIMMY_DOWN_TIMEOUT = 0.4;  // will go up for x seconds, down for x, etc
-    public static final double SHIMMY_UP_TIMEOUT = 0.3;  // will go up for x seconds, down for x, etc
+    public static final double SHIMMY_UP_TIMEOUT = 0.4;  // will go up for x seconds, down for x, etc
     public static final Rotation2d DEPLOY_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5);
 
     public static final double DEPLOY_STALL_VOLTAGE = 0.6;  // power consumption isn't an issue at these low current limit/voltages, but voltage drop on the battery is, so this has to be low

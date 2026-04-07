@@ -108,8 +108,10 @@ public class Deploy extends SubsystemBase {
       voltageMode = false; // voltageMode should be continuously set to set a voltage, so we default to maintaining pid when no command is being called
     } else {
       profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), holdVoltage));
-      deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+      double ff = DEPLOY_FEEDFOWARD.calculateWithVelocities(getAngle().getRadians(), getSpineRelativeDeployVelocity(), profileSetpoint.velocity);
+      deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
       Logger.recordOutput("Deploy/currentDeploySetpoint", profileSetpoint);
+      Logger.recordOutput("Deploy/deployFF", ff);
     }
 
     holdVoltage = 0;
