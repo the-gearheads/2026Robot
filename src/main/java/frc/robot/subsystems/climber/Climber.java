@@ -1,13 +1,18 @@
 package frc.robot.subsystems.climber;
 
 import static frc.robot.constants.ClimberConstants.*;
+import static frc.robot.constants.SwerveConstants.PATHFINDING_CONSTRAINTS;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.constants.FieldConstants;
+import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.util.AllianceFlipUtil;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -15,6 +20,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import com.reduxrobotics.sensors.canandcolor.DigoutFrameTrigger;
@@ -108,7 +115,17 @@ public class Climber extends SubsystemBase {
         climbEncoder.setPosition(position);
     }
 
-    public boolean climbingPole() {
+    @AutoLogOutput
+    public boolean isClimbingPole() {
         return canandcolor.digout1().getValue();
+    }
+
+    public Command autoClimb(Swerve swerve) {
+        Pose2d climbingPose;
+        if(AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth/2.0) {
+            climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
+        } else {
+            climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
+        }
     }
 }
