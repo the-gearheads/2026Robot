@@ -3,6 +3,7 @@ package frc.robot.constants;
 public class ClimberConstants {
 
     public static final int CLIMBER_ID = 50;
+    public static final int COLOR_SENSOR_ID = 51;
     public static final int CLIMBER_CURRENT_LIMIT = 60;
 
     public static final double CLIMB_UP_VOLTAGE = 12.0;
