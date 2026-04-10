@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.urcl.URCL;
 
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.reduxrobotics.canand.CanandEventLoop;
 
 import edu.wpi.first.net.WebServer;
@@ -56,6 +57,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
+    PathfindingCommand.warmupCommand().schedule();
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
   }
 
