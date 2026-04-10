@@ -5,6 +5,8 @@ import frc.robot.constants.SpindexerConstants;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.lang.annotation.RetentionPolicy;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -15,8 +17,10 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -30,6 +34,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 public class Spindexer extends SubsystemBase {
     SparkFlex mainSpinner = new SparkFlex(SpindexerConstants.SPINNER_ID, MotorType.kBrushless);
     SparkFlexConfig mainSpinnerConfig = new SparkFlexConfig();
+
+    SparkMax floober = new SparkMax(SpindexerConstants.FLOOBER_ID, MotorType.kBrushless);
+    SparkMaxConfig flooberConfig = new SparkMaxConfig();
 
     SparkFlex feeder = new SparkFlex(SpindexerConstants.FEEDER_ID, MotorType.kBrushless);
     RelativeEncoder feederEncoder = feeder.getEncoder();
@@ -59,7 +66,10 @@ public class Spindexer extends SubsystemBase {
         // feederConfig.closedLoop.feedForward.kS(SpindexerConstants.FEEDER_FEEDFORWARD.getKs());
         // feederConfig.closedLoop.feedForward.kV(SpindexerConstants.FEEDER_FEEDFORWARD.getKv());
         // feederConfig.closedLoop.feedForward.kA(SpindexerConstants.FEEDER_FEEDFORWARD.getKa());
-               
+
+        flooberConfig.idleMode(IdleMode.kCoast);
+
+        floober.configure(flooberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);       
         mainSpinner.configure(mainSpinnerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         feeder.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -75,6 +85,10 @@ public class Spindexer extends SubsystemBase {
     public void setVoltageFeeder(Voltage volts) {
         setVoltageFeeder(volts.magnitude());
     }
+
+    public void setVoltageFloober(double volts) {
+        floober.setVoltage(volts);
+    }
     
     public void setFeederSpeed(double velocity) {
         double ff = SpindexerConstants.FEEDER_FEEDFORWARD.calculate(velocity);
@@ -85,6 +99,11 @@ public class Spindexer extends SubsystemBase {
     @AutoLogOutput 
     public double getMainSpinnerVoltage() {
         return mainSpinner.getAppliedOutput() * mainSpinner.getBusVoltage();
+    }
+
+    @AutoLogOutput
+    public double getFlooberVoltage() {
+        return floober.getAppliedOutput() * floober.getBusVoltage();
     }
 
     @AutoLogOutput
