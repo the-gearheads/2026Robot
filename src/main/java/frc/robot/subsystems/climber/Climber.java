@@ -128,14 +128,10 @@ public class Climber extends SubsystemBase {
         double drivingVelocity;
         if(AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth/2.0) {
             climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
-            drivingVelocity = -CLIMB_SWEEP_SPEED;
+            drivingVelocity = CLIMB_SWEEP_SPEED;
         } else {
             climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
-            drivingVelocity = +CLIMB_SWEEP_SPEED;
-        }
-
-        if (swerve.getPose().getTranslation().getDistance(climbingPose.getTranslation()) > MAX_AUTOCLIMB_DIST) {
-            return Commands.none();
+            drivingVelocity = -CLIMB_SWEEP_SPEED;
         }
 
         return Commands.parallel(
@@ -143,15 +139,15 @@ public class Climber extends SubsystemBase {
             Commands.sequence(
                 swerve.pathFindToPose(climbingPose),
                 swerve.run(() -> {
-                    swerve.drive(new ChassisSpeeds(0, drivingVelocity, 0));
+                    swerve.drive(new ChassisSpeeds(0, drivingVelocity, 0), climbingPose.getRotation());
                 }).until(this::isClimbingPole),
                 swerve.runOnce(() -> {
-                            swerve.drive(new ChassisSpeeds(0, 0, 0));
+                            swerve.drive(new ChassisSpeeds(0, 0, 0), climbingPose.getRotation());
                         })
             )
         ).andThen(Commands.sequence(
                 swerve.run(() -> {
-                    new ChassisSpeeds(-CLIMB_IN_SPEED, 0, 0);
+                    swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, 0, 0), climbingPose.getRotation());
                 }).until(() -> {
                     return getColorProximity() <= AUTOCLIMB_DOWN_PROXIMITY;
                 }).withTimeout(1.5),
