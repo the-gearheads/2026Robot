@@ -5,7 +5,6 @@ import frc.robot.constants.SpindexerConstants;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.lang.annotation.RetentionPolicy;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -68,6 +67,8 @@ public class Spindexer extends SubsystemBase {
         // feederConfig.closedLoop.feedForward.kA(SpindexerConstants.FEEDER_FEEDFORWARD.getKa());
 
         flooberConfig.idleMode(IdleMode.kCoast);
+        flooberConfig.inverted(true);
+        flooberConfig.smartCurrentLimit(SpindexerConstants.FLOOBER_CURRENT_LIMIT);
 
         floober.configure(flooberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);       
         mainSpinner.configure(mainSpinnerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
