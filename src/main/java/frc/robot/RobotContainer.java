@@ -326,6 +326,17 @@ public class RobotContainer {
       shooter.setShooterVelocity(HP_TRENCH_SHOOT_VELOCITY);
       hood.setAngle(HP_TRENCH_SHOOT_ANGLE);
     }, shooter, hood).alongWith(spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake))));
-    NamedCommands.registerCommand("ShouldWeLeave", shooter.jarvisShouldIGo());
+     NamedCommands.registerCommand("aimShootStop", Commands.parallel(
+        hood.setAngleHub(swerve),
+        shooter.setHubVelocityCommand(swerve),
+        swerve.run(() -> {
+          swerve.drive(new ChassisSpeeds(),
+              ShooterCalculations.getYawToTarget(swerve.getPose(), AimingManager.latestHubShot.aimingTarget()));
+        }),
+        new SequentialCommandGroup(
+            Commands.waitUntil(() -> {
+              return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);
+            }).withTimeout(5),
+            spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake)))).until(shooter::shouldIGo));
   }
 }
