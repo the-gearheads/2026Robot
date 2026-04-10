@@ -32,6 +32,7 @@ public class Climber extends SubsystemBase {
     SparkFlex climber = new SparkFlex(CLIMBER_ID,MotorType.kBrushless);
     Canandcolor canandcolor = new Canandcolor(COLOR_SENSOR_ID);
     RelativeEncoder climbEncoder = climber.getEncoder();
+    //LaserCan laserCan = new LaserCan(LASERCAN_ID);
 
     CanandcolorSettings settings = new CanandcolorSettings();
     SparkFlexConfig climbConfig = new SparkFlexConfig();
@@ -43,6 +44,11 @@ public class Climber extends SubsystemBase {
                                 .setMinProximity(0.0)
                                 .setMaxProximity(CLIMBING_POLE_PROXIMITY_THRESHOLD) // Trigger when closer than this
         );
+        /* 
+        laserCan.setRangingMode(LaserCan.RangingMode.SHORT); //UNCONFIGURED SETTINGS
+        laserCan.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16)); //UNCONFIGURED SETTINGS
+        laserCan.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS); //UNCONFIGURED SETTINGS
+        */
     }
 
     @Override
@@ -116,12 +122,16 @@ public class Climber extends SubsystemBase {
     @AutoLogOutput
     public boolean isClimbingPole() {
         return canandcolor.digout1().getValue();
+        //return ((laserCan.getMeasurement().distance_mm)/1000) < ClimberConstants.CLIMBING_POLE_PROXIMITY_THRESHOLD;
     }
 
     @AutoLogOutput
     public double getColorProximity() {
-        return canandcolor.getProximity();
+       return canandcolor.getProximity();
+       //return ((laserCan.getMeasurement().distance_mm)/1000);
     }
+
+
 
     public Command autoClimb(Swerve swerve) {
         Pose2d climbingPose;

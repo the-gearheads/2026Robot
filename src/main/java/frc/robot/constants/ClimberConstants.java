@@ -8,6 +8,7 @@ public class ClimberConstants {
     public static final int CLIMBER_ID = 50;
     public static final int COLOR_SENSOR_ID = 51;
     public static final int CLIMBER_CURRENT_LIMIT = 60;
+   // public static final int LASERCAN_ID = 51;
 
     public static final double CLIMBING_POLE_PROXIMITY_THRESHOLD = 0.53;
     public static final double CLIMB_POLE_MIN_HUE = 0.1;  
