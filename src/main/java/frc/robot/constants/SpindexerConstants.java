@@ -6,7 +6,6 @@ import edu.wpi.first.math.util.Units;
 public final class SpindexerConstants {
     public static final int SPINNER_ID = 35;
     public static final int FEEDER_ID = 36;
-    public static final int FLOOBER_ID = 37;
 
     public static final int SPINNER_CURRENT_LIMIT = 60;
     public static final int FEEDER_CURRENT_LIMIT = 60;
