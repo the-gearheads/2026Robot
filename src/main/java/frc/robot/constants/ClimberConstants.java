@@ -20,8 +20,8 @@ public class ClimberConstants {
     public static final double CLIMB_DOWN_POS = 60.48;
     public static final double MIN_CLIMBER_POS = 5.0;
 
-    public static final Pose2d CLIMB_RIGHT_POSE = new Pose2d(1.25, 2.820, Rotation2d.kCW_90deg);
-    public static final Pose2d CLIMB_LEFT_POSE = new Pose2d(1.25, 4.731, Rotation2d.kCCW_90deg);
+    public static final Pose2d CLIMB_RIGHT_POSE = new Pose2d(1.345, 2.820, Rotation2d.kCW_90deg);
+    public static final Pose2d CLIMB_LEFT_POSE = new Pose2d(1.345, 4.731, Rotation2d.kCCW_90deg);
     public static final double CLIMB_SWEEP_SPEED = 0.25;  // m/s
     public static final double CLIMB_IN_SPEED = 0.25;  // m/s
 

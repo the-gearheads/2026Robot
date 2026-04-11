@@ -19,6 +19,7 @@ import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.AimingTarget;
 import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.HubTracker;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.targets.VirtualTarget;
@@ -41,10 +42,10 @@ import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -131,21 +132,21 @@ public class RobotContainer {
     // Find new controllers
     Controllers.updateActiveControllerInstance();
 
-    // HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(Commands.deferredProxy(() -> {
-    //   if (DriverStation.isTeleopEnabled()) {
-    //     return Controllers.driverController.getRumbleCommand(1, 0.2, 3);
-    //   } else {
-    //     return Commands.none();
-    //   }
-    // }));
+    HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(Commands.deferredProxy(() -> {
+      if (DriverStation.isTeleopEnabled()) {
+        return Controllers.driverController.getRumbleCommand(1, 0.2, 3);
+      } else {
+        return Commands.none();
+      }
+    }));
 
-    // HubTracker.NEXT_SHIFT_INACTIVE_TRIGGER.onTrue(Commands.deferredProxy(() -> {
-    //   if (DriverStation.isTeleopEnabled()) {
-    //     return Controllers.driverController.getRumbleCommand(1, 1);
-    //   } else {
-    //     return Commands.none();
-    //   }
-    // }));
+    HubTracker.NEXT_SHIFT_INACTIVE_TRIGGER.onTrue(Commands.deferredProxy(() -> {
+      if (DriverStation.isTeleopEnabled()) {
+        return Controllers.driverController.getRumbleCommand(1, 1);
+      } else {
+        return Commands.none();
+      }
+    }));
 
     Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.parallel(
         hood.setObjectiveAngleCommand(swerve),
@@ -197,7 +198,7 @@ public class RobotContainer {
 
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
-    Controllers.driverController.getYBtn().onTrue(swerve.driveToPose(AllianceFlipUtil.apply(new Pose2d(2.310, 2.310, Rotation2d.kZero)), true));
+    Controllers.driverController.getYBtn().onTrue(climber.autoClimb(swerve));
     Controllers.driverController.getBBtn().onTrue(climber.climberDown());
 
     // Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{spindexer.setVoltageFloober(12);}).finallyDo(
@@ -276,7 +277,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return swerve.driveToPose(AllianceFlipUtil.apply(new Pose2d(2.310, 2.310, Rotation2d.kZero)), true);
+    return AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(ClimberConstants.CLIMB_LEFT_POSE), SwerveConstants.PATHFINDING_CONSTRAINTS);
     // return autoChooser.getSelected();
     // return sysidPicker.get();
     //return Swerve.wheelRadiusCharacterization(swerve);
