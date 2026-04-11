@@ -29,7 +29,7 @@ public class IntakeConstants {
     public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.14108491;  // this must be in rotations
 
     public static final double INTAKE_GEAR_RATIO = 16.0 / 11.0;
-    public static final double DEPLOY_GEAR_RATIO = (30.0/24.0) * (3.0*4.0*5.0);
+    public static final double DEPLOY_GEAR_RATIO = (29.0/24.0) * (3.0*4.0*5.0);
     public static final double DEPLOY_POS_FACTOR = (1/DEPLOY_GEAR_RATIO)*(2 * Math.PI);
     public static final double DEPLOY_VEL_FACTOR = DEPLOY_POS_FACTOR / 60.0;
 

@@ -56,8 +56,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
-    // Pathfinding.setPathfinder(new LocalADStar());
-    // PathfindingCommand.warmupCommand().schedule();
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
   }
 
