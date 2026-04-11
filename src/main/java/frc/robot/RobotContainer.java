@@ -18,6 +18,7 @@ import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.AimingTarget;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.HubTracker;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
@@ -28,6 +29,7 @@ import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
 import frc.robot.controllers.Controllers;
 
+import static frc.robot.constants.ClimberConstants.CLIMB_LEFT_POSE;
 import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_VELOCITY;
@@ -273,7 +275,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(ClimberConstants.CLIMB_LEFT_POSE), SwerveConstants.PATHFINDING_CONSTRAINTS);
+    // return AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(CLIMB_LEFT_POSE), SwerveConstants.PATHFINDING_CONSTRAINTS);
     return autoChooser.getSelected();
     // return sysidPicker.get();
     //return Swerve.wheelRadiusCharacterization(swerve);
