@@ -21,29 +21,19 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
-import com.reduxrobotics.sensors.canandcolor.Canandcolor;
-import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
-import com.reduxrobotics.sensors.canandcolor.DigoutFrameTrigger;
-import com.reduxrobotics.sensors.canandcolor.HSVDigoutConfig;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 
 public class Climber extends SubsystemBase {
     SparkFlex climber = new SparkFlex(CLIMBER_ID,MotorType.kBrushless);
-    Canandcolor canandcolor = new Canandcolor(COLOR_SENSOR_ID);
     RelativeEncoder climbEncoder = climber.getEncoder();
     //LaserCan laserCan = new LaserCan(LASERCAN_ID);
 
-    CanandcolorSettings settings = new CanandcolorSettings();
     SparkFlexConfig climbConfig = new SparkFlexConfig();
 
     public Climber() {
         configure();
         climbEncoder.setPosition(0);
-        canandcolor.digout1().configureSlots(new HSVDigoutConfig()
-                                .setMinProximity(0.0)
-                                .setMaxProximity(CLIMBING_POLE_PROXIMITY_THRESHOLD) // Trigger when closer than this
-        );
         /* 
         laserCan.setRangingMode(LaserCan.RangingMode.SHORT); //UNCONFIGURED SETTINGS
         laserCan.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16)); //UNCONFIGURED SETTINGS
@@ -68,17 +58,6 @@ public class Climber extends SubsystemBase {
         climbConfig.softLimit.forwardSoftLimitEnabled(true);
         climber.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        
-
-        settings.setProximityFramePeriod(0.02);
-        settings.setColorFramePeriod(0.02);
-
-        // Tell the sensor to send a frame IMMEDIATELY when the logic trips
-        settings.setDigoutFrameTrigger(canandcolor.digout1().channelIndex(),
-                                    DigoutFrameTrigger.kRisingAndFalling);
-        settings.setLampLEDBrightness(0);
-
-        canandcolor.setSettings(settings);
 
         climbConfig.encoder.quadratureMeasurementPeriod(10);
         climbConfig.encoder.quadratureAverageDepth(2); 
@@ -119,17 +98,18 @@ public class Climber extends SubsystemBase {
         climbEncoder.setPosition(position);
     }
 
-    @AutoLogOutput
+   /* @AutoLogOutput
     public boolean isClimbingPole() {
-        return canandcolor.digout1().getValue();
         //return ((laserCan.getMeasurement().distance_mm)/1000) < ClimberConstants.CLIMBING_POLE_PROXIMITY_THRESHOLD;
     }
+    */
 
+    /*
     @AutoLogOutput
     public double getColorProximity() {
-       return canandcolor.getProximity();
        //return ((laserCan.getMeasurement().distance_mm)/1000);
     }
+    */
 
 
 
