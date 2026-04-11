@@ -17,7 +17,7 @@ public final class MiscConstants {
         // this is so we can start shooting tof + real processing time early
         public static final double REAL_FUEL_PROCESSING_TIME = 0.25;  // VERY conservative seconds from ball in hub to ball counted;
         
-        public static final double SHIFT_WARNING_TIME = 6.0;  // Controller vibrates X seconds before active
+        public static final double SHIFT_WARNING_TIME = 5.0;  // Controller vibrates X seconds before active
 
         public static final double G = 9.80665;
 
