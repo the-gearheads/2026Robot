@@ -283,7 +283,7 @@ public class RobotContainer {
 
   public void updateAimingManager() {
     ShooterCalculations.log(swerve.getPose());
-    AimingManager.update(swerve.getPose(), swerve.getFieldRelativeSpeeds(),  swerve.getGyroXAcceleration(), swerve.getGyroYAcceleration(), swerve.getGyroYawAcceleration());
+    AimingManager.update(swerve.getPose(), swerve.getFieldRelativeSpeeds());
   }
 
   private void initializeNamedCommands() {
