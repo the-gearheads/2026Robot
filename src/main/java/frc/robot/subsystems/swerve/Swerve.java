@@ -217,10 +217,6 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  public Command pathFindToPose(Pose2d pose) {
-    return AutoBuilder.pathfindToPose(pose, PATHFINDING_CONSTRAINTS);
-  }
-
   public void drive(ChassisSpeeds speeds) {
     drive(speeds, null);
   }

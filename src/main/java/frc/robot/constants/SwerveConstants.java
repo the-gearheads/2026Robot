@@ -1,7 +1,5 @@
 package frc.robot.constants;
 
-import com.pathplanner.lib.path.PathConstraints;
-
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -78,8 +76,10 @@ public final class SwerveConstants {
     public static double[] DRIVE_CONTROLLER_PID = {5, 0, 0.3};
     public static double[] ROT_CONTROLLER_PID = {11, 0, 0.2};
 
-    public static PathConstraints PATHFINDING_CONSTRAINTS = new PathConstraints(MAX_ROBOT_TRANS_SPEED - 0.5,
-        MAX_ROBOT_TRANS_ACCEL - 3.0, MAX_ROBOT_ROT_SPEED - 2.0, MAX_ROBOT_ROT_ACCEL - 2.0);
+    public static Constraints ROT_CONTROLLER_CONSTRAINTS = new Constraints(
+      MAX_ROBOT_ROT_SPEED - 2,
+      MAX_ROBOT_ROT_ACCEL - 2  // -2 just keeping things a lil conservative
+    );
 
     public static Rotation2d YAW_ALIGN_TOLERANCE = Rotation2d.fromDegrees(3);
 
