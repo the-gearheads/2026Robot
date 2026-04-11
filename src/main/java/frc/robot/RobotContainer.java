@@ -195,8 +195,8 @@ public class RobotContainer {
 
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
-    // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
-    Controllers.driverController.getBBtn().onTrue(climber.autoClimb(swerve));
+    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
+    Controllers.driverController.getBBtn().onTrue(climber.climberDown());
 
     Controllers.driverController.getLeftPaddle().whileTrue(Commands.run(() -> {
       shooter.setShooterVelocity(HP_TRENCH_SHOOT_VELOCITY);

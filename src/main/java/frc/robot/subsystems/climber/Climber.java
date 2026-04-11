@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climber;
 
 import static frc.robot.constants.ClimberConstants.*;
+import static frc.robot.constants.SwerveConstants.PATHFINDING_CONSTRAINTS;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
@@ -21,6 +22,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import com.reduxrobotics.sensors.canandcolor.DigoutFrameTrigger;
@@ -70,7 +73,6 @@ public class Climber extends SubsystemBase {
         // Tell the sensor to send a frame IMMEDIATELY when the logic trips
         settings.setDigoutFrameTrigger(canandcolor.digout1().channelIndex(),
                                     DigoutFrameTrigger.kRisingAndFalling);
-        settings.setLampLEDBrightness(0);
 
         canandcolor.setSettings(settings);
 
