@@ -133,7 +133,7 @@ public class RobotContainer {
 
     HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(Commands.deferredProxy(() -> {
       if (DriverStation.isTeleopEnabled()) {
-        return Controllers.driverController.getRumbleCommand(1, 0.3, 3);
+        return Controllers.driverController.getRumbleCommand(1, 0.2, 3);
       } else {
         return Commands.none();
       }
