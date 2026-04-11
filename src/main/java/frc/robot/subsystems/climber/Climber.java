@@ -144,27 +144,27 @@ public class Climber extends SubsystemBase {
             drivingVelocity = -CLIMB_SWEEP_SPEED;
         }
 
-        return Commands.sequence(
+        return Commands.parallel(
             climberUp(),
             Commands.sequence(
                 swerve.pathFindToPose(climbingPose),
                 swerve.run(() -> {
-                    swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, drivingVelocity, 0), climbingPose.getRotation());
-                }).withTimeout(2),
+                    swerve.drive(new ChassisSpeeds(0, drivingVelocity, 0), climbingPose.getRotation());
+                }).until(this::isClimbingPole),
                 swerve.runOnce(() -> {
                             swerve.drive(new ChassisSpeeds(0, 0, 0), climbingPose.getRotation());
-                })
+                        })
             )
         ).andThen(Commands.sequence(
-                // swerve.run(() -> {
-                //     swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, 0, 0), climbingPose.getRotation());
-                // }).until(() -> {
-                //     return getColorProximity() <= AUTOCLIMB_DOWN_PROXIMITY;
-                // }).withTimeout(1.5),
+                swerve.run(() -> {
+                    swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, 0, 0), climbingPose.getRotation());
+                }).until(() -> {
+                    return getColorProximity() <= AUTOCLIMB_DOWN_PROXIMITY;
+                }).withTimeout(1.5),
 
-                // swerve.runOnce(() -> {
-                //     swerve.drive(new ChassisSpeeds(0, 0, 0));
-                // }),
+                swerve.runOnce(() -> {
+                    swerve.drive(new ChassisSpeeds(0, 0, 0));
+                }),
 
                 climberDown()
         ));

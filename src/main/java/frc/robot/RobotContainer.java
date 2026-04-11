@@ -18,7 +18,6 @@ import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.AimingTarget;
-import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.HubTracker;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
@@ -205,7 +204,7 @@ public class RobotContainer {
 
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
-    Controllers.driverController.getYBtn().onTrue(climber.autoClimb(swerve));
+    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
     Controllers.driverController.getBBtn().onTrue(climber.climberDown());
 
     // Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{spindexer.setVoltageFloober(12);}).finallyDo(
@@ -284,8 +283,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(ClimberConstants.CLIMB_LEFT_POSE), SwerveConstants.PATHFINDING_CONSTRAINTS);
-    // return autoChooser.getSelected();
+    // return AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(ClimberConstants.CLIMB_LEFT_POSE), SwerveConstants.PATHFINDING_CONSTRAINTS);
+    return autoChooser.getSelected();
     // return sysidPicker.get();
     //return Swerve.wheelRadiusCharacterization(swerve);
   }
