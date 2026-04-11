@@ -5,6 +5,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 public final class SwerveConstants {
@@ -75,12 +76,16 @@ public final class SwerveConstants {
     public static double[] ROT_PATH_FOLLOWING_PID = {0.8, 0, 0};
 
     public static double[] DRIVE_CONTROLLER_PID = {5, 0, 0.3};
-    public static double[] ROT_CONTROLLER_PID = {11, 0, 0.2};
+    public static double[] ROT_CONTROLLER_PID = {3.2, 0, 0};
 
     public static PathConstraints PATHFINDING_CONSTRAINTS = new PathConstraints(MAX_ROBOT_TRANS_SPEED - 0.5,
         MAX_ROBOT_TRANS_ACCEL - 3.0, MAX_ROBOT_ROT_SPEED - 2.0, MAX_ROBOT_ROT_ACCEL - 2.0);
 
     public static Rotation2d YAW_ALIGN_TOLERANCE = Rotation2d.fromDegrees(3);
+
+    public static final Rotation2d SWERVE_ALIGN_ROT_TOLERANCE = Rotation2d.fromDegrees(2);
+    public static final double SWERVE_ALIGN_DIST_TOLERANCE = Units.inchesToMeters(0.75);
+    public static Constraints DRIVE_TO_POINT_CONSTRAINTS = new Constraints(6, 4);
 
     public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // rad/s^2
     public static final double WHEEL_RADIUS_MAX_VEL = 0.25; // rad/s
