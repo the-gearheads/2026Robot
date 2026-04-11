@@ -129,8 +129,10 @@ public class Spindexer extends SubsystemBase {
     public Command runSpindexer(double volts) {
         return this.run(() -> {
             setVoltageMainSpinner(-volts);
+            setVoltageFloober(volts);
             setVoltageFeeder(volts);
         }).finallyDo(() -> {
+            setVoltageFloober(0);
             setVoltageMainSpinner(0);
             setVoltageFeeder(0);
         });
