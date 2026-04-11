@@ -120,15 +120,6 @@ public class RobotContainer {
         return Commands.none();
       }
     }));
-
-      HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(Commands.deferredProxy(() -> {
-      if (DriverStation.isTeleopEnabled()) {
-        return Commands.print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-      } else {
-        return Commands.none();
-      }
-    }));
-
     HubTracker.NEXT_SHIFT_INACTIVE_TRIGGER.onTrue(Commands.deferredProxy(() -> {
       if (DriverStation.isTeleopEnabled()) {
         return Controllers.driverController.getRumbleCommand(1, 1);
@@ -204,13 +195,12 @@ public class RobotContainer {
 
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
-    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
-    Controllers.driverController.getBBtn().onTrue(climber.climberDown());
+    // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
 
-    // Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{spindexer.setVoltageFloober(12);}).finallyDo(
-    //   ()->{spindexer.setVoltageFloober(0);}
-    // ));
-    // Controllers.driverController.getBBtn().onTrue(climber.autoClimb(swerve));
+    Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{spindexer.setVoltageFloober(12);}).finallyDo(
+      ()->{spindexer.setVoltageFloober(0);}
+    ));
+    Controllers.driverController.getBBtn().onTrue(climber.autoClimb(swerve));
 
     Controllers.driverController.getLeftPaddle().whileTrue(Commands.run(() -> {
       shooter.setShooterVelocity(HP_TRENCH_SHOOT_VELOCITY);
