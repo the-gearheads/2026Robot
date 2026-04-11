@@ -34,22 +34,14 @@ public class FeederTarget implements AimingTarget {
 
     @Override
     public Rotation2d getHoodAngle(double distanceMeters) {
-        if(distanceMeters <= 6)
-        {
-        double clampedDist = Math.max(SHOOT_DISTANCES[0], Math.min(distanceMeters, SHOOT_DISTANCES[SHOOT_DISTANCES.length - 1]));
-        return Rotation2d.fromRadians(angleSpline.value(clampedDist));
-        }
-        else {
         return FEEDING_ANGLE;
-        }
     }
 
     @Override
     public double getFlywheelVel(double distanceMeters) {
         if(distanceMeters <= 6)
         {
-        double clampedDist = Math.max(SHOOT_DISTANCES[0], Math.min(distanceMeters, SHOOT_DISTANCES[SHOOT_DISTANCES.length - 1]));
-        return velSpline.value(clampedDist);
+        return ShooterConstants.SHORT_FEED_VEL;
         }
         else {
         return FEEDING_VEL;
