@@ -12,7 +12,12 @@ import frc.robot.subsystems.vision.CameraIntrinsics;
 
 public class VisionConstants {
     
-    public static final String[] CAMERA_NAMES = {"CTHULHU", "PEARL2", "ANNIE", "ALLAN"};
+    public static final String[] CAMERA_NAMES = {
+        "CTHULHU", 
+        // "PEARL2", 
+        "ANNIE",
+        "ALLAN" 
+    };
 
     public static final boolean ENABLED = true;
     public static final boolean USE_CONSTRAINED_PNP = false;
@@ -33,7 +38,7 @@ public class VisionConstants {
     public static final PoseStrategy[] INITIAL_CAMERA_STRATEGIES = {PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR};
     public static final Transform3d[] CAMERA_TRANSFORMS = {
         new Transform3d(Units.inchesToMeters(-13.934), Units.inchesToMeters(11.52), Units.inchesToMeters(9.0), new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(180))), // back left
-        new Transform3d(Units.inchesToMeters(-13.958), Units.inchesToMeters(-11.576), Units.inchesToMeters(9.25), new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(-100))), // back  right
+        // new Transform3d(Units.inchesToMeters(-13.958), Units.inchesToMeters(-11.576), Units.inchesToMeters(9.25), new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(-100))), // back  right
         new Transform3d(Units.inchesToMeters(14.19), Units.inchesToMeters(-11.536), Units.inchesToMeters(9.0), new Rotation3d(0, Units.degreesToRadians(-20),0)), // front right
         new Transform3d(Units.inchesToMeters(13.887), Units.inchesToMeters(11.6), Units.inchesToMeters(9.25), new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(80))) // front left
     };
@@ -44,11 +49,11 @@ public class VisionConstants {
             1280, 800,
             906.1235271017885, 906.3131911811712, 647.0631548443764, 401.6428917491316,
             new double[] {0.04506187328353074,-0.051275911330163695,-4.2370271745676663E-5,-0.0010494597718615677,-0.012449373353808963,-0.001374223570752213,0.00394799518717367,0.0012915739517360477}),
-        new CameraIntrinsics(  // ALLAN
-            1280, 800,
-            902.2608474853896, 902.2161068480787,
-            609.9129007473787, 392.80120315523453,
-            new double[] {0.0525716608175405,-0.0869035197754647,5.185957545931161E-4,-8.252421873108142E-4,0.02868722144643985,-0.0021021187652514443,0.0038484340525384636,-7.308988653147572E-4}),
+        // new CameraIntrinsics(  // ALLAN
+        //     1280, 800,
+        //     902.2608474853896, 902.2161068480787,
+        //     609.9129007473787, 392.80120315523453,
+        //     new double[] {0.0525716608175405,-0.0869035197754647,5.185957545931161E-4,-8.252421873108142E-4,0.02868722144643985,-0.0021021187652514443,0.0038484340525384636,-7.308988653147572E-4}),
         new CameraIntrinsics(  // PEARL TODO: update pearl camera intrinsics
             1600, 1200,
             1286.9714942340822, 1286.958397164024,

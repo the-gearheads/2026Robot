@@ -73,8 +73,8 @@ public final class SwerveConstants {
     public static double[] XY_PATH_FOLLOWING_PID = {1.5, 0, 0.0};
     public static double[] ROT_PATH_FOLLOWING_PID = {0.8, 0, 0};
 
-    public static double[] DRIVE_CONTROLLER_PID = {5, 0, 0.3};
-    public static double[] ROT_CONTROLLER_PID = {11, 0, 0.2};
+    public static double[] DRIVE_CONTROLLER_PID = {4, 0, 0.3};
+    public static double[] ROT_CONTROLLER_PID = {3.2, 0, 0};
 
     public static Constraints ROT_CONTROLLER_CONSTRAINTS = new Constraints(
       MAX_ROBOT_ROT_SPEED - 2,

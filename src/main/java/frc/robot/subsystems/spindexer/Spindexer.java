@@ -5,7 +5,6 @@ import frc.robot.constants.SpindexerConstants;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.lang.annotation.RetentionPolicy;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
