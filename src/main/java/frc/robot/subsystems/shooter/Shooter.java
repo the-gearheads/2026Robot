@@ -47,7 +47,7 @@ public class Shooter extends SubsystemBase {
   RelativeEncoder kickerEncoder = kicker.getEncoder();
 
   ShooterCalculations shooterCalculations = new ShooterCalculations();
-  Double timeOfLastShot = 80.0;
+  Double timeOfLastShot;
 
   public Shooter() {
     configure();
@@ -55,7 +55,6 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    getTimeOfLastShot();
 
   }
 
@@ -251,9 +250,9 @@ public class Shooter extends SubsystemBase {
       return false;
     }
   }
-  //public Command jarvisShouldIGo(){
-  // return this.run(()->{
-  //        getTimeOfLastShot();
-  //      }).until(()->{return shouldIGo() == true;});
-  // }
+  public Command jarvisShouldIGo(){
+    return this.run(()->{
+          getTimeOfLastShot();
+        }).until(()->{return shouldIGo() == true;});
+  }
 }
