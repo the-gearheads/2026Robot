@@ -21,24 +21,28 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
+import com.reduxrobotics.sensors.canandcolor.DigoutFrameTrigger;
+import com.reduxrobotics.sensors.canandcolor.HSVDigoutConfig;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 
 public class Climber extends SubsystemBase {
     SparkFlex climber = new SparkFlex(CLIMBER_ID,MotorType.kBrushless);
+    Canandcolor canandcolor = new Canandcolor(COLOR_SENSOR_ID);
     RelativeEncoder climbEncoder = climber.getEncoder();
-    //LaserCan laserCan = new LaserCan(LASERCAN_ID);
 
+    CanandcolorSettings settings = new CanandcolorSettings();
     SparkFlexConfig climbConfig = new SparkFlexConfig();
 
     public Climber() {
         configure();
         climbEncoder.setPosition(0);
-        /* 
-        laserCan.setRangingMode(LaserCan.RangingMode.SHORT); //UNCONFIGURED SETTINGS
-        laserCan.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16)); //UNCONFIGURED SETTINGS
-        laserCan.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS); //UNCONFIGURED SETTINGS
-        */
+        canandcolor.digout1().configureSlots(new HSVDigoutConfig()
+                                .setMinProximity(0.0)
+                                .setMaxProximity(CLIMBING_POLE_PROXIMITY_THRESHOLD) // Trigger when closer than this
+        );
     }
 
     @Override
@@ -58,6 +62,17 @@ public class Climber extends SubsystemBase {
         climbConfig.softLimit.forwardSoftLimitEnabled(true);
         climber.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+        
+
+        settings.setProximityFramePeriod(0.02);
+        settings.setColorFramePeriod(0.02);
+
+        // Tell the sensor to send a frame IMMEDIATELY when the logic trips
+        settings.setDigoutFrameTrigger(canandcolor.digout1().channelIndex(),
+                                    DigoutFrameTrigger.kRisingAndFalling);
+        settings.setLampLEDBrightness(0);
+
+        canandcolor.setSettings(settings);
 
         climbConfig.encoder.quadratureMeasurementPeriod(10);
         climbConfig.encoder.quadratureAverageDepth(2); 
@@ -98,20 +113,15 @@ public class Climber extends SubsystemBase {
         climbEncoder.setPosition(position);
     }
 
-   /* @AutoLogOutput
+    @AutoLogOutput
     public boolean isClimbingPole() {
-        //return ((laserCan.getMeasurement().distance_mm)/1000) < ClimberConstants.CLIMBING_POLE_PROXIMITY_THRESHOLD;
+        return canandcolor.digout1().getValue();
     }
-    */
 
-    /*
     @AutoLogOutput
     public double getColorProximity() {
-       //return ((laserCan.getMeasurement().distance_mm)/1000);
+        return canandcolor.getProximity();
     }
-    */
-
-
 
     public Command autoClimb(Swerve swerve) {
         Pose2d climbingPose;
@@ -121,30 +131,34 @@ public class Climber extends SubsystemBase {
             drivingVelocity = -CLIMB_SWEEP_SPEED;
         } else {
             climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
-            drivingVelocity = CLIMB_SWEEP_SPEED;
+            drivingVelocity = +CLIMB_SWEEP_SPEED;
         }
 
-        return Commands.sequence(
+        if (swerve.getPose().getTranslation().getDistance(climbingPose.getTranslation()) > MAX_AUTOCLIMB_DIST) {
+            return Commands.none();
+        }
+
+        return Commands.parallel(
             climberUp(),
             Commands.sequence(
-                swerve.driveToPose(climbingPose, true),
+                swerve.pathFindToPose(climbingPose),
                 swerve.run(() -> {
-                    swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, drivingVelocity, 0), climbingPose.getRotation());
-                }).withTimeout(2),
+                    swerve.drive(new ChassisSpeeds(0, drivingVelocity, 0));
+                }).until(this::isClimbingPole),
                 swerve.runOnce(() -> {
-                            swerve.drive(new ChassisSpeeds(0, 0, 0), climbingPose.getRotation());
-                })
+                            swerve.drive(new ChassisSpeeds(0, 0, 0));
+                        })
             )
         ).andThen(Commands.sequence(
-                // swerve.run(() -> {
-                //     swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, 0, 0), climbingPose.getRotation());
-                // }).until(() -> {
-                //     return getColorProximity() <= AUTOCLIMB_DOWN_PROXIMITY;
-                // }).withTimeout(1.5),
+                swerve.run(() -> {
+                    new ChassisSpeeds(-CLIMB_IN_SPEED, 0, 0);
+                }).until(() -> {
+                    return getColorProximity() <= AUTOCLIMB_DOWN_PROXIMITY;
+                }).withTimeout(1.5),
 
-                // swerve.runOnce(() -> {
-                //     swerve.drive(new ChassisSpeeds(0, 0, 0));
-                // }),
+                swerve.runOnce(() -> {
+                    swerve.drive(new ChassisSpeeds(0, 0, 0));
+                }),
 
                 climberDown()
         ));
