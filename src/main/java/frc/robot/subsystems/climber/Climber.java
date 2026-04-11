@@ -7,9 +7,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.FieldConstants;
@@ -45,6 +43,8 @@ public class Climber extends SubsystemBase {
         canandcolor.digout1().configureSlots(new HSVDigoutConfig()
                                 .setMinProximity(0.0)
                                 .setMaxProximity(CLIMBING_POLE_PROXIMITY_THRESHOLD) // Trigger when closer than this
+                                .setMinHue(CLIMB_POLE_MIN_HUE)      
+                                .setMaxHue(CLIMB_POLE_MAX_HUE)
         );
     }
 
@@ -120,49 +120,12 @@ public class Climber extends SubsystemBase {
         return canandcolor.digout1().getValue();
     }
 
-    @AutoLogOutput
-    public double getColorProximity() {
-        return canandcolor.getProximity();
-    }
-
     public Command autoClimb(Swerve swerve) {
         Pose2d climbingPose;
-        double drivingVelocity;
         if(AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth/2.0) {
             climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
-            drivingVelocity = -CLIMB_SWEEP_SPEED;
         } else {
             climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
-            drivingVelocity = +CLIMB_SWEEP_SPEED;
         }
-
-        if (swerve.getPose().getTranslation().getDistance(climbingPose.getTranslation()) > MAX_AUTOCLIMB_DIST) {
-            return Commands.none();
-        }
-
-        return Commands.parallel(
-            climberUp(),
-            Commands.sequence(
-                swerve.pathFindToPose(climbingPose),
-                swerve.run(() -> {
-                    swerve.drive(new ChassisSpeeds(0, drivingVelocity, 0));
-                }).until(this::isClimbingPole),
-                swerve.runOnce(() -> {
-                            swerve.drive(new ChassisSpeeds(0, 0, 0));
-                        })
-            )
-        ).andThen(Commands.sequence(
-                swerve.run(() -> {
-                    new ChassisSpeeds(-CLIMB_IN_SPEED, 0, 0);
-                }).until(() -> {
-                    return getColorProximity() <= AUTOCLIMB_DOWN_PROXIMITY;
-                }).withTimeout(1.5),
-
-                swerve.runOnce(() -> {
-                    swerve.drive(new ChassisSpeeds(0, 0, 0));
-                }),
-
-                climberDown()
-        ));
     }
 }
