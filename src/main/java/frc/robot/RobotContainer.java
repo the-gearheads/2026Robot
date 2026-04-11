@@ -275,8 +275,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(CLIMB_LEFT_POSE), SwerveConstants.PATHFINDING_CONSTRAINTS);
-    return autoChooser.getSelected();
+    return AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(CLIMB_LEFT_POSE), SwerveConstants.PATHFINDING_CONSTRAINTS);
+    // return autoChooser.getSelected();
     // return sysidPicker.get();
     //return Swerve.wheelRadiusCharacterization(swerve);
   }
