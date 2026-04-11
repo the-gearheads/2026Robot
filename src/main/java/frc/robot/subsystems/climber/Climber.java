@@ -118,16 +118,16 @@ public class Climber extends SubsystemBase {
         double drivingVelocity;
         if(AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth/2.0) {
             climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
-            drivingVelocity = CLIMB_SWEEP_SPEED;
+            drivingVelocity = -CLIMB_SWEEP_SPEED;
         } else {
             climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
-            drivingVelocity = -CLIMB_SWEEP_SPEED;
+            drivingVelocity = CLIMB_SWEEP_SPEED;
         }
 
         return Commands.sequence(
             climberUp(),
             Commands.sequence(
-                swerve.pathFindToPose(climbingPose),
+                swerve.driveToPose(climbingPose, true),
                 swerve.run(() -> {
                     swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, drivingVelocity, 0), climbingPose.getRotation());
                 }).withTimeout(2),

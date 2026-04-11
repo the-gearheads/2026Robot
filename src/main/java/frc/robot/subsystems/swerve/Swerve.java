@@ -17,11 +17,11 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.geometry.Twist3d;
@@ -30,6 +30,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -43,7 +45,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
-import frc.robot.constants.MiscConstants;
 import frc.robot.subsystems.swerve.gyro.Gyro;
 import frc.robot.subsystems.swerve.gyro.GyroRedux;
 import frc.robot.subsystems.swerve.gyro.GyroSim;
@@ -77,14 +78,7 @@ public class Swerve extends SubsystemBase {
 
   @AutoLogOutput
   boolean shouldSwerveX = false;
-
-  final LinearFilter xAccelFilter = LinearFilter.movingAverage(5);
-  final LinearFilter yAccelFilter = LinearFilter.movingAverage(5);
-  final LinearFilter alphaFilter = LinearFilter.movingAverage(10);
-  double lastYawVelocity = 0;
-  double filteredAccelX = 0;
-  double filteredAccelY = 0;
-  double filteredAlpha = 0;
+  TrapezoidProfile drivePIDProfile = new TrapezoidProfile(DRIVE_TO_POINT_CONSTRAINTS);
 
   public Swerve() {
     // SmartDashboard.putNumber("Swerve/HeadingPID/P", headingController.getP());
@@ -217,8 +211,52 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  public Command pathFindToPose(Pose2d pose) {
-    return AutoBuilder.pathfindToPose(pose, PATHFINDING_CONSTRAINTS);
+public Command driveToPose(Pose2d pose, boolean waitForStop, double distTolerance, Rotation2d rotTolerance) {
+    lastProfileVel = 0.0;
+    driveProfileLastTime = Timer.getFPGATimestamp();
+  
+    return this.run(() -> {
+
+      // accel limiting stuff
+      double now = Timer.getFPGATimestamp();
+      double dt = now - lastTime;
+      lastTime = now;
+
+      Rotation2d rotationError = getPose().getRotation().minus(pose.getRotation());
+      double targetDist = getPose().getTranslation().getDistance(pose.getTranslation());
+      double driveVel = driveController.calculate(targetDist, 0.0);
+      double rotVel = headingController.calculate(rotationError.getRadians(), 0.0);
+
+      State setpoint = drivePIDProfile.calculate(dt,
+      /* initial = */ new TrapezoidProfile.State(targetDist, lastProfileVel),
+          /* goal = */ new TrapezoidProfile.State(0.0, 0.0));
+
+      Logger.recordOutput("Swerve/DriveToPose/setpointPos", setpoint.position);
+      Logger.recordOutput("Swerve/DriveToPose/setpointVel", setpoint.velocity);
+      double targetVel = setpoint.velocity;
+      lastProfileVel = targetVel;
+
+      Rotation2d translationVectorAngleError = getPose().getTranslation().minus(pose.getTranslation()).getAngle();
+      var autoTranslation = new Pose2d(Translation2d.kZero,
+          translationVectorAngleError)
+          .transformBy(new Transform2d(new Translation2d(targetVel, 0.0), Rotation2d.kZero))
+          .getTranslation();
+      ChassisSpeeds autoSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(autoTranslation.getX(), autoTranslation.getY(), rotVel, getPose().getRotation());
+      drive(autoSpeeds);
+      Logger.recordOutput("Swerve/DriveToPose/targetDist", targetDist);
+      Logger.recordOutput("Swerve/DriveToPose/targetPose", pose);
+      Logger.recordOutput("Swerve/DriveToPose/rotationError", rotationError);
+      Logger.recordOutput("Swerve/DriveToPose/driveVel", driveVel);
+      Logger.recordOutput("Swerve/DriveToPose/rotVel", rotVel);
+    }).until(() -> {
+      boolean stopped = waitForStop ? getRobotRelativeSpeeds().omegaRadiansPerSecond < ALIGNMENT_MAX_STOPPED_ROT_SPEED
+      && Math.abs(getTranslationVelocity()) < ALIGNMENT_MAX_STOPPED_TRANS_SPEED : true;
+      return atPose(pose, distTolerance, rotTolerance) && stopped;
+    });
+  }
+
+  public Command driveToPose(Pose2d pose, boolean waitforStop) {
+    return driveToPose(pose, waitforStop, SWERVE_ALIGN_DIST_TOLERANCE, SWERVE_ALIGN_ROT_TOLERANCE);
   }
 
   public void drive(ChassisSpeeds speeds) {
@@ -426,23 +464,23 @@ public class Swerve extends SubsystemBase {
     lastOdom = odom;
 
     // acceleration moving average stuff
-    var accelFrame = gyro.getLinearAcceleration();
-    Translation2d fieldAccel = new Translation2d(accelFrame.getX()*MiscConstants.G, accelFrame.getY()*MiscConstants.G)
-                                    .rotateBy(getRotation());
+    // var accelFrame = gyro.getLinearAcceleration();
+    // Translation2d fieldAccel = new Translation2d(accelFrame.getX()*MiscConstants.G, accelFrame.getY()*MiscConstants.G)
+    //                                 .rotateBy(getRotation());
 
-    filteredAccelX = xAccelFilter.calculate(fieldAccel.getX());
-    filteredAccelY = yAccelFilter.calculate(fieldAccel.getY());
+    // filteredAccelX = xAccelFilter.calculate(fieldAccel.getX());
+    // filteredAccelY = yAccelFilter.calculate(fieldAccel.getY());
 
-    double now = Timer.getFPGATimestamp();
-    double timeDelta = now - lastTime;
-    lastTime = now;
-    double currentYawVel = gyro.getVelocityYaw();
-    double rawAlpha = (currentYawVel - lastYawVelocity) / timeDelta;
+    // double now = Timer.getFPGATimestamp();
+    // double timeDelta = now - lastTime;
+    // lastTime = now;
+    // double currentYawVel = gyro.getVelocityYaw();
+    // double rawAlpha = (currentYawVel - lastYawVelocity) / timeDelta;
     
-    filteredAlpha = alphaFilter.calculate(rawAlpha);
+    // filteredAlpha = alphaFilter.calculate(rawAlpha);
     
-    // 4. Update memory for next loop
-    lastYawVelocity = currentYawVel;
+    // // 4. Update memory for next loop
+    // lastYawVelocity = currentYawVel;
 
     // headingController.reset(getPose().getRotation().getRadians());
   }
@@ -450,33 +488,6 @@ public class Swerve extends SubsystemBase {
   @AutoLogOutput
   public Twist3d getTwist3d() {
     return odomTwist;
-  }
-
-  public double getGyroYawAcceleration() {
-    // return alphaFilter.lastValue();
-    return 0;
-  }
-
-  /*
-   * Returns Field Relative X acceleration
-   */
-  public double getGyroXAcceleration() {
-    // return xAccelFilter.lastValue();
-    return 0;
-  }
-
-  /*
-   * Returns Field Relative Y acceleration
-   */
-  public double getGyroYAcceleration() {
-    // return yAccelFilter.lastValue();
-    return 0;
-  }
-
-  @AutoLogOutput
-  public Translation2d getGyroAccel() {
-    return new Translation2d();
-    // return new Translation2d(getGyroXAcceleration(), getGyroYAcceleration());
   }
 
   public long getTwist3dTimestamp() { 
