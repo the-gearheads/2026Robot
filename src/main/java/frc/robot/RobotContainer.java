@@ -114,30 +114,6 @@ public class RobotContainer {
     sysidPicker.addSysidRoutines("Hood", hood.getSysIdRoutine(), hood::forwardSysIdLimit, hood::reverseSysIdLimit);
     sysidPicker.addSysidRoutines("Feeder", spindexer.getFeederSysidRoutine());
 
-    HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(Commands.deferredProxy(() -> {
-      if (DriverStation.isTeleopEnabled()) {
-        return Controllers.driverController.getRumbleCommand(1, 0.3, 3);
-      } else {
-        return Commands.none();
-      }
-    }));
-
-      HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(Commands.deferredProxy(() -> {
-      if (DriverStation.isTeleopEnabled()) {
-        return Commands.print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-      } else {
-        return Commands.none();
-      }
-    }));
-
-    HubTracker.NEXT_SHIFT_INACTIVE_TRIGGER.onTrue(Commands.deferredProxy(() -> {
-      if (DriverStation.isTeleopEnabled()) {
-        return Controllers.driverController.getRumbleCommand(1, 1);
-      } else {
-        return Commands.none();
-      }
-    }));
-
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -151,9 +127,26 @@ public class RobotContainer {
     
     // Clear buttons
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
+    // CommandScheduler.getInstance().getDefaultButtonLoop().clear();
 
     // Find new controllers
     Controllers.updateActiveControllerInstance();
+
+    HubTracker.NEXT_ACTIVE_SHIFT_TRIGGER.onTrue(Commands.deferredProxy(() -> {
+      if (DriverStation.isTeleopEnabled()) {
+        return Controllers.driverController.getRumbleCommand(1, 0.3, 3);
+      } else {
+        return Commands.none();
+      }
+    }));
+
+    HubTracker.NEXT_SHIFT_INACTIVE_TRIGGER.onTrue(Commands.deferredProxy(() -> {
+      if (DriverStation.isTeleopEnabled()) {
+        return Controllers.driverController.getRumbleCommand(1, 1);
+      } else {
+        return Commands.none();
+      }
+    }));
 
     Controllers.driverController.getRightTriggerBtn().whileTrue(Commands.parallel(
         hood.setObjectiveAngleCommand(swerve),
