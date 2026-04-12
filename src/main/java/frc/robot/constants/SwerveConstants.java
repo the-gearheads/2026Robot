@@ -73,7 +73,7 @@ public final class SwerveConstants {
     public static double[] XY_PATH_FOLLOWING_PID = {1.5, 0, 0.0};
     public static double[] ROT_PATH_FOLLOWING_PID = {0.8, 0, 0};
 
-    public static double[] DRIVE_CONTROLLER_PID = {4, 0, 0.3};
+    public static double[] DRIVE_CONTROLLER_PID = {3, 0, 1.5};
     public static double[] ROT_CONTROLLER_PID = {3.2, 0, 0};
 
     public static Constraints ROT_CONTROLLER_CONSTRAINTS = new Constraints(
@@ -84,7 +84,7 @@ public final class SwerveConstants {
     public static Rotation2d YAW_ALIGN_TOLERANCE = Rotation2d.fromDegrees(3);
 
     public static final Rotation2d SWERVE_ALIGN_ROT_TOLERANCE = Rotation2d.fromDegrees(2);
-    public static final double SWERVE_ALIGN_DIST_TOLERANCE = Units.inchesToMeters(0.75);
+    public static final double SWERVE_ALIGN_DIST_TOLERANCE = Units.inchesToMeters(1);
     public static Constraints DRIVE_TO_POINT_CONSTRAINTS = new Constraints(6, 4);
 
     public static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // rad/s^2
@@ -92,7 +92,7 @@ public final class SwerveConstants {
 
     public static final double SHIMMY_THRESHOLD_SPEED = 1.5;  // m/s
 
-    public static double ALIGNMENT_MAX_STOPPED_TRANS_SPEED = 0.1; // m/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning
-    public static double ALIGNMENT_MAX_STOPPED_ROT_SPEED = Units.degreesToRadians(1); // rad/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning
+    public static double ALIGNMENT_MAX_STOPPED_TRANS_SPEED = 0.3; // m/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning
+    public static double ALIGNMENT_MAX_STOPPED_ROT_SPEED = Units.degreesToRadians(10); // rad/s robot must be going slower than this in x and y direction to be considered 'stopped' and thus done aligning
 
 }

@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": " Works Version 2 Center to Depot"
+                  "pathName": "FAST AF V3 Center to Depot"
                 }
               }
             ]
@@ -79,10 +79,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Works 2nd Cycle Depot Pickup"
+                  "pathName": "FAST AF 2DC"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "aimShoot"
           }
         }
       ]

@@ -13,7 +13,6 @@ public class Controllers {
     "CircuitPython HID",
     "Keyboard 1",
     "USB Gamepad",
-    "Pro Controller"
   };
   private static String[] lastControllerNames = new String[MAX_DRIVER_STATION_PORTS];
 

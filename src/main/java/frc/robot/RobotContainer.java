@@ -18,6 +18,7 @@ import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.AimingTarget;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.HubTracker;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
@@ -41,6 +42,7 @@ import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
@@ -197,8 +199,9 @@ public class RobotContainer {
 
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
-    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
-    Controllers.driverController.getBBtn().onTrue(climber.climberDown());
+    // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
+    Controllers.driverController.getYBtn().onTrue(swerve.driveToPose(AllianceFlipUtil.apply(new Pose2d(2.3, 5.5, Rotation2d.kZero)), true));
+    Controllers.driverController.getBBtn().onTrue(climber.autoClimb(swerve));
 
     // Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{spindexer.setVoltageFloober(12);}).finallyDo(
     //   ()->{spindexer.setVoltageFloober(0);}
@@ -270,7 +273,9 @@ public class RobotContainer {
       intake.setIntakeVoltage(0);
     }));
     Controllers.operatorController.getCButton().whileTrue(deploy.run(()->{deploy.setAngle(DEPLOY_MAX_ANGLE);}));
-
+    Controllers.operatorController.getCButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(-12);})).finallyDo(()->{
+      intake.setIntakeVoltage(0);
+    }));
     Controllers.operatorController.getRightBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
     Controllers.operatorController.getLeftBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
   }
@@ -344,7 +349,8 @@ public class RobotContainer {
             Commands.waitUntil(() -> {
               return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);
             }).withTimeout(5),
-            spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake)))).until(shooter::shouldIGo));
+            spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake)))
+      ).until(shooter::shouldIGo));
       NamedCommands.registerCommand( "AutoClimb", climber.autoClimb(swerve));
   }
 }

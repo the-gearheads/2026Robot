@@ -104,10 +104,10 @@ public class Climber extends SubsystemBase {
         return Commands.sequence(
             climberUp(),
             Commands.sequence(
-                swerve.driveToPose(climbingPose, true),
+                swerve.driveToPose(climbingPose, false),
                 swerve.run(() -> {
                     swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, drivingVelocity, 0), climbingPose.getRotation());
-                }).withTimeout(2),
+                }).withTimeout(1),
                 swerve.runOnce(() -> {
                             swerve.drive(new ChassisSpeeds(0, 0, 0), climbingPose.getRotation());
                 })

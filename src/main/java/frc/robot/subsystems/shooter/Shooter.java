@@ -47,7 +47,7 @@ public class Shooter extends SubsystemBase {
   RelativeEncoder kickerEncoder = kicker.getEncoder();
 
   ShooterCalculations shooterCalculations = new ShooterCalculations();
-  Double timeOfLastShot;
+  Double timeOfLastShot = Double.POSITIVE_INFINITY;
 
   public Shooter() {
     configure();
@@ -55,7 +55,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+    setTimeOfLastShot();
   }
 
   public void configure() {
@@ -232,27 +232,19 @@ public class Shooter extends SubsystemBase {
       return kickerSpeed;
   }
 
-  public double getTimeOfLastShot(){
+  public void setTimeOfLastShot(){
     if((this.getKickerVelocityRadPerSec() < 0.9*(this.getKickerSetpoint())))
     {
       timeOfLastShot = Timer.getFPGATimestamp();
     }
-    return timeOfLastShot;
   }
 
   public boolean shouldIGo(){
-    if((Timer.getFPGATimestamp()-(this.getTimeOfLastShot())) >= 2.0)
-    {
-      return true;
-    }
-    else 
-    {
-      return false;
-    }
+    return (Timer.getFPGATimestamp()-(this.timeOfLastShot)) >= 2.0;
   }
-  public Command jarvisShouldIGo(){
-    return this.run(()->{
-          getTimeOfLastShot();
-        }).until(()->{return shouldIGo() == true;});
-  }
+  // public Command jarvisShouldIGo(){
+  //   return this.run(()->{
+  //         getTimeOfLastShot();
+  //       }).until(()->{return shouldIGo() == true;});
+  // }
 }
