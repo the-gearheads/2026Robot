@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7632142857142856,
-        "y": 6.739803571428572
+        "x": 3.0813063063063066,
+        "y": 7.283040540540541
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9048035714285716,
-        "y": 7.922142857142857
+        "x": 3.214087837837838,
+        "y": 7.620101351351352
       },
       "isLocked": false,
       "linkedName": "V4 DShoot"
@@ -80,12 +80,12 @@
     },
     {
       "anchor": {
-        "x": 2.7632142857142856,
-        "y": 6.739803571428572
+        "x": 3.0813063063063066,
+        "y": 7.283040540540541
       },
       "prevControl": {
-        "x": 2.487875,
-        "y": 7.3876607142857145
+        "x": 3.3570833333333336,
+        "y": 7.466891891891891
       },
       "nextControl": null,
       "isLocked": false,
@@ -166,13 +166,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -52.23024263925159
+    "rotation": -64.5366549381284
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.23024263925159
+    "rotation": -64.5366549381284
   },
   "useDefaultConstraints": true
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.75,
-        "y": 5.95
+        "x": 0.8358392857142853,
+        "y": 6.9503571428571425
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.246532088479557,
-        "y": 6.124259675787905
+        "x": 2.3323713741938428,
+        "y": 7.124616818645047
       },
       "isLocked": false,
       "linkedName": "Depot Intaking"
@@ -74,7 +74,7 @@
   "folder": "SLOW Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -0.7742201649281221
   },
   "useDefaultConstraints": true
 }

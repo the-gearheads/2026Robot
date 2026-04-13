@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 0.75,
-        "y": 5.95
+        "x": 0.8358392857142853,
+        "y": 6.9503571428571425
       },
       "prevControl": {
-        "x": 3.1128439655922193,
-        "y": 5.95
+        "x": 3.198683251306505,
+        "y": 6.9503571428571425
       },
       "nextControl": null,
       "isLocked": false,
@@ -69,7 +69,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -0.7742201649281221
   },
   "reversed": false,
   "folder": "SLOWEST Paths",
