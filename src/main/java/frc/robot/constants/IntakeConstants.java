@@ -42,10 +42,10 @@ public class IntakeConstants {
     public static final Rotation2d DEPLOY_MAX_SYSID_ANGLE = Rotation2d.fromDegrees(54);
 
     public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromDegrees(0);
-    public static final Rotation2d DEPLOY_SHIMMY_LOW_ANGLE = Rotation2d.fromDegrees(17); 
-    public static final Rotation2d DEPLOY_SHIMMY_HIGH_ANGLE = Rotation2d.fromDegrees(43); 
-    public static final double SHIMMY_DOWN_TIMEOUT = 0.4;  // will go up for x seconds, down for x, etc
-    public static final double SHIMMY_UP_TIMEOUT = 0.4;  // will go up for x seconds, down for x, etc
+    public static final Rotation2d DEPLOY_SHIMMY_LOW_ANGLE = Rotation2d.fromDegrees(0); 
+    public static final Rotation2d DEPLOY_SHIMMY_HIGH_ANGLE = Rotation2d.fromDegrees(49); 
+    public static final double SHIMMY_DOWN_TIMEOUT = 1;  // will go up for x seconds, down for x, etc
+    public static final double SHIMMY_UP_TIMEOUT = 0.35;  // will go up for x seconds, down for x, etc
     public static final Rotation2d DEPLOY_ANGLE_TOLERANCE = Rotation2d.fromDegrees(5);
 
     public static final double DEPLOY_STALL_VOLTAGE = 0.6;  // power consumption isn't an issue at these low current limit/voltages, but voltage drop on the battery is, so this has to be low

@@ -67,6 +67,7 @@ public class Spindexer extends SubsystemBase {
         // feederConfig.closedLoop.feedForward.kA(SpindexerConstants.FEEDER_FEEDFORWARD.getKa());
 
         flooberConfig.idleMode(IdleMode.kCoast);
+        flooberConfig.smartCurrentLimit(SpindexerConstants.FLOOBER_CURRENT_LIMIT);
         flooberConfig.inverted(true);
 
         floober.configure(flooberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);       
