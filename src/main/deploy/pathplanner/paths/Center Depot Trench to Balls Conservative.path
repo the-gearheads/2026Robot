@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.56,
+        "x": 3.5603281027144353,
         "y": 4.024728492333901
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2816656462947194,
-        "y": 6.478334886073254
+        "x": 3.281993749009155,
+        "y": 6.478334886073252
       },
       "isLocked": false,
       "linkedName": "Center Starting Forward Driver Station"
