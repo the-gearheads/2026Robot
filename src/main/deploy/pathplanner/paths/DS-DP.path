@@ -3,56 +3,77 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5906417938512565,
-        "y": 4.03791383737331
+        "x": 3.0813063063063066,
+        "y": 7.283040540540541
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.160743507102519,
-        "y": 3.988033093705097
+        "x": 1.6618571428571425,
+        "y": 7.306678571428572
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DS"
     },
     {
       "anchor": {
-        "x": 2.038692789819863,
-        "y": 5.122623631276368
+        "x": 0.8358392857142853,
+        "y": 6.9503571428571425
       },
       "prevControl": {
-        "x": 2.0213457459492385,
-        "y": 4.451063440255512
+        "x": 1.0949821428571425,
+        "y": 7.3876607142857145
       },
       "nextControl": {
-        "x": 2.052046689699542,
-        "y": 5.639596299412478
+        "x": 0.7083886881388524,
+        "y": 6.735284259448599
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.810723143531128,
-        "y": 5.970743559296435
+        "x": 0.8358392857142853,
+        "y": 5.055375000000001
       },
       "prevControl": {
-        "x": 1.8937146047290812,
-        "y": 6.034763726366662
+        "x": 0.5604999999999998,
+        "y": 5.039178571428572
+      },
+      "nextControl": {
+        "x": 1.0854078790080344,
+        "y": 5.070055505487868
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.532285714285714,
+        "y": 5.055375000000001
+      },
+      "prevControl": {
+        "x": 1.078785714285714,
+        "y": 5.055375000000001
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9952830188679245,
+      "rotationDegrees": -56.45066835710063
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.5,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 0.9457627118644069,
+      "maxWaypointRelativePos": 2.0745762711864355,
       "constraints": {
         "maxVelocity": 1.0,
-        "maxAcceleration": 1.0,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -72,13 +93,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -14.53445508054013
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -60.409651447565736
   },
   "useDefaultConstraints": true
 }
