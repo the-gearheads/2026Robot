@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "V3 Center to HP"
+                  "pathName": "LC1"
                 }
               }
             ]
@@ -79,7 +79,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "V3 2nd Cycle Center to HP"
+                  "pathName": "LSC2"
                 }
               }
             ]
