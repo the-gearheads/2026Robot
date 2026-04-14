@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LC1"
+                  "pathName": "RC1"
                 }
               }
             ]
@@ -79,7 +79,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LSC2"
+                  "pathName": "RSC2"
                 }
               }
             ]
