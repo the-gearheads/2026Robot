@@ -1,0 +1,141 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5603281027144353,
+        "y": 4.044343507666099
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.4608701854458044,
+        "y": 3.742952171182691
+      },
+      "isLocked": false,
+      "linkedName": "Center Starting Forward Driver Station"
+    },
+    {
+      "anchor": {
+        "x": 5.294108416540214,
+        "y": 2.3714543109843085
+      },
+      "prevControl": {
+        "x": 1.8524251069824396,
+        "y": 2.255006379456586
+      },
+      "nextControl": {
+        "x": 6.630039578501384,
+        "y": 2.4166549893970455
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.166490727524522,
+        "y": 2.8890006733224904
+      },
+      "prevControl": {
+        "x": 8.308815977179485,
+        "y": 1.4657481768944525
+      },
+      "nextControl": {
+        "x": 7.985587567410926,
+        "y": 4.698032274303902
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.776562054200699,
+        "y": 2.3714543109843085
+      },
+      "prevControl": {
+        "x": 6.704422253915392,
+        "y": 2.0738651526377545
+      },
+      "nextControl": {
+        "x": 3.8647164721262492,
+        "y": 2.5122089981507933
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.900456490731554,
+        "y": 2.6302274921583617
+      },
+      "prevControl": {
+        "x": 3.430941512129557,
+        "y": 2.3973316291055804
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "center depot shoot place"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.874200426439234,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1.1087420042643938,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1.9936034115138632,
+      "rotationDegrees": -0.0
+    },
+    {
+      "waypointRelativePos": 2.140724946695072,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 2.654584221748369,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 3.2409381663112335,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.5557056043213968,
+      "maxWaypointRelativePos": 2.2147197839297856,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 7.5,
+        "maxAngularVelocity": 620.0,
+        "maxAngularAcceleration": 960.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.4,
+    "maxAcceleration": 7.5,
+    "maxAngularVelocity": 620.0,
+    "maxAngularAcceleration": 960.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 51.58194465517805
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -180.0
+  },
+  "useDefaultConstraints": true
+}
