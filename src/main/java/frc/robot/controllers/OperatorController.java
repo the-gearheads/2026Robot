@@ -32,4 +32,8 @@ public interface OperatorController {
         return new Trigger(() ->false);
     }
 
+    public default Trigger getZButton(){
+        return new Trigger(() ->false);
+    }
+
 }
