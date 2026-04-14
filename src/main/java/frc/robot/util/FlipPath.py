@@ -26,35 +26,36 @@ def reflect_point(pt, axis=4.034536):
 
 
 def flip_lr_name(name):
+    return name
 
-    if name is None:
+    # if name is None:
 
-        return None
+    #     return None
 
-    def replacer(m):
+    # def replacer(m):
 
-        word = m.group(0)
+    #     word = m.group(0)
 
-        if word == "Left":   return "Right"
+    #     if word == "Left":   return "Right"
 
-        if word == "Right":  return "Left"
+    #     if word == "Right":  return "Left"
 
-        if word == "left":   return "right"
+    #     if word == "left":   return "right"
 
-        if word == "right":  return "left"
+    #     if word == "right":  return "left"
 
-        if word == "LEFT":   return "RIGHT"
+    #     if word == "LEFT":   return "RIGHT"
 
-        if word == "RIGHT":  return "LEFT"
+    #     if word == "RIGHT":  return "LEFT"
 
-        return word
+    #     return word
 
-    return re.sub(r'\b(Left|Right|left|right|LEFT|RIGHT)\b', replacer, name)
-
-
+    # return re.sub(r'\b(Left|Right|left|right|LEFT|RIGHT)\b', replacer, name)
 
 
-with open("C:\\Users\\1189-Driver\\Documents\\FRC\\2026Robot\\src\\main\\deploy\\pathplanner\\paths\\RC1.path", "r") as f:
+
+
+with open("C:\\Users\\Gavin\\Documents\\FRC\\2026Robot\\src\\main\\deploy\\pathplanner\\paths\\CLC.path", "r") as f:
 
     data = json.load(f)
 
@@ -81,19 +82,19 @@ for wp in result["waypoints"]:
 
 for rt in result["rotationTargets"]:
 
-    rt["rotationDegrees"] = -rt["rotationDegrees"]
+    rt["rotationDegrees"] = -rt["rotationDegrees"] + 180
 
 
 
 
-result["goalEndState"]["rotation"] = -result["goalEndState"]["rotation"]
+result["goalEndState"]["rotation"] = -result["goalEndState"]["rotation"] + 180
 
 result["idealStartingState"]["rotation"] = -result["idealStartingState"]["rotation"]
 
 
 
 
-with open("C:\\Users\\1189-Driver\\Documents\\FRC\\2026Robot\\src\\main\\deploy\\pathplanner\\paths\\LC1.path", "w") as f:
+with open("C:\\Users\\Gavin\\Documents\\FRC\\2026Robot\\src\\main\\deploy\\pathplanner\\paths\\CRC.path", "w") as f:
 
     json.dump(result, f, indent=2)
 
