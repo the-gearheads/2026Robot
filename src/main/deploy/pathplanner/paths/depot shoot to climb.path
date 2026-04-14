@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.900456490731554,
+        "y": 5.4388445078416385
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7618544935805986,
+        "y": 4.882482168330956
+      },
+      "isLocked": false,
+      "linkedName": "center depot shoot place"
+    },
+    {
+      "anchor": {
+        "x": 1.0414,
+        "y": 4.60207106
+      },
+      "prevControl": {
+        "x": 2.564051355206847,
+        "y": 5.412967189728959
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Depot Side Climb"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.4,
+    "maxAcceleration": 7.5,
+    "maxAngularVelocity": 620.0,
+    "maxAngularAcceleration": 960.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -51.58194465517805
+  },
+  "useDefaultConstraints": true
+}
