@@ -80,16 +80,16 @@
     },
     {
       "anchor": {
-        "x": 2.8974549549549558,
-        "y": 5.444527027027027
+        "x": 2.968952702702703,
+        "y": 5.526238738738739
       },
       "prevControl": {
-        "x": 5.747150900900904,
-        "y": 5.556880630630631
+        "x": 5.818648648648651,
+        "y": 5.638592342342343
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DSB"
     }
   ],
   "rotationTargets": [
@@ -149,7 +149,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -36.81864919840816
+    "rotation": -38.617177473628786
   },
   "reversed": false,
   "folder": null,

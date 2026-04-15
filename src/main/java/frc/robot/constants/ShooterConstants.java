@@ -93,5 +93,6 @@ public class ShooterConstants {
     public static double SHOOTER_VEL_ADJUSTMENT = Units.rotationsPerMinuteToRadiansPerSecond(100);
 
     public static final double FEEDING_VEL = 433.0250388;  // rad/sec
+    public static final double FEEDING_FAR_VEL = 785;  // rad/sec
     public static final Rotation2d FEEDING_ANGLE = Rotation2d.fromDegrees(36);
 }

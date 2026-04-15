@@ -76,7 +76,7 @@
         "y": 5.522355435922589
       },
       "isLocked": false,
-      "linkedName": "DSB"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -89,7 +89,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DSB"
     }
   ],
   "rotationTargets": [

@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 2.968952702702703,
-        "y": 7.160472972972973
+        "y": 5.526238738738739
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.631891891891892,
-        "y": 6.741700450450451
+        "x": 2.437826576576577,
+        "y": 5.516024774774776
       },
       "isLocked": false,
-      "linkedName": "DS"
+      "linkedName": "DSB"
     },
     {
       "anchor": {
-        "x": 1.2734346846846853,
-        "y": 4.933828828828829
+        "x": 1.4266441441441446,
+        "y": 4.964470720720722
       },
       "prevControl": {
-        "x": 1.8249887387387393,
-        "y": 5.291317567567567
+        "x": 1.9781981981981986,
+        "y": 5.32195945945946
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,8 +38,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.4,
-    "maxAcceleration": 7.5,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 620.0,
     "maxAngularAcceleration": 960.0,
     "nominalVoltage": 12.0,
@@ -53,7 +53,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -61.457394138780494
+    "rotation": -38.617177473628786
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
