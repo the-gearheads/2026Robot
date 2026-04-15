@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RC1"
+                  "pathName": "LC1"
                 }
               }
             ]
@@ -79,7 +79,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RSC2"
+                  "pathName": "DS-DP"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "aimShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
                 }
               }
             ]
@@ -88,13 +107,13 @@
         {
           "type": "named",
           "data": {
-            "name": "aimShoot"
+            "name": "AutoClimb"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "HP Start",
+  "folder": "Depot Start",
   "choreoAuto": false
 }

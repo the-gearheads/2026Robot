@@ -24,7 +24,7 @@ public class Vision extends SubsystemBase {
         this.swerve = swerve;
 
         for (int i = 0; i<CAMERA_NAMES.length; i++) {
-            cameras[i] = new Camera(FieldConstants.ATFL, CAMERA_NAMES[i], CAMERA_TRANSFORMS[i], swerve::getPose, CAMERA_INTRINSICS[i]);
+            cameras[i] = new Camera(FieldConstants.ATFL, CAMERA_NAMES[i], CAMERA_TRANSFORMS[i], swerve::getPose, WRONG_CAMERA_INTRINSICS[i]);
         }
 
         if (Robot.isSimulation()) {

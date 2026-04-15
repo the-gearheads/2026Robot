@@ -29,22 +29,28 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CLC"
+                  "pathName": "RC1"
                 }
               }
             ]
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "RS-Climb"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "aimShoot"
+            "name": "AutoClimb"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Center Start",
+  "folder": "HP Start",
   "choreoAuto": false
 }

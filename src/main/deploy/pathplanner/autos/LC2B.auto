@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RC1"
+                  "pathName": "LC1B"
                 }
               }
             ]
@@ -79,7 +79,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RSC2"
+                  "pathName": "LSBC2B"
                 }
               }
             ]
@@ -95,6 +95,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "HP Start",
+  "folder": "Depot Start",
   "choreoAuto": false
 }

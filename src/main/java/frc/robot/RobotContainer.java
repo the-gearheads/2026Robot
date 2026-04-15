@@ -291,6 +291,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+    // retursn climber.autoClimb(swerve);
     // return sysidPicker.get();
     //return Swerve.wheelRadiusCharacterization(swerve);
   }

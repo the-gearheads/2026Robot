@@ -29,7 +29,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CLC"
+                  "pathName": "CDP"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "aimShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 8.0
                 }
               }
             ]
@@ -38,7 +57,7 @@
         {
           "type": "named",
           "data": {
-            "name": "aimShoot"
+            "name": "AutoClimb"
           }
         }
       ]

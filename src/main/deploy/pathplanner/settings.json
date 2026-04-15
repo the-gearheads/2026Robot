@@ -2,10 +2,7 @@
   "robotWidth": 0.8001,
   "robotLength": 0.927,
   "holonomicMode": true,
-  "pathFolders": [
-    "SLOWEST Paths",
-    "SLOW Paths"
-  ],
+  "pathFolders": [],
   "autoFolders": [
     "Center Start",
     "Depot Start",
@@ -35,5 +32,7 @@
   "brModuleY": -0.273,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":0.55},\"size\":{\"width\":0.3048,\"length\":0.8},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
+  ]
 }

@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "V3 Center to Depot"
+                  "pathName": "LC1"
                 }
               }
             ]
@@ -48,7 +48,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 6.0
                 }
               }
             ]
@@ -79,7 +79,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "DTS-DP-DS"
+                  "pathName": "DS-DP"
                 }
               }
             ]

@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -36,9 +42,34 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "aimShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LSB-Climb"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "aimShoot"
+            "name": "AutoClimb"
           }
         }
       ]
