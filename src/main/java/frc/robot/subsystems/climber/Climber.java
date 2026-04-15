@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.swerve.Swerve;
@@ -113,17 +114,7 @@ public class Climber extends SubsystemBase {
                 })
             )
         ).andThen(Commands.sequence(
-                // swerve.run(() -> {
-                //     swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, 0, 0), climbingPose.getRotation());
-                // }).until(() -> {
-                //     return getColorProximity() <= AUTOCLIMB_DOWN_PROXIMITY;
-                // }).withTimeout(1.5),
-
-                // swerve.runOnce(() -> {
-                //     swerve.drive(new ChassisSpeeds(0, 0, 0));
-                // }),
-
                 climberDown()
-        ));
+        )).withName("AutoClimb").withInterruptBehavior(InterruptionBehavior.kCancelSelf);
     }
 }
