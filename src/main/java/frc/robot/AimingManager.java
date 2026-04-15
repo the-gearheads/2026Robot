@@ -55,16 +55,18 @@ public class AimingManager {
     }
 
     private static ShotData applySafeties(ShotData baseShot, Pose2d robotPose, ChassisSpeeds fieldRelSpeeds) {
+        ShotData adjustedShot;
         if (DriverStation.isAutonomous()) {
-            return baseShot;
+            adjustedShot = baseShot;
+        } else {
+            adjustedShot = ShooterCalculations.applyTrenchAvoidance(baseShot, robotPose, fieldRelSpeeds);
         }
-        ShotData trenchAvoidanceShot = ShooterCalculations.applyTrenchAvoidance(baseShot, robotPose, fieldRelSpeeds);
         return new ShotData(
-            trenchAvoidanceShot.flywheelVel() + SHOOTER_VEL_ADJUSTMENT,
-            trenchAvoidanceShot.hoodAngle().plus(HOOD_ANGLE_ADJUSTMENT),
-            trenchAvoidanceShot.timeOfFlight(),
-            trenchAvoidanceShot.target(),
-            trenchAvoidanceShot.aimingTarget()
+            adjustedShot.flywheelVel() + SHOOTER_VEL_ADJUSTMENT,
+            adjustedShot.hoodAngle().plus(HOOD_ANGLE_ADJUSTMENT),
+            adjustedShot.timeOfFlight(),
+            adjustedShot.target(),
+            adjustedShot.aimingTarget()
         );
     } 
 }
