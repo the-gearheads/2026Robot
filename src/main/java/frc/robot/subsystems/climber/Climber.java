@@ -93,12 +93,12 @@ public class Climber extends SubsystemBase {
     public Command autoClimb(Swerve swerve) {
         Pose2d climbingPose;
         double drivingVelocity;
-        if(AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth/2.0) {
+        if(AllianceFlipUtil.applyY(swerve.getPose().getY()) > FieldConstants.fieldWidth/2.0) {
             climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
-            drivingVelocity = -CLIMB_SWEEP_SPEED;
+            drivingVelocity = CLIMB_SWEEP_SPEED;
         } else {
             climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
-            drivingVelocity = CLIMB_SWEEP_SPEED;
+            drivingVelocity = -CLIMB_SWEEP_SPEED;
         }
 
         return Commands.sequence(
@@ -107,7 +107,7 @@ public class Climber extends SubsystemBase {
                 swerve.driveToPose(climbingPose, false),
                 swerve.run(() -> {
                     swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, drivingVelocity, 0), climbingPose.getRotation());
-                }).withTimeout(1),
+                }).withTimeout(1.5),
                 swerve.runOnce(() -> {
                             swerve.drive(new ChassisSpeeds(0, 0, 0), climbingPose.getRotation());
                 })
