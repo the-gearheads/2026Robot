@@ -21,6 +21,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -101,6 +102,8 @@ public class Climber extends SubsystemBase {
             climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
             drivingVelocity = -CLIMB_SWEEP_SPEED;
         }
+
+        Logger.recordOutput("Climber/climbingPose", climbingPose);
 
         return Commands.sequence(
             climberUp(),
