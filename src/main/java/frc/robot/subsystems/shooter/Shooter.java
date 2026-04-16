@@ -19,7 +19,6 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -29,7 +28,6 @@ import frc.robot.util.ShooterCalculations;
 import frc.robot.AimingManager;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.swerve.Swerve;
-import edu.wpi.first.wpilibj.Timer;
 
 public class Shooter extends SubsystemBase {
 
@@ -47,7 +45,6 @@ public class Shooter extends SubsystemBase {
   RelativeEncoder kickerEncoder = kicker.getEncoder();
 
   ShooterCalculations shooterCalculations = new ShooterCalculations();
-  Double timeOfLastShot = Double.POSITIVE_INFINITY;
 
   public Shooter() {
     configure();
@@ -55,7 +52,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setTimeOfLastShot();
+
   }
 
   public void configure() {
@@ -232,19 +229,4 @@ public class Shooter extends SubsystemBase {
       return kickerSpeed;
   }
 
-  public void setTimeOfLastShot(){
-    if((this.getKickerVelocityRadPerSec() < 0.9*(this.getKickerSetpoint())))
-    {
-      timeOfLastShot = Timer.getFPGATimestamp();
-    }
-  }
-
-  public boolean shouldIGo(){
-    return (Timer.getFPGATimestamp()-(this.timeOfLastShot)) >= 2.0;
-  }
-  // public Command jarvisShouldIGo(){
-  //   return this.run(()->{
-  //         getTimeOfLastShot();
-  //       }).until(()->{return shouldIGo() == true;});
-  // }
 }

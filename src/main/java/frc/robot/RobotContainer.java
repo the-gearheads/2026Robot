@@ -359,7 +359,8 @@ public class RobotContainer {
               return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);
             }).withTimeout(5),
             spindexer.runSpindexer(12).alongWith(deploy.shimmy(intake)))
-      ).until(shooter::shouldIGo));
+      ).until(() -> ((ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB))
+      && (shooter.getKickerSetpoint()> 0.9*shooter.getKickerVelocityRadPerSec()))));
       NamedCommands.registerCommand( "AutoClimb", climber.autoClimb(swerve));
   }
 }
