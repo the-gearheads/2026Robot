@@ -203,9 +203,13 @@ public class RobotContainer {
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
     // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
-    Controllers.driverController.getYBtn().onTrue(climber.autoClimb(swerve));
+    Controllers.driverController.getYBtn().onTrue(climber.autoClimb(swerve).until(()->{
+      return Math.abs(Controllers.driverController.getTranslateXAxis()) > 0.1 ||
+      Math.abs(Controllers.driverController.getTranslateYAxis()) > 0.1 ||
+      Math.abs(Controllers.driverController.getRotateAxis()) > 0.1;
+    }));
 
-    // Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{spindexer.setVoltageFloober(12);}).finallyDo(
+    // Controllers.driverContromade ller.getYBtn().whileTrue(spindexer.run(()->{spindexer.setVoltageFloober(12);}).finallyDo(
     //   ()->{spindexer.setVoltageFloober(0);}
     // ));
     // Controllers.driverController.getBBtn().onTrue(climber.autoClimb(swerve));
