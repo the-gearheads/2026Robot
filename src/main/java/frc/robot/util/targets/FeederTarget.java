@@ -1,6 +1,7 @@
 package frc.robot.util.targets;
 
 import static frc.robot.constants.ShooterConstants.FEEDING_ANGLE;
+import static frc.robot.constants.ShooterConstants.FEEDING_CLOSE_ANGLE;
 import static frc.robot.constants.ShooterConstants.FEEDING_FAR_VEL;
 import static frc.robot.constants.ShooterConstants.FEEDING_VEL;
 import static frc.robot.constants.ShooterConstants.SHOOT_DISTANCES;
@@ -35,7 +36,12 @@ public class FeederTarget implements AimingTarget {
 
     @Override
     public Rotation2d getHoodAngle(double distanceMeters) {
-        return FEEDING_ANGLE;
+        if (distanceMeters > 9.25) {
+            return FEEDING_ANGLE;
+        }
+        else{
+        return FEEDING_CLOSE_ANGLE;
+        }
         // double clampedDist = Math.max(SHOOT_DISTANCES[0], Math.min(distanceMeters, SHOOT_DISTANCES[SHOOT_DISTANCES.length - 1]));
         // return Rotation2d.fromRadians(angleSpline.value(clampedDist));
     }

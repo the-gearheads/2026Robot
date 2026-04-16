@@ -18,7 +18,6 @@ import frc.robot.subsystems.spindexer.Spindexer;
 import frc.robot.subsystems.spindexer.SpindexerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.util.AimingTarget;
-import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.HubTracker;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
@@ -45,7 +44,6 @@ import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
@@ -202,7 +200,6 @@ public class RobotContainer {
 
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
-    // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
     Controllers.driverController.getYBtn().onTrue(climber.autoClimb(swerve).until(()->{
       return Math.abs(Controllers.driverController.getTranslateXAxis()) > 0.1 ||
       Math.abs(Controllers.driverController.getTranslateYAxis()) > 0.1 ||

@@ -97,32 +97,58 @@ public class Climber extends SubsystemBase {
     }
 
     public Command autoClimb(Swerve swerve) {
+        return Commands.deferredProxy(() -> {
+
+            Pose2d climbingPose;
+            double sweepVel;
+            double inVel;
+            if (AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth / 2.0) {
+                climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
+                sweepVel = CLIMB_SWEEP_SPEED;
+                inVel = -CLIMB_IN_SPEED;
+            } else {
+                climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
+                sweepVel = -CLIMB_SWEEP_SPEED;
+                inVel = CLIMB_IN_SPEED;
+            }
+
+            Logger.recordOutput("Climber/climbingPose", climbingPose);
+
+            return Commands.sequence(
+                    climberUp(),
+                    Commands.sequence(
+                            swerve.driveToPose(climbingPose, false),
+                            waitForClimbUp(),
+                            swerve.run(() -> {
+                                swerve.drive(new ChassisSpeeds(inVel, sweepVel, 0), climbingPose.getRotation());
+                            }).withTimeout(1.5),
+                            swerve.runOnce(() -> {
+                                swerve.drive(new ChassisSpeeds(0, 0, 0), climbingPose.getRotation());
+                            })))
+                    .andThen(Commands.sequence(
+                            climberDown()))
+                    .withName("AutoClimb").withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+        });
+    }
+
+    public Command logAutoClimb(Swerve swerve) {
+        return Commands.runOnce(()->{
         Pose2d climbingPose;
-        double drivingVelocity;
+        double sweepVel;
+        double inVel;
         if(AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth/2.0) {
             climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
-            drivingVelocity = CLIMB_SWEEP_SPEED;
+            sweepVel = CLIMB_SWEEP_SPEED;
+            inVel = -CLIMB_IN_SPEED;
         } else {
             climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
-            drivingVelocity = -CLIMB_SWEEP_SPEED;
+            sweepVel = -CLIMB_SWEEP_SPEED;
+            inVel = CLIMB_IN_SPEED;
         }
 
         Logger.recordOutput("Climber/climbingPose", climbingPose);
-
-        return Commands.sequence(
-            climberUp(),
-            Commands.sequence(
-                swerve.driveToPose(climbingPose, false),
-                waitForClimbUp(),
-                swerve.run(() -> {
-                    swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, drivingVelocity, 0), climbingPose.getRotation());
-                }).withTimeout(1.5),
-                swerve.runOnce(() -> {
-                            swerve.drive(new ChassisSpeeds(0, 0, 0), climbingPose.getRotation());
-                })
-            )
-        ).andThen(Commands.sequence(
-                climberDown()
-        )).withName("AutoClimb").withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+        Logger.recordOutput("Climber/sweepVel", sweepVel);
+        Logger.recordOutput("Climber/inVel", inVel);
+    });
     }
 }

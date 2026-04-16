@@ -14,7 +14,7 @@ public class VisionConstants {
     
     public static final String[] CAMERA_NAMES = {
         "CTHULHU", 
-        "PEARL3", 
+        "PEARL2", 
         "ANNIE",
         "ALLAN" 
     };
