@@ -88,6 +88,10 @@ public class Climber extends SubsystemBase {
         });
     }
 
+    public Command waitForClimbUp() {
+        return Commands.waitUntil(()->{return getClimbPosition()<=ClimberConstants.MIN_CLIMBER_POS;});
+    }
+
     public void setPosition(double position) {
         climbEncoder.setPosition(position);
     }
@@ -95,7 +99,7 @@ public class Climber extends SubsystemBase {
     public Command autoClimb(Swerve swerve) {
         Pose2d climbingPose;
         double drivingVelocity;
-        if(AllianceFlipUtil.applyY(swerve.getPose().getY()) > FieldConstants.fieldWidth/2.0) {
+        if(AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth/2.0) {
             climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
             drivingVelocity = CLIMB_SWEEP_SPEED;
         } else {
@@ -109,6 +113,7 @@ public class Climber extends SubsystemBase {
             climberUp(),
             Commands.sequence(
                 swerve.driveToPose(climbingPose, false),
+                waitForClimbUp(),
                 swerve.run(() -> {
                     swerve.drive(new ChassisSpeeds(-CLIMB_IN_SPEED, drivingVelocity, 0), climbingPose.getRotation());
                 }).withTimeout(1.5),
