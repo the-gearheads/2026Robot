@@ -203,8 +203,7 @@ public class RobotContainer {
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
     // Controllers.driverController.getYBtn().onTrue(climber.climberUp());
-    Controllers.driverController.getYBtn().onTrue(swerve.driveToPose(AllianceFlipUtil.apply(new Pose2d(2.3, 5.5, Rotation2d.kZero)), true));
-    Controllers.driverController.getBBtn().onTrue(climber.autoClimb(swerve));
+    Controllers.driverController.getYBtn().onTrue(climber.autoClimb(swerve));
 
     // Controllers.driverController.getYBtn().whileTrue(spindexer.run(()->{spindexer.setVoltageFloober(12);}).finallyDo(
     //   ()->{spindexer.setVoltageFloober(0);}
@@ -290,8 +289,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return autoChooser.getSelected();
-    return climber.autoClimb(swerve);
+    return autoChooser.getSelected();
     // return sysidPicker.get();
     //return Swerve.wheelRadiusCharacterization(swerve);
   }

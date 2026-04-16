@@ -55,7 +55,7 @@ def flip_lr_name(name):
 
 
 
-with open("C:\\Users\\Gavin\\Documents\\FRC\\2026Robot\\src\\main\\deploy\\pathplanner\\paths\\CLC.path", "r") as f:
+with open("C:\\Users\\1189-Driver\\Documents\\FRC\\2026Robot\\src\\main\\deploy\\pathplanner\\paths\\LSBC2B.path", "r") as f:
 
     data = json.load(f)
 
@@ -94,7 +94,7 @@ result["idealStartingState"]["rotation"] = -result["idealStartingState"]["rotati
 
 
 
-with open("C:\\Users\\Gavin\\Documents\\FRC\\2026Robot\\src\\main\\deploy\\pathplanner\\paths\\CRC.path", "w") as f:
+with open("C:\\Users\\1189-Driver\\Documents\\FRC\\2026Robot\\src\\main\\deploy\\pathplanner\\paths\\RSBC2B.path", "w") as f:
 
     json.dump(result, f, indent=2)
 

@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CDP"
+                  "pathName": "RC1B"
                 }
               }
             ]
@@ -48,7 +48,38 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 8.0
+                  "waitTime": 6.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "DeployIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartIntakeChomp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "HoodDown"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RSBC2B"
                 }
               }
             ]
@@ -57,13 +88,13 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoClimb"
+            "name": "aimShoot"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Center Start",
+  "folder": "HP Start",
   "choreoAuto": false
 }
