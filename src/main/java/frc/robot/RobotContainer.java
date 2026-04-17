@@ -30,12 +30,12 @@ import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
 import static frc.robot.constants.IntakeConstants.OPERATOR_MANUAL_SHIMMY_ANGLE;
-import static frc.robot.constants.IntakeConstants.DEPLOY_SHIMMY_HIGH_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_VELOCITY;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_VELOCITY;
+import static frc.robot.constants.IntakeConstants.OPERATOR_HIGH_SHIMMY_ANGLE;
 
 
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
@@ -200,11 +200,13 @@ public class RobotContainer {
 
     Controllers.driverController.getXBtn().whileTrue(spindexer.runSpindexer(12));
     Controllers.driverController.getABtn().whileTrue(deploy.shimmy(intake));
-    Controllers.driverController.getYBtn().onTrue(climber.autoClimb(swerve).until(()->{
-      return Math.abs(Controllers.driverController.getTranslateXAxis()) > 0.1 ||
-      Math.abs(Controllers.driverController.getTranslateYAxis()) > 0.1 ||
-      Math.abs(Controllers.driverController.getRotateAxis()) > 0.1;
-    }));
+    // Controllers.driverController.getYBtn().onTrue(climber.autoClimb(swerve).until(()->{
+    //   return Math.abs(Controllers.driverController.getTranslateXAxis()) > 0.1 ||
+    //   Math.abs(Controllers.driverController.getTranslateYAxis()) > 0.1 ||
+    //   Math.abs(Controllers.driverController.getRotateAxis()) > 0.1;
+    // }));
+    Controllers.driverController.getYBtn().onTrue(climber.climberUp());
+    Controllers.driverController.getBBtn().onTrue(climber.climberDown());
 
     // Controllers.driverContromade ller.getYBtn().whileTrue(spindexer.run(()->{spindexer.setVoltageFloober(12);}).finallyDo(
     //   ()->{spindexer.setVoltageFloober(0);}
@@ -272,21 +274,21 @@ public class RobotContainer {
     // }));
 
     Controllers.operatorController.getAButton().whileTrue(deploy.shimmy(intake));
-    Controllers.operatorController.getBButton().whileTrue(deploy.run(()->{deploy.setAngle(OPERATOR_MANUAL_SHIMMY_ANGLE);}));
-    Controllers.operatorController.getBButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(12);})).finallyDo(()->{
+    Controllers.operatorController.getYButton().whileTrue(deploy.run(()->{deploy.setAngle(OPERATOR_MANUAL_SHIMMY_ANGLE);}));
+    Controllers.operatorController.getYButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(12);})).finallyDo(()->{
     intake.setIntakeVoltage(0);}));
-    Controllers.operatorController.getCButton().whileTrue(deploy.run(()->{deploy.setAngle(DEPLOY_MAX_ANGLE);}));
-    Controllers.operatorController.getCButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(-12);})).finallyDo(()->{
+    Controllers.operatorController.getZButton().whileTrue(deploy.run(()->{deploy.setAngle(DEPLOY_MAX_ANGLE);}));
+    Controllers.operatorController.getZButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(-12);})).finallyDo(()->{
     intake.setIntakeVoltage(0);}));
     Controllers.operatorController.getXButton().onTrue(Commands.runOnce(() -> {swerve.waitToCrossToggle();}));
-    Controllers.operatorController.getYButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(-12);})).finallyDo(()->{
+    Controllers.operatorController.getBButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(-12);})).finallyDo(()->{
     intake.setIntakeVoltage(0);}));
-    Controllers.operatorController.getZButton().whileTrue(deploy.run(()->{deploy.setAngle(DEPLOY_SHIMMY_HIGH_ANGLE);}));
-    Controllers.operatorController.getZButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(12);})).finallyDo(()->{
+    Controllers.operatorController.getCButton().whileTrue(deploy.run(()->{deploy.setAngle(OPERATOR_HIGH_SHIMMY_ANGLE);}));
+    Controllers.operatorController.getCButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(12);})).finallyDo(()->{
     intake.setIntakeVoltage(0);}));
 
-    // Controllers.operatorController.getRightBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
-    // Controllers.operatorController.getLeftBumper().whileTrue(climber.run(()->{climber.setClimberVoltage(-2);}).finallyDo(()->{climber.setClimberVoltage(0);}));
+    Controllers.operatorController.getRightBumper().onTrue(climber.climberUp());
+    Controllers.operatorController.getLeftBumper().onTrue(climber.climberDown());
   }
 
   public Command getAutonomousCommand() {

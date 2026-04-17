@@ -6,7 +6,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -100,19 +103,40 @@ public class Climber extends SubsystemBase {
         return Commands.deferredProxy(() -> {
 
             Pose2d climbingPose;
-            double sweepVel;
-            double inVel;
-            if (AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth / 2.0) {
-                climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
-                sweepVel = CLIMB_SWEEP_SPEED;
-                inVel = -CLIMB_IN_SPEED;
+            double xVelocity;  // field relative
+            double yVelocity;  // field relative
+            if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) { // meaning we're on blue
+                if (swerve.getPose().getY() < 3.857) {
+                    // positive x and y, up and to the right
+                    xVelocity = CLIMB_SWEEP_SPEED;
+                    yVelocity = CLIMB_IN_SPEED;
+                    climbingPose = new Pose2d(0.803, 2.755, Rotation2d.fromDegrees(-90));
+                } else {
+                    // we're on the left side on the blue field
+                    // negative x and y, down and to the left
+                    xVelocity = -CLIMB_SWEEP_SPEED;
+                    yVelocity = -CLIMB_IN_SPEED;
+                    climbingPose = new Pose2d(1.338, 4.731, Rotation2d.fromDegrees(90));
+                }
             } else {
-                climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
-                sweepVel = -CLIMB_SWEEP_SPEED;
-                inVel = CLIMB_IN_SPEED;
+                // we are on red
+                if (swerve.getPose().getY() < 4.278) {
+                    // positive x and y, up and to the right
+                    xVelocity = CLIMB_SWEEP_SPEED;
+                    yVelocity = CLIMB_IN_SPEED;
+                    climbingPose = new Pose2d(15.234, 3.339, Rotation2d.fromDegrees(-90));
+                } else {
+                    // we're on the left side on the blue field
+                    // negative x and y, down and to the left
+                    xVelocity = -CLIMB_SWEEP_SPEED;
+                    yVelocity = -CLIMB_IN_SPEED;
+                    climbingPose = new Pose2d(15.720, 5.298, Rotation2d.fromDegrees(90));
+                }
             }
 
-            Logger.recordOutput("Climber/climbingPose", climbingPose);
+            Logger.recordOutput("Climber/autoClimb/climbingPose", climbingPose);
+            Logger.recordOutput("Climber/autoClimb/xVelocity", xVelocity);
+            Logger.recordOutput("Climber/autoClimb/inVel", yVelocity);
 
             return Commands.sequence(
                     climberUp(),
@@ -120,8 +144,8 @@ public class Climber extends SubsystemBase {
                             swerve.driveToPose(climbingPose, false),
                             waitForClimbUp(),
                             swerve.run(() -> {
-                                swerve.drive(new ChassisSpeeds(inVel, sweepVel, 0), climbingPose.getRotation());
-                            }).withTimeout(1.5),
+                                swerve.driveFieldRelative(new ChassisSpeeds(xVelocity, yVelocity, 0), climbingPose.getRotation());
+                            }).withTimeout(2.5),
                             swerve.runOnce(() -> {
                                 swerve.drive(new ChassisSpeeds(0, 0, 0), climbingPose.getRotation());
                             })))
@@ -134,20 +158,20 @@ public class Climber extends SubsystemBase {
     public Command logAutoClimb(Swerve swerve) {
         return Commands.runOnce(()->{
         Pose2d climbingPose;
-        double sweepVel;
+        double xVelocity;
         double inVel;
         if(AllianceFlipUtil.applyY(swerve.getPose().getY()) < FieldConstants.fieldWidth/2.0) {
             climbingPose = AllianceFlipUtil.apply(CLIMB_RIGHT_POSE);
-            sweepVel = CLIMB_SWEEP_SPEED;
+            xVelocity = CLIMB_SWEEP_SPEED;
             inVel = -CLIMB_IN_SPEED;
         } else {
             climbingPose = AllianceFlipUtil.apply(CLIMB_LEFT_POSE);
-            sweepVel = -CLIMB_SWEEP_SPEED;
+            xVelocity = -CLIMB_SWEEP_SPEED;
             inVel = CLIMB_IN_SPEED;
         }
 
         Logger.recordOutput("Climber/climbingPose", climbingPose);
-        Logger.recordOutput("Climber/sweepVel", sweepVel);
+        Logger.recordOutput("Climber/xVelocity", xVelocity);
         Logger.recordOutput("Climber/inVel", inVel);
     });
     }
