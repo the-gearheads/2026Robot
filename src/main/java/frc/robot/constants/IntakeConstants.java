@@ -21,7 +21,7 @@ public class IntakeConstants {
     // );
     public static final Constraints DEPLOY_CONSTRAINTS = new Constraints(
         Units.degreesToRadians(3000), // per second; max vel
-        Units.degreesToRadians(6000)  //  per sec^2; max accel
+        Units.degreesToRadians(4000)  //  per sec^2; max accel
     );
 
     public static final double[] INTAKE_PID = {0, 0, 0};
