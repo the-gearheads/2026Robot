@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5815819979770023,
+        "x": 2.6114639639639643,
         "y": 4.074072
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5202678571428567,
-        "y": 4.699053571428571
+        "x": 2.734031531531532,
+        "y": 4.760191441441441
       },
       "isLocked": false,
-      "linkedName": "Center"
+      "linkedName": "Center Shoot"
     },
     {
       "anchor": {
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -0.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }
