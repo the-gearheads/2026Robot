@@ -154,15 +154,11 @@ public class RobotContainer {
         hood.setObjectiveAngleCommand(swerve),
         shooter.setObjectiveVelocityCommand(swerve),
         new SequentialCommandGroup(
-          Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter);}).withTimeout(5),
+          Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter);}),
           Commands.deferredProxy(()->{
              if( //ShooterCalculations.isTimeToShoot(AimingManager.latestShot.timeOfFlight()) &&
               AimingManager.latestShot.aimingTarget() == ObjectiveTracker.HUB || (AimingManager.latestShot.aimingTarget() instanceof VirtualTarget) && ((VirtualTarget)AimingManager.latestShot.aimingTarget()).baseTarget == ObjectiveTracker.HUB) {
-              if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
                 return spindexer.runSpindexer(12);
-              } else {
-                return spindexer.runSpindexer(12);//.alongWith(deploy.shimmy(intake));
-              }
             } else {
               return spindexer.runSpindexer(12);
             }
