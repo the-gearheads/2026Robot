@@ -81,7 +81,7 @@ public final class SwerveConstants {
       MAX_ROBOT_ROT_ACCEL - 2  // -2 just keeping things a lil conservative
     );
 
-    public static Rotation2d YAW_ALIGN_TOLERANCE = Rotation2d.fromDegrees(3);
+    public static Rotation2d YAW_ALIGN_TOLERANCE = Rotation2d.fromDegrees(4);
 
     public static final Rotation2d SWERVE_ALIGN_ROT_TOLERANCE = Rotation2d.fromDegrees(2);
     public static final double SWERVE_ALIGN_DIST_TOLERANCE = Units.inchesToMeters(1);

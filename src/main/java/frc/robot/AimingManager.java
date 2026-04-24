@@ -59,7 +59,8 @@ public class AimingManager {
         if (DriverStation.isAutonomous()) {
             adjustedShot = baseShot;
         } else {
-            adjustedShot = ShooterCalculations.applyTrenchAvoidance(baseShot, robotPose, fieldRelSpeeds);
+            // adjustedShot = ShooterCalculations.applyTrenchAvoidance(baseShot, robotPose, fieldRelSpeeds);
+            adjustedShot = baseShot;
         }
         return new ShotData(
             adjustedShot.flywheelVel() + SHOOTER_VEL_ADJUSTMENT,

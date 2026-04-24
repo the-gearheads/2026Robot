@@ -21,23 +21,19 @@ import frc.robot.util.AimingTarget;
 import frc.robot.util.HubTracker;
 import frc.robot.util.ObjectiveTracker;
 import frc.robot.util.ShooterCalculations;
-import frc.robot.util.targets.VirtualTarget;
 import frc.robot.commands.Teleop;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.ShooterConstants;
-import frc.robot.constants.SwerveConstants;
 import frc.robot.controllers.Controllers;
 
 import static frc.robot.constants.IntakeConstants.DEPLOY_MAX_ANGLE;
-import static frc.robot.constants.IntakeConstants.OPERATOR_MANUAL_SHIMMY_ANGLE;
 import static frc.robot.constants.MiscConstants.isReal;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_VELOCITY;
 import static frc.robot.constants.ShooterConstants.HOOD_MIN_ANGLE;
 import static frc.robot.constants.ShooterConstants.DEPOT_TRENCH_SHOOT_ANGLE;
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_VELOCITY;
 import static frc.robot.constants.IntakeConstants.OPERATOR_HIGH_SHIMMY_ANGLE;
-
-
+import static frc.robot.constants.IntakeConstants.OPERATOR_MANUAL_SHIMMY_ANGLE;
 import static frc.robot.constants.ShooterConstants.HP_TRENCH_SHOOT_ANGLE;
 
 
@@ -156,14 +152,14 @@ public class RobotContainer {
         new SequentialCommandGroup(
           Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter);}),
           Commands.deferredProxy(()->{
-             if( //ShooterCalculations.isTimeToShoot(AimingManager.latestShot.timeOfFlight()) &&
-              AimingManager.latestShot.aimingTarget() == ObjectiveTracker.HUB || (AimingManager.latestShot.aimingTarget() instanceof VirtualTarget) && ((VirtualTarget)AimingManager.latestShot.aimingTarget()).baseTarget == ObjectiveTracker.HUB) {
-                return spindexer.runSpindexer(12);
-            } else {
+            //  if( //ShooterCalculations.isTimeToShoot(AimingManager.latestShot.timeOfFlight()) &&
+            //   AimingManager.latestShot.aimingTarget() == ObjectiveTracker.HUB || (AimingManager.latestShot.aimingTarget() instanceof VirtualTarget) && ((VirtualTarget)AimingManager.latestShot.aimingTarget()).baseTarget == ObjectiveTracker.HUB) {
+            //     return spindexer.runSpindexer(12);
+            // } else {
               return spindexer.runSpindexer(12);
-            }
-          })
-        )
+            // }
+          }).until(()->{return !ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter);})
+          ).repeatedly()
       )
     );
 
@@ -173,11 +169,11 @@ public class RobotContainer {
         new SequentialCommandGroup(
           Commands.waitUntil(() -> {return ShooterCalculations.readyToShoot(swerve.getPose(), hood, shooter, ObjectiveTracker.HUB);}),
           Commands.deferredProxy(()->{
-            if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
+            // if (swerve.getSpeedMagnitude() > SwerveConstants.SHIMMY_THRESHOLD_SPEED) {
                 return spindexer.runSpindexer(12);
-              } else {
-                return spindexer.runSpindexer(12);//.alongWith(deploy.shimmy(intake));
-              }
+              // } else {
+              //   return spindexer.runSpindexer(12);//.alongWith(deploy.shimmy(intake));
+              // }
             })
           )
       )
@@ -271,7 +267,7 @@ public class RobotContainer {
 
     Controllers.operatorController.getAButton().whileTrue(deploy.shimmy(intake));
     Controllers.operatorController.getYButton().whileTrue(deploy.run(()->{deploy.setAngle(OPERATOR_MANUAL_SHIMMY_ANGLE);}));
-    Controllers.operatorController.getYButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(12);})).finallyDo(()->{
+    Controllers.operatorController.getYButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(-12);})).finallyDo(()->{
     intake.setIntakeVoltage(0);}));
     Controllers.operatorController.getZButton().whileTrue(deploy.run(()->{deploy.setAngle(DEPLOY_MAX_ANGLE);}));
     Controllers.operatorController.getZButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(-12);})).finallyDo(()->{
@@ -283,8 +279,11 @@ public class RobotContainer {
     Controllers.operatorController.getCButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(12);})).finallyDo(()->{
     intake.setIntakeVoltage(0);}));
 
-    Controllers.operatorController.getRightBumper().onTrue(climber.climberUp());
-    Controllers.operatorController.getLeftBumper().onTrue(climber.climberDown());
+    Controllers.operatorController.getRightBumper().whileTrue(spindexer.runSpindexer(-12));
+    Controllers.operatorController.getLeftBumper().whileTrue(spindexer.runSpindexer(12));
+
+    Controllers.operatorController.getModeButton().onTrue(climber.climberDown());
+    Controllers.operatorController.getStartButton().onTrue(climber.climberUp());
   }
 
   public Command getAutonomousCommand() {

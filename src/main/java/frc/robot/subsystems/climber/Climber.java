@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -126,10 +125,8 @@ public class Climber extends SubsystemBase {
                     yVelocity = CLIMB_IN_SPEED;
                     climbingPose = new Pose2d(15.234, 3.339, Rotation2d.fromDegrees(-90));
                 } else {
-                    // we're on the left side on the blue field
-                    // negative x and y, down and to the left
                     xVelocity = -CLIMB_SWEEP_SPEED;
-                    yVelocity = -CLIMB_IN_SPEED;
+                    yVelocity = CLIMB_IN_SPEED;
                     climbingPose = new Pose2d(15.720, 5.298, Rotation2d.fromDegrees(90));
                 }
             }

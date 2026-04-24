@@ -36,4 +36,12 @@ public interface OperatorController {
         return new Trigger(() ->false);
     }
 
+    public  default Trigger getModeButton() {
+        return new Trigger(() ->false);
+    }
+
+    public default Trigger getStartButton(){
+        return new Trigger(() ->false);
+    }
+
 }

@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import static frc.robot.constants.VisionConstants.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +23,7 @@ public class Vision extends SubsystemBase {
 
     public Vision(Swerve swerve) {
         this.swerve = swerve;
+        PhotonCamera.setVersionCheckEnabled(false); // we using super cool dev version today
 
         for (int i = 0; i<CAMERA_NAMES.length; i++) {
             cameras[i] = new Camera(FieldConstants.ATFL, CAMERA_NAMES[i], CAMERA_TRANSFORMS[i], swerve::getPose, WRONG_CAMERA_INTRINSICS[i]);
