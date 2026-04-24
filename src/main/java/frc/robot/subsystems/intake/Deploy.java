@@ -14,7 +14,6 @@ import com.revrobotics.encoder.DetachedEncoder.Faults;
 import com.revrobotics.encoder.SplineEncoder;
 import com.revrobotics.encoder.config.DetachedEncoderConfig;
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -64,7 +63,7 @@ public class Deploy extends SubsystemBase {
   void configure() {
     deployConfig.encoder.quadratureMeasurementPeriod(10);
     deployConfig.encoder.quadratureAverageDepth(2);
-    deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, DEPLOY_ENCODER_ID);
+    //deployConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, DEPLOY_ENCODER_ID);
     deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
     deployConfig.idleMode(IdleMode.kBrake);
     deployConfig.disableVoltageCompensation();
@@ -108,7 +107,7 @@ public class Deploy extends SubsystemBase {
       voltageMode = false; // voltageMode should be continuously set to set a voltage, so we default to maintaining pid when no command is being called
     } else {
       profileSetpoint = profile.calculate(0.02, profileSetpoint, new State(targetAngle.getRadians(), holdVoltage));
-      double ff = DEPLOY_FEEDFOWARD.calculateWithVelocities(getAngle().getRadians(), getSpineRelativeDeployVelocity(), profileSetpoint.velocity);
+      double ff = DEPLOY_FEEDFOWARD.calculateWithVelocities(getAngle().getRadians(), getIntegratedRelativeDeployVelocity(), profileSetpoint.velocity);
       deployController.setSetpoint(profileSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff);
       Logger.recordOutput("Deploy/currentDeploySetpoint", profileSetpoint);
       Logger.recordOutput("Deploy/deployFF", ff);
@@ -134,8 +133,8 @@ public class Deploy extends SubsystemBase {
 
   @AutoLogOutput
   public Rotation2d getAngle() {
-    return Rotation2d.fromRadians(deploySplineEncoder.getAngle());
-    // return Rotation2d.fromRadians(deployRelativeEncoder.getPosition());
+    //return Rotation2d.fromRadians(deploySplineEncoder.getAngle());
+    return Rotation2d.fromRadians(deployRelativeEncoder.getPosition());
   }
 
   @AutoLogOutput
