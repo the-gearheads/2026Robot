@@ -11,7 +11,7 @@ public class IntakeConstants {
     public static final int INTAKE_ID = 31;
     public static final int DEPLOY_ENCODER_ID = 34;
     public static final int INTAKE_CURRENT_LIMIT = 60;
-    public static final int DEPLOY_CURRENT_LIMIT = 50;
+    public static final int DEPLOY_CURRENT_LIMIT = 5;
 
     public static final double[] DEPLOY_PID = {0.55, 0, 0};
     public static final ArmFeedforward DEPLOY_FEEDFOWARD = new ArmFeedforward(0, 0, 0, 0);
@@ -32,20 +32,21 @@ public class IntakeConstants {
     public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.14108491;  // this must be in rotations
 
     public static final double INTAKE_GEAR_RATIO = 16.0 / 11.0;
-    public static final double DEPLOY_GEAR_RATIO = (29.0/24.0) * (3.0*4.0*5.0);
+    //public static final double DEPLOY_GEAR_RATIO = (29.0/24.0) * (3.0*4.0*5.0);
+    public static final double DEPLOY_GEAR_RATIO = 120;
     public static final double DEPLOY_POS_FACTOR = (1/DEPLOY_GEAR_RATIO)*(2 * Math.PI);
     public static final double DEPLOY_VEL_FACTOR = DEPLOY_POS_FACTOR / 60.0;
 
     public static final double DEPLOY_LENGTH = Units.inchesToMeters(21);  // not exact
 
-    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(-1);  // it sinks into the bumper a bit to hold position
+    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(5);  // it sinks into the bumper a bit to hold position
     public static final Rotation2d DEPLOY_MAX_ANGLE = Rotation2d.fromDegrees(84);
 
     public static final Rotation2d DEPLOY_MIN_SYSID_ANGLE = Rotation2d.fromDegrees(4);
     public static final Rotation2d DEPLOY_MAX_SYSID_ANGLE = Rotation2d.fromDegrees(54);
 
-    public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromDegrees(0);
-    public static final Rotation2d DEPLOY_SHIMMY_LOW_ANGLE = Rotation2d.fromDegrees(0); 
+    public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromDegrees(5);
+    public static final Rotation2d DEPLOY_SHIMMY_LOW_ANGLE = Rotation2d.fromDegrees(5); 
     public static final Rotation2d DEPLOY_SHIMMY_HIGH_ANGLE = Rotation2d.fromDegrees(49); 
     public static final Rotation2d OPERATOR_MANUAL_SHIMMY_ANGLE = Rotation2d.fromDegrees(30);
      
