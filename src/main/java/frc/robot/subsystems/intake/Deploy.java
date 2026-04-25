@@ -67,7 +67,7 @@ public class Deploy extends SubsystemBase {
     deployConfig.smartCurrentLimit(IntakeConstants.DEPLOY_CURRENT_LIMIT);
     deployConfig.idleMode(IdleMode.kBrake);
     deployConfig.disableVoltageCompensation();
-    deployConfig.inverted(true);
+    deployConfig.inverted(false);
 
     deployAbsEncoderConfig.positionConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);
     deployAbsEncoderConfig.angleConversionFactor(DEPLOY_ABS_ENC_POS_FACTOR);

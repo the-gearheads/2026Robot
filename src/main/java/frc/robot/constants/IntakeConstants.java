@@ -11,7 +11,7 @@ public class IntakeConstants {
     public static final int INTAKE_ID = 31;
     public static final int DEPLOY_ENCODER_ID = 34;
     public static final int INTAKE_CURRENT_LIMIT = 60;
-    public static final int DEPLOY_CURRENT_LIMIT = 5;
+    public static final int DEPLOY_CURRENT_LIMIT = 20;
 
     public static final double[] DEPLOY_PID = {0.55, 0, 0};
     public static final ArmFeedforward DEPLOY_FEEDFOWARD = new ArmFeedforward(0, 0, 0, 0);
