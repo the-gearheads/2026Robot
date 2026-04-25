@@ -16,7 +16,7 @@ public class VisionConstants {
         "CTHULHU", 
         "PEARL2", 
         "ANNIE",
-        "ALLAN" 
+        "RA" 
     };
 
     public static final boolean ENABLED = true;
