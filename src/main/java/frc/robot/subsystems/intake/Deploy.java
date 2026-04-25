@@ -26,6 +26,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,6 +45,7 @@ public class Deploy extends SubsystemBase {
   DetachedEncoderConfig deployAbsEncoderConfig = new DetachedEncoderConfig();
   SparkClosedLoopController deployController = deploy.getClosedLoopController();
   SparkFlexConfig deployConfig = new SparkFlexConfig();
+  
 
   TrapezoidProfile profile = new TrapezoidProfile(DEPLOY_CONSTRAINTS);
   Rotation2d targetAngle;
@@ -131,12 +133,21 @@ public class Deploy extends SubsystemBase {
     setVoltage(volts.magnitude());
   }
 
+
   @AutoLogOutput
   public Rotation2d getAngle() {
-    //return Rotation2d.fromRadians(deploySplineEncoder.getAngle());
+    //return Rotation2d.fromRadians(deploySplineEncoder.getPosition());
     return Rotation2d.fromRadians(deployRelativeEncoder.getPosition());
     //return Rotation2d.fromRadians(deploySplineEncoder.getPosition());
   }
+  //   Rotation2d angle = new Rotation2d(Units.rotationsToRadians(deployRelativeEncoder.getPosition()));
+  //    angle.times(0.9);
+  //    Rotation2d angletwo = new Rotation2d(deploySplineEncoder.getPosition());
+  //    angletwo.times(0.1);
+  //    angle.plus(angletwo);
+     
+  //   return angle; 
+  // }
 
   @AutoLogOutput
   public Rotation2d getSplineEncoderRelativeDeployAngle() {
