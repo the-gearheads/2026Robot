@@ -40,7 +40,7 @@ public class IntakeConstants {
     public static final double DEPLOY_LENGTH = Units.inchesToMeters(21);  // not exact
 
     public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(5);  // it sinks into the bumper a bit to hold position
-    public static final Rotation2d DEPLOY_MAX_ANGLE = Rotation2d.fromDegrees(84);
+    public static final Rotation2d DEPLOY_MAX_ANGLE = Rotation2d.fromDegrees(80);
 
     public static final Rotation2d DEPLOY_MIN_SYSID_ANGLE = Rotation2d.fromDegrees(4);
     public static final Rotation2d DEPLOY_MAX_SYSID_ANGLE = Rotation2d.fromDegrees(54);
