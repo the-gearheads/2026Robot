@@ -1,6 +1,5 @@
 package frc.robot.constants;
 
-import static edu.wpi.first.units.Units.Rotation;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -31,7 +30,7 @@ public class IntakeConstants {
 
     public static final float DEPLOY_ABS_ENC_POS_FACTOR = (float)(2 * Math.PI);
     public static final float DEPLOY_ABS_ENC_VEL_FACTOR = (float)(DEPLOY_ABS_ENC_POS_FACTOR / 60.0);  // why tf does it want a float TODO: complain to rev
-    public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.14108491;  // this must be in rotations
+    public static final float DEPLOY_ABS_ENC_OFFSET = (float)0.9794156;  // this must be in rotations
 
     public static final double INTAKE_GEAR_RATIO = 16.0 / 11.0;
     //public static final double DEPLOY_GEAR_RATIO = (29.0/24.0) * (3.0*4.0*5.0);
@@ -53,7 +52,7 @@ public class IntakeConstants {
     public static final Rotation2d OPERATOR_MANUAL_SHIMMY_ANGLE = Rotation2d.fromDegrees(30);
     public static final Rotation2d SPIT_ANGLE = Rotation2d.fromDegrees(10);
 
-    public static final Rotation2d INITIAL_ANGLE = Rotation2d.fromDegrees(75);
+    public static final Rotation2d INITIAL_ANGLE = Rotation2d.fromDegrees(81.4);
      
     public static final Rotation2d OPERATOR_HIGH_SHIMMY_ANGLE = Rotation2d.fromDegrees(45);
     public static final double SHIMMY_DOWN_TIMEOUT = 0.6;  // will go up for x seconds, down for x, etc

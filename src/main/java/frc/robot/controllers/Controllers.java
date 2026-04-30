@@ -6,7 +6,7 @@ import frc.robot.constants.MiscConstants;
 import static edu.wpi.first.math.MathUtil.applyDeadband;
 
 public class Controllers {
-     private Controllers() {}
+  private Controllers() {}
 
   private static final int MAX_DRIVER_STATION_PORTS = DriverStation.kJoystickPorts; 
   private static final String[] OPERATOR_CONTROLLER_NAMES = {
