@@ -26,7 +26,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,7 +56,7 @@ public class Deploy extends SubsystemBase {
 
   public Deploy() {
     configure();
-    deployRelativeEncoder.setPosition(deploySplineEncoder.getAngle());
+    deployRelativeEncoder.setPosition(INITIAL_ANGLE.getRadians());
     targetAngle = getAngle();
     profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
   }
@@ -98,7 +97,7 @@ public class Deploy extends SubsystemBase {
   @Override
   public void periodic() {
     if (DriverStation.isDisabled()) {
-      deployRelativeEncoder.setPosition(deploySplineEncoder.getAngle());
+      // deployRelativeEncoder.setPosition(deploySplineEncoder.getAngle());
       profileSetpoint = new State(getAngle().getRadians(), getIntegratedRelativeDeployVelocity());
       targetAngle = getAngle();
     }
@@ -153,6 +152,10 @@ public class Deploy extends SubsystemBase {
   public Rotation2d getSplineEncoderRelativeDeployAngle() {
       return Rotation2d.fromRadians(deploySplineEncoder.getPosition());
   }
+  @AutoLogOutput
+  public Rotation2d getSplineEncoderAbsoluteDeployAngle() {
+      return Rotation2d.fromRadians(deploySplineEncoder.getAngle());
+  }
 
   @AutoLogOutput
   public Rotation2d getIntegratedRelativeDeployAngle() {
@@ -190,6 +193,16 @@ public class Deploy extends SubsystemBase {
       // this.setAngleCommand(IntakeConstants.DEPLOY_MIN_ANGLE).withTimeout(SHIMMY_DOWN_TIMEOUT+0.1)
 
     ).alongWith(intake.run(()->{intake.setIntakeVoltage(12);})).andThen(this.setAngleCommand(DEPLOY_MIN_ANGLE));
+  }
+
+public Command spit() {
+    return Commands.repeatingSequence(
+      this.setAngleCommand(IntakeConstants.SPIT_ANGLE).withTimeout(SHIMMY_UP_TIMEOUT),
+      this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_LOW_ANGLE).withTimeout(SHIMMY_DOWN_TIMEOUT)
+      // this.setAngleCommand(IntakeConstants.DEPLOY_SHIMMY_HIGH_ANGLE).withTimeout(SHIMMY_UP_TIMEOUT),
+      // this.setAngleCommand(IntakeConstants.DEPLOY_MIN_ANGLE).withTimeout(SHIMMY_DOWN_TIMEOUT+0.1)
+
+    );
   }
 
   public Command holdDownCommand() {

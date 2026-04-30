@@ -275,12 +275,13 @@ public class RobotContainer {
     Controllers.operatorController.getXButton().onTrue(Commands.runOnce(() -> {swerve.waitToCrossToggle();}));
     Controllers.operatorController.getBButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(-12);})).finallyDo(()->{
     intake.setIntakeVoltage(0);}));
+    Controllers.operatorController.getLeftBumper().whileTrue(deploy.spit());
     Controllers.operatorController.getCButton().whileTrue(deploy.run(()->{deploy.setAngle(OPERATOR_HIGH_SHIMMY_ANGLE);}));
     Controllers.operatorController.getCButton().whileTrue(intake.run((()->{intake.setIntakeVoltage(12);})).finallyDo(()->{
     intake.setIntakeVoltage(0);}));
 
-    Controllers.operatorController.getRightBumper().whileTrue(spindexer.runSpindexer(-12));
-    Controllers.operatorController.getLeftBumper().whileTrue(spindexer.runSpindexer(12));
+    Controllers.operatorController.getRightBumper().whileTrue(spindexer.runSpindexer(12));
+    Controllers.operatorController.getLeftBumper().whileTrue(spindexer.runSpindexer(-12));
 
     Controllers.operatorController.getModeButton().onTrue(climber.climberDown());
     Controllers.operatorController.getStartButton().onTrue(climber.climberUp());

@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,9 +13,9 @@ public class IntakeConstants {
     public static final int INTAKE_ID = 31;
     public static final int DEPLOY_ENCODER_ID = 34;
     public static final int INTAKE_CURRENT_LIMIT = 60;
-    public static final int DEPLOY_CURRENT_LIMIT = 20;
+    public static final int DEPLOY_CURRENT_LIMIT = 40;
 
-    public static final double[] DEPLOY_PID = {0.55, 0, 0};
+    public static final double[] DEPLOY_PID = {2, 0, 0};
     public static final ArmFeedforward DEPLOY_FEEDFOWARD = new ArmFeedforward(0, 0, 0, 0);
     // public static final Constraints DEPLOY_CONSTRAINTS = new Constraints(
     //     Units.degreesToRadians(1500), // per second; max vel
@@ -39,16 +41,19 @@ public class IntakeConstants {
 
     public static final double DEPLOY_LENGTH = Units.inchesToMeters(21);  // not exact
 
-    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(5);  // it sinks into the bumper a bit to hold position
+    public static final Rotation2d DEPLOY_MIN_ANGLE = Rotation2d.fromDegrees(0);  // it sinks into the bumper a bit to hold position
     public static final Rotation2d DEPLOY_MAX_ANGLE = Rotation2d.fromDegrees(80);
 
     public static final Rotation2d DEPLOY_MIN_SYSID_ANGLE = Rotation2d.fromDegrees(4);
     public static final Rotation2d DEPLOY_MAX_SYSID_ANGLE = Rotation2d.fromDegrees(54);
 
-    public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromDegrees(5);
-    public static final Rotation2d DEPLOY_SHIMMY_LOW_ANGLE = Rotation2d.fromDegrees(5); 
+    public static final Rotation2d DEPLOY_HOLD_ANGLE = Rotation2d.fromDegrees(0);
+    public static final Rotation2d DEPLOY_SHIMMY_LOW_ANGLE = Rotation2d.fromDegrees(1); 
     public static final Rotation2d DEPLOY_SHIMMY_HIGH_ANGLE = Rotation2d.fromDegrees(49); 
     public static final Rotation2d OPERATOR_MANUAL_SHIMMY_ANGLE = Rotation2d.fromDegrees(30);
+    public static final Rotation2d SPIT_ANGLE = Rotation2d.fromDegrees(10);
+
+    public static final Rotation2d INITIAL_ANGLE = Rotation2d.fromDegrees(75);
      
     public static final Rotation2d OPERATOR_HIGH_SHIMMY_ANGLE = Rotation2d.fromDegrees(45);
     public static final double SHIMMY_DOWN_TIMEOUT = 0.6;  // will go up for x seconds, down for x, etc
