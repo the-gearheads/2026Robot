@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import static frc.robot.constants.IntakeConstants.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;

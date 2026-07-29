@@ -36,7 +36,7 @@ public class FeederTarget implements AimingTarget {
 
     @Override
     public Rotation2d getHoodAngle(double distanceMeters) {
-        if (distanceMeters > 9.25) {
+        if (distanceMeters > 10.5) {
             return FEEDING_ANGLE;
         }
         else{
@@ -48,7 +48,7 @@ public class FeederTarget implements AimingTarget {
 
     @Override
     public double getFlywheelVel(double distanceMeters) {
-        if (distanceMeters > 9.25) {
+        if (distanceMeters > 10.5) {
             return FEEDING_FAR_VEL;
         }
         return FEEDING_VEL;

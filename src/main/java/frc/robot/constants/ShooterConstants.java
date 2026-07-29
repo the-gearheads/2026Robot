@@ -94,7 +94,7 @@ public class ShooterConstants {
 
     public static final double FEEDING_VEL = 420.0250388;  // rad/sec
     public static final double FEEDING_FAR_VEL = 765;  // rad/sec
-    public static final Rotation2d FEEDING_ANGLE = Rotation2d.fromDegrees(36);
+    public static final Rotation2d FEEDING_ANGLE = Rotation2d.fromDegrees(42);
     public static final Rotation2d FEEDING_CLOSE_ANGLE = Rotation2d.fromDegrees(38);
 }
 
